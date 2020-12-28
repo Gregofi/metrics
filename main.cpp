@@ -23,7 +23,7 @@ struct Function
 class FunctionInfoVisitor : public RecursiveASTVisitor<FunctionInfoVisitor>
 {
     /* Statements that contains other statements */
-    static const std::array<Stmt::StmtClass, 9> compoundStatements;
+    static const std::array<Stmt::StmtClass, 10> compoundStatements;
     struct Result
     {
         int statements;
@@ -68,11 +68,14 @@ public:
         auto it = stmt->child_begin();
         /* For statement has three potential childs: condition, body and else.
          * We will skip the condition. */
+
         std::next(it, 1);
+        /* This is the 'if' body */
         auto res_if = StmtCount(*it, depth + 1);
-        ++ it;
-        /* Check else branch, for us, this is NOT counted as depth increase. */
+        std::next(it, 1);
+        /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
         auto res_else = StmtCount(*it, depth);
+
         cnt += res_else.statements + res_if.statements;
         depth = std::max(res_if.depth, res_else.depth);
         return {cnt, depth};
@@ -83,7 +86,8 @@ public:
         auto it = body->children().begin();
         auto stmtClass = body->getStmtClass();
         /* First children of these statements are some sort of conditions or initializations, skip that */
-        if(stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::SwitchStmtClass || stmtClass == Stmt::CXXForRangeStmtClass)
+        if(stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::SwitchStmtClass
+            || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CaseStmtClass)
             ++ it;
 
         /* Here, for cycle contains four other statements before body, also just
@@ -101,7 +105,8 @@ public:
             bool advance = !(it->getStmtClass() == Stmt::CompoundStmtClass &&
                              (stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::CXXTryStmtClass
                               || stmtClass == Stmt::ForStmtClass || stmtClass == Stmt::SwitchStmtClass
-                              || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass));
+                              || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass
+                              || stmtClass == Stmt::CaseStmtClass));
             auto tmp_res = StmtCount(*it, depth + advance);
             res.statements += tmp_res.statements;
             res.depth = std::max(res.depth, tmp_res.depth);
@@ -174,7 +179,7 @@ private:
     std::map<int, Function> funcs;
 };
 
-const std::array<Stmt::StmtClass, 9> FunctionInfoVisitor::compoundStatements  ({
+const std::array<Stmt::StmtClass, 10> FunctionInfoVisitor::compoundStatements  ({
         Stmt::SwitchStmtClass,
         Stmt::IfStmtClass,
         Stmt::ForStmtClass,
@@ -184,6 +189,7 @@ const std::array<Stmt::StmtClass, 9> FunctionInfoVisitor::compoundStatements  ({
         Stmt::CXXTryStmtClass,
         Stmt::CXXCatchStmtClass,
         Stmt::CoroutineBodyStmtClass,
+        Stmt::CaseStmtClass,
 });
 
 /* ======================================================================================= */

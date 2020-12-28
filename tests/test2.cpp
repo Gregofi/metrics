@@ -11,21 +11,18 @@ int foo()
     return 1;
 }
 
-int func1()
+int func1(int i)
 {
-    int i;
     if(i < 10)
     {
-        return 0;
+//        i += 1;
+//        i += 2;
+//        return i;
     }
-    else if(i < 20)
-    {
-        return 1;
-    }
-    else
-    {
-        return 2;
-    }
+//    else if(i < 20)
+//    {
+//        return i;
+//    }
 }
 
 int func2()
@@ -48,6 +45,10 @@ int func2()
             case 1:
             {
                 return 2;
+            }
+            case 2:
+            {
+                return 3;
             }
         }
     }
