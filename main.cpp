@@ -12,20 +12,27 @@
 using namespace clang;
 using clang::Stmt;
 
-struct Result
+struct Function
 {
-    int statements;
-    int depth;
+    std::string name;
+    int length;
+    int stmtCnt;
+    int maxDepth;
 };
 
 class FunctionInfoVisitor : public RecursiveASTVisitor<FunctionInfoVisitor>
 {
     /* Statements that contains other statements */
     static const std::array<Stmt::StmtClass, 9> compoundStatements;
+    struct Result
+    {
+        int statements;
+        int depth;
+    };
 
 public:
-    explicit FunctionInfoVisitor(ASTContext *Context)
-            : Context(Context) {}
+    explicit FunctionInfoVisitor(ASTContext *context)
+            : context(context) {}
 
     /**
      * Calculates number of lines for given function body.
@@ -34,9 +41,9 @@ public:
      *
      * This calculates real number of lines, empty lines and comments are also counted.
      */
-    unsigned CalcLength(FunctionDecl *decl)
+    int CalcLength(FunctionDecl *decl)
     {
-        clang::SourceManager &sm(Context->getSourceManager());
+        clang::SourceManager &sm(context->getSourceManager());
         if(decl->hasBody())
             return sm.getSpellingLineNumber(decl->getBody()->getEndLoc())
                        - sm.getSpellingLineNumber(decl->getBody()->getBeginLoc());
@@ -142,7 +149,7 @@ public:
      */
     bool VisitFunctionDecl(FunctionDecl *decl)
     {
-        clang::SourceManager &sm(Context->getSourceManager());
+        clang::SourceManager &sm(context->getSourceManager());
         /* Don't calc if source code is not in main file. */
         if(!sm.isInMainFile(decl->getLocation())){
             return true;
@@ -150,18 +157,21 @@ public:
         /* Only calculate length if its also a definition */
         if(decl->isThisDeclarationADefinition())
         {
-            llvm::outs() << "Name: " << decl->getQualifiedNameAsString() << "\n";
-            llvm::outs() << "Length: " << CalcLength(decl) << "\n";
             auto res = StmtCount(decl->getBody());
-            llvm::outs() << "Statements:  " << res.statements << "\n";
-            llvm::outs() << "Max depth: " << res.depth << "\n";
-            llvm::outs() << "---------------" << "\n";
+            funcs.insert({decl->getID(), {decl->getQualifiedNameAsString(), CalcLength(decl),
+                                                    res.statements, res.depth}});
         }
         return true;
     }
 
+    std::map<int, Function> GetFunctions()
+    {
+        return std::move(funcs);
+    }
+
 private:
-    ASTContext *Context;
+    ASTContext *context;
+    std::map<int, Function> funcs;
 };
 
 const std::array<Stmt::StmtClass, 9> FunctionInfoVisitor::compoundStatements  ({
@@ -178,27 +188,53 @@ const std::array<Stmt::StmtClass, 9> FunctionInfoVisitor::compoundStatements  ({
 
 /* ======================================================================================= */
 
+class CyclomaticVisitor : public RecursiveASTVisitor<CyclomaticVisitor>
+{
+public:
+    explicit CyclomaticVisitor(ASTContext *context) : context(context) {}
+    bool VisitFunctionDecl(FunctionDecl *decl)
+    {
+        llvm::outs() << decl->getQualifiedNameAsString() << "\n";
+        return true;
+    }
+private:
+    ASTContext *context;
+};
+
+/* ======================================================================================= */
+
 class FunctionInfoConsumer : public clang::ASTConsumer
 {
 public:
-    explicit FunctionInfoConsumer(ASTContext *Context) : Visitor(Context) {}
+    explicit FunctionInfoConsumer(ASTContext *context) : visitorFunc(context), visitorCycl(context) {}
 
-    virtual void HandleTranslationUnit(clang::ASTContext &Context)
+    virtual void HandleTranslationUnit(clang::ASTContext &context)
     {
-        Visitor.TraverseDecl(Context.getTranslationUnitDecl());
+        visitorFunc.TraverseDecl(context.getTranslationUnitDecl());
+        visitorCycl.TraverseDecl(context.getTranslationUnitDecl());
+        for(const auto & x : visitorFunc.GetFunctions())
+        {
+            auto func = x.second;
+            llvm::outs() << "name: " << func.name << "\n"
+                         << "length: " << func.length << "\n"
+                         << "stmtcnt:" << func.stmtCnt << "\n"
+                         << "depth:" << func.maxDepth << "\n----------------\n";
+        }
     }
 private:
-    FunctionInfoVisitor Visitor;
+    FunctionInfoVisitor visitorFunc;
+    CyclomaticVisitor visitorCycl;
 };
 
 class FunctionInfoAction : public clang::ASTFrontendAction
 {
 public:
-    virtual std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile)
+    virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile)
     {
-        return std::unique_ptr<clang::ASTConsumer>(new FunctionInfoConsumer(&Compiler.getASTContext()));
+        return std::unique_ptr<FunctionInfoConsumer>(new FunctionInfoConsumer(&Compiler.getASTContext()));
     }
 };
+
 
 int main(int argc, char **argv) {
     std::ifstream fs(argv[1]);
