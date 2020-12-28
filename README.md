@@ -1,0 +1,11 @@
+# Metrics
+## How to build this.
+
+1. Put this in the tools directory, eg. llvm-project/clang/tools
+2. Add following to to llvm-project/clang/tools/CMakeLists.txt : "add_subdirectory(metrics)"
+3. Go to folder where you want to build your llvm project.
+4. Run "cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS=clang -G "Unix Makefiles" /path/to/llvm".
+If you omit BUILD_TYPE, it will default to debug, which is approximately 60GB, release is about 4GB.
+5. Run "make check-all"
+6. Go make yourself a coffee, this will take some time.
+7. Binary is then located at ./bin/metrics

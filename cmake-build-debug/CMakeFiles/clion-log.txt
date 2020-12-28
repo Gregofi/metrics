@@ -1,0 +1,7 @@
+/opt/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/filip/dev/llvm-project/clang/tools/metrics
+CMake Error at CMakeLists.txt:10 (add_clang_executable):
+  Unknown CMake command "add_clang_executable".
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles/CMakeOutput.log".
