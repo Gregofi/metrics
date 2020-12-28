@@ -1,6 +1,17 @@
 # Metrics
-## How to build this.
+Calculates software metrics for given source codes, targeted for C/C++ sources.  
+Currently implemented metrics:  
+* For each function, it calculates following:
+    * Lines of code (for now, this also counts lines containing only 
+        comments and empty lines :( )
+    * Maximum depth 
+    * Number of C/C++ statements
+    
+---
+This tool is based on clang-libtooling, and requires it to be built.  
 
+## How to build this.
+You need to have the llvm and clang sources downloaded to build this.
 1. Put this in the tools directory, eg. llvm-project/clang/tools
 2. Add following to to llvm-project/clang/tools/CMakeLists.txt : "add_subdirectory(metrics)"
 3. Go to folder where you want to build your llvm project.
