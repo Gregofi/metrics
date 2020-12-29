@@ -7,7 +7,7 @@ set(LLVM_LINK_COMPONENTS support)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 
-add_clang_executable(metrics main.cpp)
+add_clang_executable(metrics main.cpp modules/FuncInfoVisitor.cpp)
 
 target_link_libraries(metrics
         PRIVATE
