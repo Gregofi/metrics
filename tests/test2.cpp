@@ -13,16 +13,42 @@ int foo()
 
 int func1(int i)
 {
-    if(i < 10)
-    {
-//        i += 1;
-//        i += 2;
-//        return i;
-    }
-//    else if(i < 20)
+//    if(true)
 //    {
-//        return i;
+//
 //    }
+    if(true)
+    {
+        i += 1;
+        i += 2;
+        return i;
+    }
+    else
+    if(i < 20)
+    {
+        if(i > 22)
+        {
+            if(true)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
+            return 1;
+        }
+        else
+        {
+            return i;
+        }
+        return i;
+
+    }
+    else
+    {
+        return i - 1;
+    }
 }
 
 int func2()

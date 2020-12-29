@@ -68,13 +68,20 @@ public:
         auto it = stmt->child_begin();
         /* For statement has three potential childs: condition, body and else.
          * We will skip the condition. */
-
-        std::next(it, 1);
+        std::advance(it, 1);
+        printf("%s\n", it->getStmtClassName());
         /* This is the 'if' body */
-        auto res_if = StmtCount(*it, depth + 1);
-        std::next(it, 1);
+        auto res_if = StmtCount(*it, depth);
+        std::advance(it, 1);
         /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
-        auto res_else = StmtCount(*it, depth);
+        Result res_else{0, 0};
+        if(it != stmt->child_end())
+        {
+            bool is_else = it->getStmtClass() != Stmt::IfStmtClass;
+            res_else = StmtCount(*it, depth);
+            if(is_else)
+                res_else.statements += 1;
+        }
 
         cnt += res_else.statements + res_if.statements;
         depth = std::max(res_if.depth, res_else.depth);
@@ -88,12 +95,12 @@ public:
         /* First children of these statements are some sort of conditions or initializations, skip that */
         if(stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::SwitchStmtClass
             || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CaseStmtClass)
-            ++ it;
+            std::advance(it, 1);
 
         /* Here, for cycle contains four other statements before body, also just
          * skip them */
         if(stmtClass == Stmt::ForStmtClass)
-            std::next(it, 4);
+            std::advance(it, 4);
 
         Result res = {0, depth};
         for(;it != body->child_end(); ++it)
@@ -159,6 +166,7 @@ public:
         if(!sm.isInMainFile(decl->getLocation())){
             return true;
         }
+        decl->dump();
         /* Only calculate length if its also a definition */
         if(decl->isThisDeclarationADefinition())
         {
