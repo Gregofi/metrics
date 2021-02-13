@@ -40,13 +40,12 @@ public:
     {
         visitorFunc.TraverseDecl(context.getTranslationUnitDecl());
         visitorCycl.TraverseDecl(context.getTranslationUnitDecl());
+        /* DEBUG : Print all metrics to stdout as is */
         for(const auto & x : visitorFunc.GetFunctions())
         {
             auto func = x.second;
-            llvm::outs() << "name: " << func.name << "\n"
-                         << "length: " << func.length << "\n"
-                         << "stmtcnt:" << func.stmtCnt << "\n"
-                         << "depth:" << func.maxDepth << "\n----------------\n";
+            for(const auto & metric : func)
+            llvm::outs() << metric.name << " : " << metric.val << "\n";
         }
     }
 private:

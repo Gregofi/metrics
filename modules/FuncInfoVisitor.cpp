@@ -45,7 +45,6 @@ FuncInfoVisitor::Result FuncInfoVisitor::HandleIfStatement(const Stmt *stmt, int
     /* For statement has three potential childs: condition, body and else.
      * We will skip the condition. */
     std::advance(it, 1);
-    printf("%s\n", it->getStmtClassName());
     /* This is the 'if' body */
     auto res_if = StmtCount(*it, depth);
     std::advance(it, 1);
@@ -142,13 +141,17 @@ bool FuncInfoVisitor::VisitFunctionDecl(FunctionDecl *decl)
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
-        funcs.insert({decl->getID(), {decl->getQualifiedNameAsString(), CalcLength(decl),
-                                      res.statements, res.depth}});
+        Function func(decl->getQualifiedNameAsString(), {
+            {"Physical Lines of code", CalcLength(decl)},
+            {"Number of statements", res.statements},
+            {"Maximum depth", res.depth},
+        });
+        funcs.insert({decl->getID(), func});
     }
     return true;
 }
 
-std::map<int, Function> FuncInfoVisitor::GetFunctions()
+std::map<int64_t, Function> FuncInfoVisitor::GetFunctions()
 {
     return std::move(funcs);
 }

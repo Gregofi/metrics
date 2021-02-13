@@ -14,22 +14,17 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
+#include "Metric.hpp"
+
 using namespace clang;
 using clang::Stmt;
-
-struct Function
-{
-    std::string name;
-    int length;
-    int stmtCnt;
-    int maxDepth;
-};
 
 class FuncInfoVisitor : public RecursiveASTVisitor<FuncInfoVisitor>
 {
@@ -60,7 +55,7 @@ public:
      * @param depth - current depth
      * @return - Result struct containing maximum depth of this statement and number of statements in this statement.
      *
-     * If statement needs to be done separately, because the 'else' branch is child of the 'if' statement,
+     * If statement needs to be done separately, because the 'else' branch is child of the 'if' statement(its not on the same level),
      * and depth would not be calculated properly.
      */
     Result HandleIfStatement(const Stmt *stmt, int depth);
@@ -76,11 +71,26 @@ public:
      */
     bool VisitFunctionDecl(FunctionDecl *decl);
 
-    std::map<int, Function> GetFunctions();
+    bool VisitCXXRecordDecl(CXXRecordDecl *decl)
+    {
+        clang::SourceManager &sm(context->getSourceManager());
+        /* Don't calc if source code is not in main file. */
+        if(!sm.isInMainFile(decl->getLocation())){
+            return true;
+        }
+
+        decl->forallBases([](const CXXRecordDecl *decl){
+            llvm::outs() << "--+==" << decl->getNameAsString() << "\n";
+            return true;
+        });
+        return true;
+    }
+
+    std::map<int64_t, Function> GetFunctions();
 
 private:
     ASTContext *context;
-    std::map<int, Function> funcs;
+    std::map<int64_t, Function> funcs;
 };
 
 #endif //METRICS_FUNCINFO_HPP
