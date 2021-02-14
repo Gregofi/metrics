@@ -3,6 +3,7 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -136,22 +137,18 @@ bool FuncInfoVisitor::VisitFunctionDecl(FunctionDecl *decl)
     if(!sm.isInMainFile(decl->getLocation())){
         return true;
     }
+
     decl->dump();
     /* Only calculate length if its also a definition */
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
-        Function func(decl->getQualifiedNameAsString(), {
+        functions[decl->getID()].insert({
             {"Physical Lines of code", CalcLength(decl)},
             {"Number of statements", res.statements},
             {"Maximum depth", res.depth},
         });
-        funcs.insert({decl->getID(), func});
     }
     return true;
 }
 
-std::map<int64_t, Function> FuncInfoVisitor::GetFunctions()
-{
-    return std::move(funcs);
-}

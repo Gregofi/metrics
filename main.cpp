@@ -9,6 +9,7 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
+#include "modules/CyclomaticVisitor.hpp"
 #include "modules/FuncInfoVisitor.hpp"
 
 using namespace clang;
@@ -16,32 +17,17 @@ using clang::Stmt;
 
 /* ======================================================================================= */
 
-class CyclomaticVisitor : public RecursiveASTVisitor<CyclomaticVisitor>
-{
-public:
-    explicit CyclomaticVisitor(ASTContext *context) : context(context) {}
-    bool VisitFunctionDecl(FunctionDecl *decl)
-    {
-        llvm::outs() << decl->getQualifiedNameAsString() << "\n";
-        return true;
-    }
-private:
-    ASTContext *context;
-};
-
-/* ======================================================================================= */
-
 class FunctionInfoConsumer : public clang::ASTConsumer
 {
 public:
-    explicit FunctionInfoConsumer(ASTContext *context) : visitorFunc(context), visitorCycl(context) {}
+    explicit FunctionInfoConsumer(ASTContext *context) : visitorFunc(context, functions), visitorCycl(context, functions) {}
 
     virtual void HandleTranslationUnit(clang::ASTContext &context)
     {
         visitorFunc.TraverseDecl(context.getTranslationUnitDecl());
         visitorCycl.TraverseDecl(context.getTranslationUnitDecl());
         /* DEBUG : Print all metrics to stdout as is */
-        for(const auto & x : visitorFunc.GetFunctions())
+        for(const auto & x : functions)
         {
             auto func = x.second;
             for(const auto & metric : func)
@@ -49,6 +35,7 @@ public:
         }
     }
 private:
+    std::map<int64_t, Function> functions;
     FuncInfoVisitor visitorFunc;
     CyclomaticVisitor visitorCycl;
 };

@@ -1,13 +1,7 @@
-//
-// Created by filip on 12/29/20.
-//
 
 #ifndef METRICS_FUNCINFO_HPP
 #define METRICS_FUNCINFO_HPP
 
-//
-// Created by filip on 12/29/20.
-//
 
 #include <fstream>
 #include <set>
@@ -22,11 +16,12 @@
 #include "clang/Tooling/Tooling.h"
 
 #include "Metric.hpp"
+#include "MetricVisitor.hpp"
 
 using namespace clang;
 using clang::Stmt;
 
-class FuncInfoVisitor : public RecursiveASTVisitor<FuncInfoVisitor>
+class FuncInfoVisitor : public MetricVisitor<FuncInfoVisitor>
 {
     /* Statements that contains other statements */
     static const std::array<Stmt::StmtClass, 10> compoundStatements;
@@ -37,8 +32,8 @@ class FuncInfoVisitor : public RecursiveASTVisitor<FuncInfoVisitor>
     };
 
 public:
-    explicit FuncInfoVisitor(ASTContext *context)
-            : context(context) {}
+    explicit FuncInfoVisitor(ASTContext *context, std::map<int64_t, Function> &functions)
+                                : MetricVisitor(functions), context(context) {}
 
     /**
      * Calculates number of lines for given function body.
@@ -86,11 +81,8 @@ public:
         return true;
     }
 
-    std::map<int64_t, Function> GetFunctions();
-
 private:
     ASTContext *context;
-    std::map<int64_t, Function> funcs;
 };
 
 #endif //METRICS_FUNCINFO_HPP
