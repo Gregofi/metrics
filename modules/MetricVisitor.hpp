@@ -7,17 +7,22 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
+#include "clang/AST/ASTContext.h"
 
 #include "Metric.hpp"
+#include "FuncInfoVisitor.hpp"
+#include "CyclomaticVisitor.hpp"
 
-template <class T>
-class MetricVisitor : public clang::RecursiveASTVisitor<T>
+class MetricVisitor : public clang::RecursiveASTVisitor<MetricVisitor>
 {
 public:
-    MetricVisitor(std::map<int64_t, Function> &functions) : functions(functions) {}
+    MetricVisitor(clang::ASTContext *context) : context(context) {}
+    bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
 protected:
-    std::map<int64_t, Function> &functions;
+    std::map<int64_t, Function> funcs;
+    clang::ASTContext *context;
 };
+
 
 #endif //METRICS_METRICVISITOR_HPP

@@ -138,12 +138,11 @@ bool FuncInfoVisitor::VisitFunctionDecl(FunctionDecl *decl)
         return true;
     }
 
-    decl->dump();
     /* Only calculate length if its also a definition */
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
-        functions[decl->getID()].insert({
+        this->res.insert(this->res.end(), {
             {"Physical Lines of code", CalcLength(decl)},
             {"Number of statements", res.statements},
             {"Maximum depth", res.depth},

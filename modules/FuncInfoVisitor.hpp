@@ -21,7 +21,7 @@
 using namespace clang;
 using clang::Stmt;
 
-class FuncInfoVisitor : public MetricVisitor<FuncInfoVisitor>
+class FuncInfoVisitor : public clang::RecursiveASTVisitor<FuncInfoVisitor>
 {
     /* Statements that contains other statements */
     static const std::array<Stmt::StmtClass, 10> compoundStatements;
@@ -32,8 +32,7 @@ class FuncInfoVisitor : public MetricVisitor<FuncInfoVisitor>
     };
 
 public:
-    explicit FuncInfoVisitor(ASTContext *context, std::map<int64_t, Function> &functions)
-                                : MetricVisitor(functions), context(context) {}
+    FuncInfoVisitor(ASTContext *ctx) : context(ctx) {}
 
     /**
      * Calculates number of lines for given function body.
@@ -81,7 +80,14 @@ public:
         return true;
     }
 
+    std::vector<Metric> calcMetric(Decl *decl)
+    {
+        this->TraverseDecl(decl);
+        return res;
+    }
+
 private:
+    std::vector<Metric> res;
     ASTContext *context;
 };
 

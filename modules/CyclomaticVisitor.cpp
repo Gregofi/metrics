@@ -7,8 +7,15 @@
 
 #include "CyclomaticVisitor.hpp"
 
+
 bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
+    /* Skip declarations */
 
+    return true;
+}
+
+bool CyclomaticVisitor::VisitIfStmt(clang::IfStmt *decl)
+{
     return true;
 }
