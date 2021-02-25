@@ -36,28 +36,16 @@ int FuncInfoVisitor::CalcLength(FunctionDecl *decl)
     return 0;
 }
 
-FuncInfoVisitor::Result FuncInfoVisitor::HandleIfStatement(const Stmt *stmt, int depth)
+FuncInfoVisitor::Result FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int depth)
 {
     using clang::Stmt;
-    assert(stmt->getStmtClass() == Stmt::IfStmtClass);
 
     int cnt = 0;
-    auto it = stmt->child_begin();
-    /* For statement has three potential childs: condition, body and else.
-     * We will skip the condition. */
-    std::advance(it, 1);
     /* This is the 'if' body */
-    auto res_if = StmtCount(*it, depth);
-    std::advance(it, 1);
+    Result res_if = StmtCount(stmt->getThen(), depth);
     /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
     Result res_else{0, 0};
-    if(it != stmt->child_end())
-    {
-        bool is_else = it->getStmtClass() != Stmt::IfStmtClass;
-        res_else = StmtCount(*it, depth);
-        if(is_else)
-            res_else.statements += 1;
-    }
+    res_else = StmtCount(stmt->getElse(), depth);
 
     cnt += res_else.statements + res_if.statements;
     depth = std::max(res_if.depth, res_else.depth);
@@ -120,7 +108,7 @@ FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
         /* Because else branch is child of if statement, we need to deal with it
          * separately. */
         if(stmtClass == Stmt::IfStmtClass)
-            tmp_res = HandleIfStatement(body, depth);
+            tmp_res = HandleIfStatement(llvm::dyn_cast<IfStmt>(body), depth);
         else
             tmp_res = HandleOtherCompounds(body, depth);
 

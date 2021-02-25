@@ -52,7 +52,7 @@ public:
      * If statement needs to be done separately, because the 'else' branch is child of the 'if' statement(its not on the same level),
      * and depth would not be calculated properly.
      */
-    Result HandleIfStatement(const Stmt *stmt, int depth);
+    Result HandleIfStatement(const IfStmt *stmt, int depth);
 
     Result HandleOtherCompounds(const Stmt *body, int depth);
 
