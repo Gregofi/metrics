@@ -26,7 +26,7 @@ int func1(int i)
     else
     if(i < 20)
     {
-        if(i > 22)
+        if(i > 22 && i < 24)
         {
             if(true)
             {

@@ -14,6 +14,7 @@
 #include "Metric.hpp"
 
 
+
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
@@ -26,8 +27,12 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
     llvm::outs() << decl->getQualifiedNameAsString() << "\n";
     FuncInfoVisitor v1(context);
+    CyclomaticVisitor v2(context);
     for(const auto & x : v1.calcMetric(decl))
         llvm::outs() << x.name << " " << x.val << "\n";
+    for(const auto & x : v2.calcMetric(decl))
+        llvm::outs() << x.name << " " << x.val << "\n";
+
     llvm::outs() << "-----------\n";
     return true;
 }

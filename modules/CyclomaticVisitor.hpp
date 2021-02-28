@@ -20,7 +20,16 @@ public:
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
     bool VisitIfStmt(clang::IfStmt *decl);
 
+
+    std::vector<Metric> calcMetric(clang::Decl *decl)
+    {
+        this->TraverseDecl(decl);
+        return res;
+    }
+
 protected:
+    std::vector<Metric> res;
+    size_t count = 0;
     clang::ASTContext *context;
 };
 

@@ -42,8 +42,8 @@ public:
     }
 };
 
-
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     std::ifstream fs(argv[1]);
     std::string s, l;
     while(std::getline(fs, l))
