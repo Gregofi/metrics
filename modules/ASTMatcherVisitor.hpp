@@ -23,16 +23,26 @@ using namespace clang::ast_matchers;
  * There is a much easier way to do this, however it requires to edit
  * clang source code, because clang MatchFinder either visits whole AST
  * or only one node.
+ *
+ * Now it visits every statement and declaration and tries to match it with given matchers.
  */
 class ASTMatcherVisitor : public clang::RecursiveASTVisitor<ASTMatcherVisitor>
 {
 public:
+    /**
+     * Creates visitor that visits every node, tries to match it with given matchers and
+     * if it is matched, callback will be called.
+     * @param context
+     * @param callback
+     * @param matchers
+     */
     ASTMatcherVisitor(ASTContext *context, MatchFinder::MatchCallback *callback, std::vector<StatementMatcher> matchers) :
                             context(context), callback(callback)
     {
         for(const auto & x : matchers)
             finder.addMatcher(x, callback);
     }
+
 
     bool VisitDecl(Decl *decl)
     {

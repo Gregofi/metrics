@@ -13,7 +13,9 @@
 
 using namespace clang::ast_matchers;
 
-     
+/**
+ * Simple callback class that counts how many times a match has been found.
+ */
 class Counter : public MatchFinder::MatchCallback
 {
 public :
@@ -29,6 +31,7 @@ private:
 bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
     Counter counter;
+    /* Statements that make the code branch */
     std::vector<StatementMatcher> matchers
     = {
             clang::ast_matchers::forStmt(),
@@ -39,15 +42,12 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
             clang::ast_matchers::doStmt(),
             clang::ast_matchers::ifStmt(),
             clang::ast_matchers::binaryOperator(hasOperatorName("&&")),
-            clang::ast_matchers::binaryOperator(hasOperatorName("||"))
+            clang::ast_matchers::binaryOperator(hasOperatorName("||")),
+            clang::ast_matchers::
     };
     ASTMatcherVisitor v(context, &counter, matchers);
     v.TraverseDecl(decl);
-    res.push_back({"Cyclomatic complexity", counter.getCount()});
+    res.push_back({"Cyclomatic complexity", counter.getCount() + 1});
     return true;
 }
 
-bool CyclomaticVisitor::VisitIfStmt(clang::IfStmt *decl)
-{
-    return true;
-}
