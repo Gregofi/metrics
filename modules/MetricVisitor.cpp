@@ -18,6 +18,7 @@
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
+
     /* Don't calc if source code is not in main file. */
     if(!sm.isInMainFile(decl->getLocation())
         || !decl->isThisDeclarationADefinition()
@@ -26,6 +27,7 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     }
 
     llvm::outs() << decl->getQualifiedNameAsString() << "\n";
+
     FuncInfoVisitor v1(context);
     CyclomaticVisitor v2(context);
     for(const auto & x : v1.calcMetric(decl))

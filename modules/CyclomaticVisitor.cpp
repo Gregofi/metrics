@@ -28,6 +28,7 @@ private:
     int count = 0;
 };
 
+
 bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
     Counter counter;
@@ -43,7 +44,6 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
             clang::ast_matchers::ifStmt(),
             clang::ast_matchers::binaryOperator(hasOperatorName("&&")),
             clang::ast_matchers::binaryOperator(hasOperatorName("||")),
-            clang::ast_matchers::
     };
     ASTMatcherVisitor v(context, &counter, matchers);
     v.TraverseDecl(decl);

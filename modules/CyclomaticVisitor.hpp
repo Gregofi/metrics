@@ -13,12 +13,14 @@
 #include "MetricVisitor.hpp"
 #include "Metric.hpp"
 
+/**
+ *
+ */
 class CyclomaticVisitor : public clang::RecursiveASTVisitor<CyclomaticVisitor>
 {
 public:
     explicit CyclomaticVisitor(clang::ASTContext *context) : context(context) {}
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
-
 
     std::vector<Metric> calcMetric(clang::Decl *decl)
     {

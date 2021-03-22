@@ -56,6 +56,12 @@ public:
         return true;
     }
 
+    bool VisitType(Type *type)
+    {
+        finder.match(*type, *context);
+        return true;
+    }
+
 protected:
     MatchFinder finder;
     MatchFinder::MatchCallback *callback;
