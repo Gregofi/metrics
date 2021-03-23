@@ -12,6 +12,7 @@
 
 #include "FuncInfoVisitor.hpp"
 
+using namespace clang;
 
 const std::array<Stmt::StmtClass, 10> FuncInfoVisitor::compoundStatements  ({
     Stmt::SwitchStmtClass,
@@ -95,8 +96,8 @@ FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
     using clang::Stmt;
 
     auto stmtClass = body->getStmtClass();
-    bool is_compound = std::find(compoundStatements.begin(), compoundStatements.end(), stmtClass)
-                       != compoundStatements.end();
+    bool is_compound =
+            std::find(compoundStatements.begin(), compoundStatements.end(), stmtClass)!= compoundStatements.end();
 
     /* Do not count Compound Statement as statement */
     Result res = {!(stmtClass == Stmt::CompoundStmtClass), depth};
@@ -105,7 +106,7 @@ FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
     {
         Result tmp_res;
 
-        /* Because else branch is child of if statement, we need to deal with it
+        /* Because else branch is child of if statement(ie. it would increase depth), we need to deal with it
          * separately. */
         if(stmtClass == Stmt::IfStmtClass)
             tmp_res = HandleIfStatement(llvm::dyn_cast<IfStmt>(body), depth);
@@ -118,19 +119,13 @@ FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
     return res;
 }
 
-bool FuncInfoVisitor::VisitFunctionDecl(FunctionDecl *decl)
+bool FuncInfoVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
-    clang::SourceManager &sm(context->getSourceManager());
-    /* Don't calc if source code is not in main file. */
-    if(!sm.isInMainFile(decl->getLocation())){
-        return true;
-    }
-
     /* Only calculate length if its also a definition */
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
-        this->res.insert(this->res.end(), {
+        metrics.insert(this->metrics.end(), {
             {"Physical Lines of code", CalcLength(decl)},
             {"Number of statements", res.statements},
             {"Maximum depth", res.depth},
@@ -138,4 +133,3 @@ bool FuncInfoVisitor::VisitFunctionDecl(FunctionDecl *decl)
     }
     return true;
 }
-

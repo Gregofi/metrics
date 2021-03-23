@@ -22,7 +22,6 @@ public:
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
 protected:
-    std::map<int64_t, Function> funcs;
     clang::ASTContext *context;
 };
 

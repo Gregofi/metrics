@@ -2,6 +2,10 @@
 // Created by filip on 2/25/21.
 //
 
+#include <vector>
+#include <memory>
+#include <iostream>
+
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -12,7 +16,7 @@
 #include "MetricVisitor.hpp"
 #include "FuncInfoVisitor.hpp"
 #include "Metric.hpp"
-
+#include "AbstractVisitor.hpp"
 
 
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
@@ -26,16 +30,18 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
         return true;
     }
 
-    llvm::outs() << decl->getQualifiedNameAsString() << "\n";
+    std::cout << decl->getQualifiedNameAsString() << "\n";
 
-    FuncInfoVisitor v1(context);
-    CyclomaticVisitor v2(context);
-    for(const auto & x : v1.calcMetric(decl))
-        llvm::outs() << x.name << " " << x.val << "\n";
-    for(const auto & x : v2.calcMetric(decl))
-        llvm::outs() << x.name << " " << x.val << "\n";
+    std::vector<std::unique_ptr<AbstractVisitor> > visitors;
+    visitors.emplace_back(std::make_unique<FuncInfoVisitor>(context));
+    visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
+    for(const auto & x : visitors)
+    {
+        x->CalcMetrics(decl);
+        x->Export(std::cout);
+    }
+    std::cout << std::endl;
 
-    llvm::outs() << "-----------\n";
     return true;
 }
 

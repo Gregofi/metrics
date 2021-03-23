@@ -8,6 +8,7 @@
 #include <array>
 #include <algorithm>
 #include <cassert>
+#include <ostream>
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -17,14 +18,12 @@
 
 #include "Metric.hpp"
 #include "MetricVisitor.hpp"
+#include "AbstractVisitor.hpp"
 
-using namespace clang;
-using clang::Stmt;
-
-class FuncInfoVisitor : public clang::RecursiveASTVisitor<FuncInfoVisitor>
+class FuncInfoVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<FuncInfoVisitor>
 {
     /* Statements that contains other statements */
-    static const std::array<Stmt::StmtClass, 10> compoundStatements;
+    static const std::array<clang::Stmt::StmtClass, 10> compoundStatements;
     struct Result
     {
         int statements;
@@ -32,7 +31,7 @@ class FuncInfoVisitor : public clang::RecursiveASTVisitor<FuncInfoVisitor>
     };
 
 public:
-    FuncInfoVisitor(ASTContext *ctx) : context(ctx) {}
+    FuncInfoVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx) {}
 
     /**
      * Calculates number of lines for given function body.
@@ -41,7 +40,7 @@ public:
      *
      * This calculates real number of lines, empty lines and comments are also counted.
      */
-    int CalcLength(FunctionDecl *decl);
+    int CalcLength(clang::FunctionDecl *decl);
 
     /**
      * Handles calculation of depth and statements for if statement.
@@ -52,43 +51,23 @@ public:
      * If statement needs to be done separately, because the 'else' branch is child of the 'if' statement(its not on the same level),
      * and depth would not be calculated properly.
      */
-    Result HandleIfStatement(const IfStmt *stmt, int depth);
+    Result HandleIfStatement(const clang::IfStmt *stmt, int depth);
 
-    Result HandleOtherCompounds(const Stmt *body, int depth);
+    Result HandleOtherCompounds(const clang::Stmt *body, int depth);
 
-    Result StmtCount(const Stmt *body, int depth = 0);
+    Result StmtCount(const clang::Stmt *body, int depth = 0);
 
     /**
      * Calculates range of function declaration.
      * @param decl
      * @return
      */
-    bool VisitFunctionDecl(FunctionDecl *decl);
+    bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
-    bool VisitCXXRecordDecl(CXXRecordDecl *decl)
-    {
-        clang::SourceManager &sm(context->getSourceManager());
-        /* Don't calc if source code is not in main file. */
-        if(!sm.isInMainFile(decl->getLocation())){
-            return true;
-        }
-
-        decl->forallBases([](const CXXRecordDecl *decl){
-            llvm::outs() << "--+==" << decl->getNameAsString() << "\n";
-            return true;
-        });
-        return true;
-    }
-
-    std::vector<Metric> calcMetric(Decl *decl)
+    virtual void CalcMetrics(clang::Decl *decl) override
     {
         this->TraverseDecl(decl);
-        return res;
     }
-
-private:
-    std::vector<Metric> res;
-    ASTContext *context;
 };
 
 #endif //METRICS_FUNCINFO_HPP

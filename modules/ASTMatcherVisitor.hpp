@@ -1,3 +1,4 @@
+
 //
 // Created by filip on 2/28/21.
 //
@@ -14,6 +15,7 @@
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
 using namespace clang::ast_matchers;
+using namespace clang;
 
 /**
  * AST Visitor that visits every node in given subtree and tries to match
@@ -37,7 +39,7 @@ public:
      * @param matchers
      */
     ASTMatcherVisitor(ASTContext *context, MatchFinder::MatchCallback *callback, std::vector<StatementMatcher> matchers) :
-                            context(context), callback(callback)
+            context(context), callback(callback)
     {
         for(const auto & x : matchers)
             finder.addMatcher(x, callback);
@@ -53,12 +55,6 @@ public:
     bool VisitStmt(Stmt *stmt)
     {
         finder.match(*stmt, *context);
-        return true;
-    }
-
-    bool VisitType(Type *type)
-    {
-        finder.match(*type, *context);
         return true;
     }
 

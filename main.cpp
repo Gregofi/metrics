@@ -22,21 +22,20 @@ class FunctionInfoConsumer : public clang::ASTConsumer
 public:
     explicit FunctionInfoConsumer(ASTContext *context) : metricVisitor(context)  {}
 
-    virtual void HandleTranslationUnit(clang::ASTContext &context)
+    virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
 //        visitorFunc.TraverseDecl(context.getTranslationUnitDecl());
 //        visitorCycl.TraverseDecl(context.getTranslationUnitDecl());
         metricVisitor.TraverseDecl(context.getTranslationUnitDecl());
     }
 private:
-    std::map<int64_t, Function> functions;
     MetricVisitor metricVisitor;
 };
 
 class FunctionInfoAction : public clang::ASTFrontendAction
 {
 public:
-    virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile)
+    virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) override
     {
         return std::unique_ptr<FunctionInfoConsumer>(new FunctionInfoConsumer(&Compiler.getASTContext()));
     }

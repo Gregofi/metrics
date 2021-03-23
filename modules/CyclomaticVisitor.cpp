@@ -47,7 +47,7 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     };
     ASTMatcherVisitor v(context, &counter, matchers);
     v.TraverseDecl(decl);
-    res.push_back({"Cyclomatic complexity", counter.getCount() + 1});
+    metrics.push_back({"Cyclomatic complexity", counter.getCount() + 1});
     return true;
 }
 

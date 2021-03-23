@@ -12,26 +12,24 @@
 
 #include "MetricVisitor.hpp"
 #include "Metric.hpp"
+#include "AbstractVisitor.hpp"
 
 /**
  *
  */
-class CyclomaticVisitor : public clang::RecursiveASTVisitor<CyclomaticVisitor>
+class CyclomaticVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
 {
 public:
-    explicit CyclomaticVisitor(clang::ASTContext *context) : context(context) {}
+    explicit CyclomaticVisitor(clang::ASTContext *context) : AbstractVisitor(context) {}
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
-    std::vector<Metric> calcMetric(clang::Decl *decl)
+    virtual void CalcMetrics(clang::Decl *decl) override
     {
         this->TraverseDecl(decl);
-        return res;
     }
 
 protected:
-    std::vector<Metric> res;
     size_t count = 0;
-    clang::ASTContext *context;
 };
 
 
