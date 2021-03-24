@@ -20,7 +20,7 @@
 class CyclomaticVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
 {
 public:
-    explicit CyclomaticVisitor(clang::ASTContext *context) : AbstractVisitor(context) {}
+    explicit CyclomaticVisitor(clang::ASTContext *context);
 
     virtual ~CyclomaticVisitor();
     bool VisitFunctionDecl(clang::FunctionDecl *decl);

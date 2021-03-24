@@ -38,12 +38,28 @@ public:
      * @param callback
      * @param matchers
      */
-    ASTMatcherVisitor(ASTContext *context, MatchFinder::MatchCallback *callback, std::vector<StatementMatcher> matchers) :
-            context(context), callback(callback)
+    ASTMatcherVisitor(ASTContext *context) : context(context)
+    {
+    }
+
+    void AddMatchers(const std::vector<StatementMatcher>& matchers, MatchFinder::MatchCallback *callback)
     {
         for(const auto & x : matchers)
             finder.addMatcher(x, callback);
     }
+
+    void AddMatchers(const std::vector<TypeMatcher>& matchers, MatchFinder::MatchCallback *callback)
+    {
+        for(const auto & x : matchers)
+            finder.addMatcher(x, callback);
+    }
+
+    void AddMatchers(const std::vector<DeclarationMatcher>& matchers, MatchFinder::MatchCallback *callback)
+    {
+        for(const auto & x : matchers)
+            finder.addMatcher(x, callback);
+    }
+
 
 
     bool VisitDecl(Decl *decl)
@@ -60,7 +76,6 @@ public:
 
 protected:
     MatchFinder finder;
-    MatchFinder::MatchCallback *callback;
     clang::ASTContext *context;
 };
 
