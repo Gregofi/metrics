@@ -22,41 +22,37 @@
 class HalsteadVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<HalsteadVisitor>
 {
 public:
-    bool VisitDecl(Decl *decl)
+    bool VisitDecl(clang::Decl *decl)
     {
 
     }
 
-    bool VisitType(Type *type)
+    bool VisitType(clang::Type *type)
     {
 
     }
 
-    bool VisitStmt(Stmt *stmt)
+    bool VisitStmt(clang::Stmt *stmt)
     {
 
     }
 
-    virtual void calcMetric(Decl *decl) override
+    virtual void CalcMetrics(clang::Decl *decl) override
     {
         this->TraverseDecl(decl);
     }
 
-    virtual std::ostream& Export(std::ostream &os) override
-    {
-
-    }
 protected:
     int operator_count = 0;
     int operand_count = 0;
     std::set<int> seen_operators;
     std::set<int> seen_operands;
 
-    static constexpr std::array<clang::ast_matchers>
+//    static constexpr std::vector<clang::ast_matchers::StatementMatcher> matchers;
 
     Metric result;
-    MatchFinder finder;
-    MatchFinder::MatchCallback *callback;
+    clang::ast_matchers::MatchFinder finder;
+    clang::ast_matchers::MatchFinder::MatchCallback *callback;
 };
 
 

@@ -5,41 +5,31 @@
 		<Option title="metrics"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\usr\;CMake Files\..\..\..\usr\local\;CMake Files\..\..\..\usr\local\lib\;CMake Files\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\usr\local\lib\cmake\llvm\;CMake Files\..\..\..\usr\lib64\;CMake Files\..\..\..\usr\lib64\cmake\;CMake Files\..\..\..\usr\lib64\cmake\clang\;CMake Files\..\..\..\usr\lib\;CMake Files\..\..\..\usr\lib\cmake\;CMake Files\..\..\..\usr\lib\cmake\clang\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug"/>
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="rebuild_cache">
-				<Option working_dir="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug"/>
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="metrics">
-				<Option output="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/metrics" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug"/>
+				<Option output="/home/filip/metrics_1/cmake-build-debug/metrics" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -53,15 +43,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 metrics"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 metrics"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="metrics/fast">
-				<Option output="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/metrics" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug"/>
+				<Option output="/home/filip/metrics_1/cmake-build-debug/metrics" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -75,18 +65,113 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 metrics/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 metrics/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="intrinsics_gen">
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 intrinsics_gen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="omp_gen">
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 omp_gen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="acc_gen">
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 acc_gen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="clang-tablegen-targets">
+				<Option working_dir="/home/filip/metrics_1/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clang-tablegen-targets"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/filip/metrics_1/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/filip/dev/llvm-project/clang/tools/metrics/main.cpp">
+		<Unit filename="/home/filip/metrics_1/main.cpp">
 			<Option target="metrics"/>
 		</Unit>
-		<Unit filename="/home/filip/dev/llvm-project/clang/tools/metrics/CMakeLists.txt">
+		<Unit filename="/home/filip/metrics_1/modules/CyclomaticVisitor.cpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/CyclomaticVisitor.hpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/FuncInfoVisitor.cpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/FuncInfoVisitor.hpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/MetricVisitor.cpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/MetricVisitor.hpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/local/lib/cmake/llvm/LLVM-Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\local\lib\cmake\llvm\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/local/lib/cmake/llvm/LLVMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\local\lib\cmake\llvm\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/local/lib/cmake/llvm/LLVMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\local\lib\cmake\llvm\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/local/lib/cmake/llvm/LLVMExports-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\local\lib\cmake\llvm\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/local/lib/cmake/llvm/LLVMExports.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\local\lib\cmake\llvm\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/lib64/cmake/clang/ClangConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\lib64\cmake\clang\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/lib/cmake/clang/ClangConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\lib\cmake\clang\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/lib/cmake/clang/ClangTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\lib\cmake\clang\"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/../../../usr/lib/cmake/clang/ClangTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\usr\lib\cmake\clang\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

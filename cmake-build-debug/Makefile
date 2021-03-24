@@ -48,24 +48,13 @@ RM = /opt/clion/bin/cmake/linux/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/filip/dev/llvm-project/clang/tools/metrics
+CMAKE_SOURCE_DIR = /home/filip/metrics_1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug
+CMAKE_BINARY_DIR = /home/filip/metrics_1/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/opt/clion/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,11 +67,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/opt/clion/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles /home/filip/metrics_1/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,6 +123,58 @@ metrics/fast:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/build
 .PHONY : metrics/fast
 
+#=============================================================================
+# Target rules for targets named intrinsics_gen
+
+# Build rule for target.
+intrinsics_gen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 intrinsics_gen
+.PHONY : intrinsics_gen
+
+# fast build rule for target.
+intrinsics_gen/fast:
+	$(MAKE) -f CMakeFiles/intrinsics_gen.dir/build.make CMakeFiles/intrinsics_gen.dir/build
+.PHONY : intrinsics_gen/fast
+
+#=============================================================================
+# Target rules for targets named omp_gen
+
+# Build rule for target.
+omp_gen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 omp_gen
+.PHONY : omp_gen
+
+# fast build rule for target.
+omp_gen/fast:
+	$(MAKE) -f CMakeFiles/omp_gen.dir/build.make CMakeFiles/omp_gen.dir/build
+.PHONY : omp_gen/fast
+
+#=============================================================================
+# Target rules for targets named acc_gen
+
+# Build rule for target.
+acc_gen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 acc_gen
+.PHONY : acc_gen
+
+# fast build rule for target.
+acc_gen/fast:
+	$(MAKE) -f CMakeFiles/acc_gen.dir/build.make CMakeFiles/acc_gen.dir/build
+.PHONY : acc_gen/fast
+
+#=============================================================================
+# Target rules for targets named clang-tablegen-targets
+
+# Build rule for target.
+clang-tablegen-targets: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 clang-tablegen-targets
+.PHONY : clang-tablegen-targets
+
+# fast build rule for target.
+clang-tablegen-targets/fast:
+	$(MAKE) -f CMakeFiles/clang-tablegen-targets.dir/build.make CMakeFiles/clang-tablegen-targets.dir/build
+.PHONY : clang-tablegen-targets/fast
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -150,18 +202,112 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+modules/CyclomaticVisitor.o: modules/CyclomaticVisitor.cpp.o
+
+.PHONY : modules/CyclomaticVisitor.o
+
+# target to build an object file
+modules/CyclomaticVisitor.cpp.o:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.o
+.PHONY : modules/CyclomaticVisitor.cpp.o
+
+modules/CyclomaticVisitor.i: modules/CyclomaticVisitor.cpp.i
+
+.PHONY : modules/CyclomaticVisitor.i
+
+# target to preprocess a source file
+modules/CyclomaticVisitor.cpp.i:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.i
+.PHONY : modules/CyclomaticVisitor.cpp.i
+
+modules/CyclomaticVisitor.s: modules/CyclomaticVisitor.cpp.s
+
+.PHONY : modules/CyclomaticVisitor.s
+
+# target to generate assembly for a file
+modules/CyclomaticVisitor.cpp.s:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.s
+.PHONY : modules/CyclomaticVisitor.cpp.s
+
+modules/FuncInfoVisitor.o: modules/FuncInfoVisitor.cpp.o
+
+.PHONY : modules/FuncInfoVisitor.o
+
+# target to build an object file
+modules/FuncInfoVisitor.cpp.o:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o
+.PHONY : modules/FuncInfoVisitor.cpp.o
+
+modules/FuncInfoVisitor.i: modules/FuncInfoVisitor.cpp.i
+
+.PHONY : modules/FuncInfoVisitor.i
+
+# target to preprocess a source file
+modules/FuncInfoVisitor.cpp.i:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.i
+.PHONY : modules/FuncInfoVisitor.cpp.i
+
+modules/FuncInfoVisitor.s: modules/FuncInfoVisitor.cpp.s
+
+.PHONY : modules/FuncInfoVisitor.s
+
+# target to generate assembly for a file
+modules/FuncInfoVisitor.cpp.s:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.s
+.PHONY : modules/FuncInfoVisitor.cpp.s
+
+modules/MetricVisitor.o: modules/MetricVisitor.cpp.o
+
+.PHONY : modules/MetricVisitor.o
+
+# target to build an object file
+modules/MetricVisitor.cpp.o:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o
+.PHONY : modules/MetricVisitor.cpp.o
+
+modules/MetricVisitor.i: modules/MetricVisitor.cpp.i
+
+.PHONY : modules/MetricVisitor.i
+
+# target to preprocess a source file
+modules/MetricVisitor.cpp.i:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.i
+.PHONY : modules/MetricVisitor.cpp.i
+
+modules/MetricVisitor.s: modules/MetricVisitor.cpp.s
+
+.PHONY : modules/MetricVisitor.s
+
+# target to generate assembly for a file
+modules/MetricVisitor.cpp.s:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.s
+.PHONY : modules/MetricVisitor.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... metrics"
+	@echo "... rebuild_cache"
+	@echo "... intrinsics_gen"
+	@echo "... omp_gen"
+	@echo "... acc_gen"
+	@echo "... clang-tablegen-targets"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... modules/CyclomaticVisitor.o"
+	@echo "... modules/CyclomaticVisitor.i"
+	@echo "... modules/CyclomaticVisitor.s"
+	@echo "... modules/FuncInfoVisitor.o"
+	@echo "... modules/FuncInfoVisitor.i"
+	@echo "... modules/FuncInfoVisitor.s"
+	@echo "... modules/MetricVisitor.o"
+	@echo "... modules/MetricVisitor.i"
+	@echo "... modules/MetricVisitor.s"
 .PHONY : help
 
 

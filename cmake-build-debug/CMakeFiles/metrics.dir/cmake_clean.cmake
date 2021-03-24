@@ -1,5 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/metrics.dir/main.cpp.o"
+  "CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.o"
+  "CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o"
+  "CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o"
   "metrics"
   "metrics.pdb"
 )

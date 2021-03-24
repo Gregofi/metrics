@@ -44,10 +44,10 @@ RM = /opt/clion/bin/cmake/linux/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/filip/dev/llvm-project/clang/tools/metrics
+CMAKE_SOURCE_DIR = /home/filip/metrics_1
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug
+CMAKE_BINARY_DIR = /home/filip/metrics_1/cmake-build-debug
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -64,6 +64,10 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/metrics.dir/clean
+clean: CMakeFiles/intrinsics_gen.dir/clean
+clean: CMakeFiles/omp_gen.dir/clean
+clean: CMakeFiles/acc_gen.dir/clean
+clean: CMakeFiles/clang-tablegen-targets.dir/clean
 
 .PHONY : clean
 
@@ -74,14 +78,14 @@ clean: CMakeFiles/metrics.dir/clean
 CMakeFiles/metrics.dir/all:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/depend
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target metrics"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target metrics"
 .PHONY : CMakeFiles/metrics.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/metrics.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/metrics.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/metrics.dir/rule
 
 # Convenience name for target.
@@ -93,6 +97,114 @@ metrics: CMakeFiles/metrics.dir/rule
 CMakeFiles/metrics.dir/clean:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/clean
 .PHONY : CMakeFiles/metrics.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/intrinsics_gen.dir
+
+# All Build rule for target.
+CMakeFiles/intrinsics_gen.dir/all:
+	$(MAKE) -f CMakeFiles/intrinsics_gen.dir/build.make CMakeFiles/intrinsics_gen.dir/depend
+	$(MAKE) -f CMakeFiles/intrinsics_gen.dir/build.make CMakeFiles/intrinsics_gen.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num= "Built target intrinsics_gen"
+.PHONY : CMakeFiles/intrinsics_gen.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/intrinsics_gen.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/intrinsics_gen.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/intrinsics_gen.dir/rule
+
+# Convenience name for target.
+intrinsics_gen: CMakeFiles/intrinsics_gen.dir/rule
+
+.PHONY : intrinsics_gen
+
+# clean rule for target.
+CMakeFiles/intrinsics_gen.dir/clean:
+	$(MAKE) -f CMakeFiles/intrinsics_gen.dir/build.make CMakeFiles/intrinsics_gen.dir/clean
+.PHONY : CMakeFiles/intrinsics_gen.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/omp_gen.dir
+
+# All Build rule for target.
+CMakeFiles/omp_gen.dir/all:
+	$(MAKE) -f CMakeFiles/omp_gen.dir/build.make CMakeFiles/omp_gen.dir/depend
+	$(MAKE) -f CMakeFiles/omp_gen.dir/build.make CMakeFiles/omp_gen.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num= "Built target omp_gen"
+.PHONY : CMakeFiles/omp_gen.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/omp_gen.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/omp_gen.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/omp_gen.dir/rule
+
+# Convenience name for target.
+omp_gen: CMakeFiles/omp_gen.dir/rule
+
+.PHONY : omp_gen
+
+# clean rule for target.
+CMakeFiles/omp_gen.dir/clean:
+	$(MAKE) -f CMakeFiles/omp_gen.dir/build.make CMakeFiles/omp_gen.dir/clean
+.PHONY : CMakeFiles/omp_gen.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/acc_gen.dir
+
+# All Build rule for target.
+CMakeFiles/acc_gen.dir/all:
+	$(MAKE) -f CMakeFiles/acc_gen.dir/build.make CMakeFiles/acc_gen.dir/depend
+	$(MAKE) -f CMakeFiles/acc_gen.dir/build.make CMakeFiles/acc_gen.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num= "Built target acc_gen"
+.PHONY : CMakeFiles/acc_gen.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/acc_gen.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/acc_gen.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/acc_gen.dir/rule
+
+# Convenience name for target.
+acc_gen: CMakeFiles/acc_gen.dir/rule
+
+.PHONY : acc_gen
+
+# clean rule for target.
+CMakeFiles/acc_gen.dir/clean:
+	$(MAKE) -f CMakeFiles/acc_gen.dir/build.make CMakeFiles/acc_gen.dir/clean
+.PHONY : CMakeFiles/acc_gen.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/clang-tablegen-targets.dir
+
+# All Build rule for target.
+CMakeFiles/clang-tablegen-targets.dir/all:
+	$(MAKE) -f CMakeFiles/clang-tablegen-targets.dir/build.make CMakeFiles/clang-tablegen-targets.dir/depend
+	$(MAKE) -f CMakeFiles/clang-tablegen-targets.dir/build.make CMakeFiles/clang-tablegen-targets.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num= "Built target clang-tablegen-targets"
+.PHONY : CMakeFiles/clang-tablegen-targets.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/clang-tablegen-targets.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/clang-tablegen-targets.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/clang-tablegen-targets.dir/rule
+
+# Convenience name for target.
+clang-tablegen-targets: CMakeFiles/clang-tablegen-targets.dir/rule
+
+.PHONY : clang-tablegen-targets
+
+# clean rule for target.
+CMakeFiles/clang-tablegen-targets.dir/clean:
+	$(MAKE) -f CMakeFiles/clang-tablegen-targets.dir/build.make CMakeFiles/clang-tablegen-targets.dir/clean
+.PHONY : CMakeFiles/clang-tablegen-targets.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

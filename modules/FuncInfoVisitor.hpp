@@ -30,9 +30,10 @@ class FuncInfoVisitor : public AbstractVisitor, public clang::RecursiveASTVisito
         int depth;
     };
 
+
 public:
     FuncInfoVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx) {}
-
+    virtual ~FuncInfoVisitor() = default;
     /**
      * Calculates number of lines for given function body.
      * @param decl

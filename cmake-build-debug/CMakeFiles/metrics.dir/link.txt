@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/metrics.dir/main.cpp.o  -o metrics  -lclangTooling -lclangBasic -lclangASTMatchers 
+/usr/bin/c++   -g -g   CMakeFiles/metrics.dir/main.cpp.o CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.o CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o  -o metrics  -lLLVM /usr/lib/libclang-cpp.so.11.1 -lLLVM 

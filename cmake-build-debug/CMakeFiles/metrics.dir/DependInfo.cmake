@@ -4,7 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/filip/dev/llvm-project/clang/tools/metrics/main.cpp" "/home/filip/dev/llvm-project/clang/tools/metrics/cmake-build-debug/CMakeFiles/metrics.dir/main.cpp.o"
+  "/home/filip/metrics_1/main.cpp" "/home/filip/metrics_1/cmake-build-debug/CMakeFiles/metrics.dir/main.cpp.o"
+  "/home/filip/metrics_1/modules/CyclomaticVisitor.cpp" "/home/filip/metrics_1/cmake-build-debug/CMakeFiles/metrics.dir/modules/CyclomaticVisitor.cpp.o"
+  "/home/filip/metrics_1/modules/FuncInfoVisitor.cpp" "/home/filip/metrics_1/cmake-build-debug/CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o"
+  "/home/filip/metrics_1/modules/MetricVisitor.cpp" "/home/filip/metrics_1/cmake-build-debug/CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

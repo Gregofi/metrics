@@ -51,3 +51,8 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     return true;
 }
 
+CyclomaticVisitor::~CyclomaticVisitor()
+{
+
+}
+

@@ -21,6 +21,8 @@ class CyclomaticVisitor : public AbstractVisitor, public clang::RecursiveASTVisi
 {
 public:
     explicit CyclomaticVisitor(clang::ASTContext *context) : AbstractVisitor(context) {}
+
+    virtual ~CyclomaticVisitor();
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
     virtual void CalcMetrics(clang::Decl *decl) override

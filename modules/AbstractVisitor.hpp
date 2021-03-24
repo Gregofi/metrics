@@ -13,11 +13,14 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
+#include "Metric.hpp"
+
 
 class AbstractVisitor
 {
 public:
     AbstractVisitor(clang::ASTContext *ctx) : context(ctx) {}
+    virtual ~AbstractVisitor() = default;
     virtual std::ostream& Export(std::ostream &os) const
     {
         for(const auto & x : metrics)
