@@ -25,7 +25,7 @@ set(LLVM_LINK_COMPONENTS support)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
-add_executable(metrics main.cpp modules/FuncInfoVisitor.cpp modules/CyclomaticVisitor.cpp modules/MetricVisitor.cpp)
+add_executable(metrics main.cpp modules/FuncInfoVisitor.cpp modules/CyclomaticVisitor.cpp modules/MetricVisitor.cpp modules/HalsteadVisitor.cpp)
 
 target_link_libraries(metrics
         PRIVATE

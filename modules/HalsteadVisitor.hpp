@@ -7,6 +7,7 @@
 
 
 #include <map>
+#include <iostream>
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -18,41 +19,75 @@
 
 #include "MetricVisitor.hpp"
 #include "Metric.hpp"
+#include "ASTMatcherVisitor.hpp"
 
+
+class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
+{
+public:
+    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override
+    {
+        count += 1;
+        if(const Stmt *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
+        {
+            seen_tokens_stmt.emplace(s->getStmtClass());
+        }
+        if(const Type *type = Result.Nodes.getNodeAs<clang::Type>("type"))
+        {
+            seen_tokens_type.emplace(type->getTypeClass());
+        }
+        if(const Decl *decl = Result.Nodes.getNodeAs<clang::Decl>("decl"))
+        {
+            seen_tokens_decl.emplace(decl->getKind());
+        }
+    }
+    int getCount() const { return count; }
+private:
+    int count = 0;
+    std::set<clang::Stmt::StmtClass> seen_tokens_stmt;
+    std::set<clang::Decl::Kind> seen_tokens_decl;
+    std::set<clang::Type::TypeClass> seen_tokens_type;
+};
+
+/**
+ * Counts the Halstead metrics.
+ *
+ * Rules for determining if token is operand or operator:
+ * Operators:
+ *  All control flow statements - for, while, do, switch, case, default, goto, break, continue, return, try, catch
+ *  All operators - Unary operators, Binary operators and Conditional operator (Also all overloaded operators)
+ *  Assignments:
+ *      There is a special case with assignments
+ *          int a;
+ *      contains one operator, 'int', but
+ *          int a = 1;
+ *      also contains one operator, because it can be written as
+ *          int a{1};
+ *      so we won't count initializing with value as special operator(even though it seems as binary operator).
+ */
 class HalsteadVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<HalsteadVisitor>
 {
 public:
-    bool VisitDecl(clang::Decl *decl)
-    {
-
-    }
-
-    bool VisitType(clang::Type *type)
-    {
-
-    }
-
-    bool VisitStmt(clang::Stmt *stmt)
-    {
-
-    }
+    explicit HalsteadVisitor(clang::ASTContext *ctx);
 
     virtual void CalcMetrics(clang::Decl *decl) override
     {
-        this->TraverseDecl(decl);
+        matcher.TraverseDecl(decl);
+        metrics.push_back({"Operator count", tk_operators.getCount()});
     }
 
 protected:
-    int operator_count = 0;
-    int operand_count = 0;
-    std::set<int> seen_operators;
+    TokenCounter tk_operators;
+    TokenCounter tk_operand;
+    ASTMatcherVisitor matcher;
+    std::set<clang::Stmt> seen_operators;
     std::set<int> seen_operands;
 
-//    static constexpr std::vector<clang::ast_matchers::StatementMatcher> matchers;
+    static const std::vector<clang::ast_matchers::StatementMatcher>   operators_stmt;
+    static const std::vector<clang::ast_matchers::DeclarationMatcher> operators_decl;
+    static const std::vector<clang::ast_matchers::TypeMatcher>        operators_type;
 
-    Metric result;
-    clang::ast_matchers::MatchFinder finder;
-    clang::ast_matchers::MatchFinder::MatchCallback *callback;
+    static const std::vector<clang::Stmt::StmtClass> operands_stmt;
 };
 
 

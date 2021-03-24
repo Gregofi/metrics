@@ -23,9 +23,20 @@ CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o: ../modules/FuncInfoVisitor
 CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o: ../modules/Metric.hpp
 CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.o: ../modules/MetricVisitor.hpp
 
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/ASTMatcherVisitor.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/AbstractVisitor.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/CyclomaticVisitor.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/FuncInfoVisitor.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/HalsteadVisitor.cpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/HalsteadVisitor.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/Metric.hpp
+CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o: ../modules/MetricVisitor.hpp
+
+CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/ASTMatcherVisitor.hpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/AbstractVisitor.hpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/CyclomaticVisitor.hpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/FuncInfoVisitor.hpp
+CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/HalsteadVisitor.hpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/Metric.hpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/MetricVisitor.cpp
 CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o: ../modules/MetricVisitor.hpp

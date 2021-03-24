@@ -18,5 +18,10 @@
   "directory": "/home/filip/metrics_1/cmake-build-debug",
   "command": "/usr/bin/c++     -g -g   -std=gnu++17 -o CMakeFiles/metrics.dir/modules/MetricVisitor.cpp.o -c /home/filip/metrics_1/modules/MetricVisitor.cpp",
   "file": "/home/filip/metrics_1/modules/MetricVisitor.cpp"
+},
+{
+  "directory": "/home/filip/metrics_1/cmake-build-debug",
+  "command": "/usr/bin/c++     -g -g   -std=gnu++17 -o CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o -c /home/filip/metrics_1/modules/HalsteadVisitor.cpp",
+  "file": "/home/filip/metrics_1/modules/HalsteadVisitor.cpp"
 }
 ]

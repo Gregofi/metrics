@@ -256,6 +256,33 @@ modules/FuncInfoVisitor.cpp.s:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/FuncInfoVisitor.cpp.s
 .PHONY : modules/FuncInfoVisitor.cpp.s
 
+modules/HalsteadVisitor.o: modules/HalsteadVisitor.cpp.o
+
+.PHONY : modules/HalsteadVisitor.o
+
+# target to build an object file
+modules/HalsteadVisitor.cpp.o:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.o
+.PHONY : modules/HalsteadVisitor.cpp.o
+
+modules/HalsteadVisitor.i: modules/HalsteadVisitor.cpp.i
+
+.PHONY : modules/HalsteadVisitor.i
+
+# target to preprocess a source file
+modules/HalsteadVisitor.cpp.i:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.i
+.PHONY : modules/HalsteadVisitor.cpp.i
+
+modules/HalsteadVisitor.s: modules/HalsteadVisitor.cpp.s
+
+.PHONY : modules/HalsteadVisitor.s
+
+# target to generate assembly for a file
+modules/HalsteadVisitor.cpp.s:
+	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/modules/HalsteadVisitor.cpp.s
+.PHONY : modules/HalsteadVisitor.cpp.s
+
 modules/MetricVisitor.o: modules/MetricVisitor.cpp.o
 
 .PHONY : modules/MetricVisitor.o
@@ -305,6 +332,9 @@ help:
 	@echo "... modules/FuncInfoVisitor.o"
 	@echo "... modules/FuncInfoVisitor.i"
 	@echo "... modules/FuncInfoVisitor.s"
+	@echo "... modules/HalsteadVisitor.o"
+	@echo "... modules/HalsteadVisitor.i"
+	@echo "... modules/HalsteadVisitor.s"
 	@echo "... modules/MetricVisitor.o"
 	@echo "... modules/MetricVisitor.i"
 	@echo "... modules/MetricVisitor.s"

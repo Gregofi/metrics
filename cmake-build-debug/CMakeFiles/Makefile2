@@ -78,12 +78,12 @@ clean: CMakeFiles/clang-tablegen-targets.dir/clean
 CMakeFiles/metrics.dir/all:
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/depend
 	$(MAKE) -f CMakeFiles/metrics.dir/build.make CMakeFiles/metrics.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target metrics"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filip/metrics_1/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target metrics"
 .PHONY : CMakeFiles/metrics.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/metrics.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/metrics.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/filip/metrics_1/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/metrics.dir/rule

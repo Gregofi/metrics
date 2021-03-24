@@ -1,9 +1,4 @@
-#include <fstream>
 #include <memory>
-#include <set>
-#include <array>
-#include <algorithm>
-#include <cassert>
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -13,8 +8,7 @@
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "llvm/Support/CommandLine.h"
 
-#include "modules/CyclomaticVisitor.hpp"
-#include "modules/FuncInfoVisitor.hpp"
+#include "modules/MetricVisitor.hpp"
 
 using namespace clang;
 using clang::Stmt;
@@ -28,8 +22,6 @@ public:
 
     virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
-//        visitorFunc.TraverseDecl(context.getTranslationUnitDecl());
-//        visitorCycl.TraverseDecl(context.getTranslationUnitDecl());
         metricVisitor.TraverseDecl(context.getTranslationUnitDecl());
     }
 private:
@@ -45,7 +37,7 @@ public:
     }
 };
 
-static llvm::cl::OptionCategory MyToolCategory("my-tool options");
+static llvm::cl::OptionCategory MyToolCategory("metrics options");
 
 int main(int argc, const char **argv)
 {

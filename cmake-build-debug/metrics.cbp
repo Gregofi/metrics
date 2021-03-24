@@ -137,6 +137,12 @@
 		<Unit filename="/home/filip/metrics_1/modules/FuncInfoVisitor.hpp">
 			<Option target="metrics"/>
 		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/HalsteadVisitor.cpp">
+			<Option target="metrics"/>
+		</Unit>
+		<Unit filename="/home/filip/metrics_1/modules/HalsteadVisitor.hpp">
+			<Option target="metrics"/>
+		</Unit>
 		<Unit filename="/home/filip/metrics_1/modules/MetricVisitor.cpp">
 			<Option target="metrics"/>
 		</Unit>
