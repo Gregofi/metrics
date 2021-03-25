@@ -41,25 +41,37 @@ const std::vector<StatementMatcher> HalsteadVisitor::operators_stmt {
         callExpr().bind("stmt"),
         /* explicit casts */
         explicitCastExpr().bind("stmt"),
-
-        declRefExpr().bind("stmt"),
 };
 
 const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::operators_decl {
+    varDecl().bind("decl"),
+};
+
+const std::vector<clang::ast_matchers::StatementMatcher> HalsteadVisitor::operands_stmt {
+    /* All literals */
+    integerLiteral().bind("stmt"),
+    stringLiteral().bind("stmt"),
+    characterLiteral().bind("stmt"),
+    floatLiteral().bind("stmt"),
+    cxxBoolLiteral().bind("stmt"),
+    cxxNullPtrLiteralExpr().bind("stmt"),
+
+    declRefExpr().bind("stmt"),
+    labelStmt().bind("stmt"),
+    /* 'goto' is operator, but this statement also covers the label */
+    gotoStmt().bind("stmt"),
 
 };
 
-HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx), matcher(ctx)
+const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::operands_decl {
+    varDecl().bind("decl"),
+};
+
+HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx), matcher(ctx), tk_operators(true)
 {
-    const static std::vector<StatementMatcher> operands_stmt {
-        declRefExpr(), /* This is an expression that refers to declaration, ie in 'if(x)' it'll match 'x' */
-        /* literals */
-        integerLiteral(),
-        stringLiteral(),
-        floatLiteral(),
-        cxxNullPtrLiteralExpr(),
-        cxxBoolLiteral(),
-        characterLiteral(),
-    };
     matcher.AddMatchers(operators_stmt, &tk_operators);
+    matcher.AddMatchers(operators_decl, &tk_operators);
+
+    matcher.AddMatchers(operands_stmt, &tk_operand);
+    matcher.AddMatchers(operands_decl, &tk_operand);
 }
