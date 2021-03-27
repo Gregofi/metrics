@@ -16,6 +16,7 @@
 #include "MetricVisitor.hpp"
 #include "FuncInfoVisitor.hpp"
 #include "HalsteadVisitor.hpp"
+#include "NPathVisitor.hpp"
 
 #include "Metric.hpp"
 #include "AbstractVisitor.hpp"
@@ -38,6 +39,8 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     visitors.emplace_back(std::make_unique<FuncInfoVisitor>(context));
     visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
     visitors.emplace_back(std::make_unique<HalsteadVisitor>(context));
+    visitors.emplace_back(std::make_unique<NPathVisitor>(context));
+
     for(const auto & x : visitors)
     {
         x->CalcMetrics(decl);

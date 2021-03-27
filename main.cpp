@@ -8,11 +8,11 @@
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "llvm/Support/CommandLine.h"
 
+#include "modules/Logging.hpp"
 #include "modules/MetricVisitor.hpp"
 
 using namespace clang;
 using clang::Stmt;
-
 /* ======================================================================================= */
 
 class FunctionInfoConsumer : public clang::ASTConsumer
@@ -47,6 +47,5 @@ int main(int argc, const char **argv)
     clang::tooling::ArgumentsAdjuster ardj1 =
             clang::tooling::getInsertArgumentAdjuster("-I/usr/lib/clang/11.1.0/include");
     Tool.appendArgumentsAdjuster(ardj1);
-
     Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
 }
