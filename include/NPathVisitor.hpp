@@ -11,9 +11,9 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 #include "clang/AST/ASTContext.h"
-
-#include "AbstractVisitor.hpp"
 #include "clang/AST/StmtVisitor.h"
+
+#include "include/AbstractVisitor.hpp"
 
 class StmtNPathVisitor : public clang::ConstStmtVisitor<StmtNPathVisitor>
 {

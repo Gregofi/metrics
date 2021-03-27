@@ -7,9 +7,9 @@
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
-#include "CyclomaticVisitor.hpp"
-#include "ASTMatcherVisitor.hpp"
-#include "Metric.hpp"
+#include "include/CyclomaticVisitor.hpp"
+#include "include/ASTMatcherVisitor.hpp"
+#include "include/Metric.hpp"
 
 using namespace clang::ast_matchers;
 

@@ -12,14 +12,13 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "CyclomaticVisitor.hpp"
-#include "MetricVisitor.hpp"
-#include "FuncInfoVisitor.hpp"
-#include "HalsteadVisitor.hpp"
-#include "NPathVisitor.hpp"
+#include "include/CyclomaticVisitor.hpp"
+#include "include/MetricVisitor.hpp"
+#include "include/FuncInfoVisitor.hpp"
+#include "include/HalsteadVisitor.hpp"
+#include "include/NPathVisitor.hpp"
 
-#include "Metric.hpp"
-#include "AbstractVisitor.hpp"
+#include "include/AbstractVisitor.hpp"
 
 
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)

@@ -16,9 +16,9 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "Metric.hpp"
-#include "MetricVisitor.hpp"
-#include "AbstractVisitor.hpp"
+#include "include/Metric.hpp"
+#include "include/MetricVisitor.hpp"
+#include "include/AbstractVisitor.hpp"
 
 class FuncInfoVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<FuncInfoVisitor>
 {

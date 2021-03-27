@@ -13,7 +13,7 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "Metric.hpp"
+#include "include/Metric.hpp"
 
 
 class AbstractVisitor

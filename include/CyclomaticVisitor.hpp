@@ -10,9 +10,9 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "MetricVisitor.hpp"
-#include "Metric.hpp"
-#include "AbstractVisitor.hpp"
+#include "include/MetricVisitor.hpp"
+#include "include/Metric.hpp"
+#include "include/AbstractVisitor.hpp"
 
 /**
  *

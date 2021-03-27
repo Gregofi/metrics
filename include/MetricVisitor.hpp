@@ -9,9 +9,9 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/AST/ASTContext.h"
 
-#include "Metric.hpp"
-#include "FuncInfoVisitor.hpp"
-#include "CyclomaticVisitor.hpp"
+#include "include/Metric.hpp"
+#include "include/FuncInfoVisitor.hpp"
+#include "include/CyclomaticVisitor.hpp"
 
 
 

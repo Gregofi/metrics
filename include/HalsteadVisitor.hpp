@@ -17,9 +17,9 @@
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
-#include "MetricVisitor.hpp"
-#include "Metric.hpp"
-#include "ASTMatcherVisitor.hpp"
+#include "include/MetricVisitor.hpp"
+#include "include/Metric.hpp"
+#include "include/ASTMatcherVisitor.hpp"
 
 class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
 {

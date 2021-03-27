@@ -8,8 +8,8 @@
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "llvm/Support/CommandLine.h"
 
-#include "modules/Logging.hpp"
-#include "modules/MetricVisitor.hpp"
+#include "include/Logging.hpp"
+#include "include/MetricVisitor.hpp"
 
 using namespace clang;
 using clang::Stmt;

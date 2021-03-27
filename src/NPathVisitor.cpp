@@ -2,8 +2,8 @@
 // Created by filip on 3/26/21.
 //
 
-#include "NPathVisitor.hpp"
-#include "Logging.hpp"
+#include "include/NPathVisitor.hpp"
+#include "include/Logging.hpp"
 
 using namespace clang;
 
