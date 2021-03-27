@@ -30,7 +30,6 @@ public:
         count += 1;
         if(const auto *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
         {
-            std::cout << s->getStmtClassName() << std::endl;
             seen_tokens_stmt.emplace(s->getStmtClass());
         }
         if(const Type *t = Result.Nodes.getNodeAs<clang::Type>("type"))
@@ -40,7 +39,7 @@ public:
         if(const Decl *d = Result.Nodes.getNodeAs<clang::Decl>("decl"))
         {
             seen_tokens_decl.emplace(d->getKind());
-            if(const auto *vardecl = llvm::dyn_cast_or_null<clang::VarDecl>(d); isOperator && vardecl)
+            if(const auto *vardecl = llvm::dyn_cast<clang::VarDecl>(d); isOperator && vardecl)
             {
                 count += vardecl->hasInit();
             }
