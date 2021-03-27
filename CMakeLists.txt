@@ -8,12 +8,6 @@ project(metrics)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
 
-message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using LLVMConfig.cmake Iin: ${LLVM_DIR} :)")
-
-message(STATUS "LLVM include dirs : ${LLVM_INCLUDE_DIRS} :)")
-message(STATUS "Clang include dirs : ${CLANG_INCLUDE_DIRS}")
-
 include("${CLANG_CMAKE_DIR}/ClangConfig.cmake")
 include("${LLVM_CMAKE_DIR}/LLVMConfig.cmake")
 
@@ -32,3 +26,7 @@ target_link_libraries(metrics
         LLVM
         clang-cpp
 )
+
+enable_testing()
+add_subdirectory( tests )
+
