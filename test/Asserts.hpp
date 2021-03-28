@@ -12,7 +12,7 @@
 if(!expr)                                                                                                   \
 {                                                                                                           \
 std::cout << __FILE__ << ":" << __LINE__ << ": assertion failed in " << __PRETTY_FUNCTION__ << std::endl;   \
-throw std::runtime_error("Test failed!");                                                                   \
+return EXIT_FAILURE;                                                                                        \
 }
 
 #define ASSERT_EQ(a, b)                                                                                     \
@@ -22,7 +22,7 @@ std::cout << std::endl;                                                         
 std::cout << __FILE__ << ":" << __LINE__ << ": assertion failed in " << __PRETTY_FUNCTION__ << std::endl;   \
 std::cout << #a << " = " << a << std::endl;                                                                 \
 std::cout << #b << " = " << b << std::endl;                                                                 \
-throw std::runtime_error("Test failed!");                                                                   \
+return EXIT_FAILURE;                                                                                        \
 }
 
 

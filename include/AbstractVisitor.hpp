@@ -28,6 +28,7 @@ public:
         return os;
     };
     virtual void CalcMetrics(clang::Decl *decl) = 0;
+    std::vector<Metric> GetMetrics() const { return metrics; }
 protected:
     std::vector<Metric> metrics;
     clang::ASTContext *context;

@@ -14,10 +14,16 @@ NPathVisitor::NPathVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx)
 
 void NPathVisitor::CalcMetrics(clang::Decl *decl)
 {
+    this->TraverseDecl(decl);
+}
+
+bool NPathVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
+{
     auto *body = llvm::dyn_cast<CompoundStmt>(decl->getBody());
     StmtNPathVisitor visitor;
     visitor.Visit(body);
     metrics.push_back({"NPATH", visitor.GetCount()});
+    return true;
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -32,7 +38,6 @@ void StmtNPathVisitor::VisitStmt(const Stmt *stmt)
         result *= count;
     }
     count = result;
-
 }
 
 void StmtNPathVisitor::VisitCompoundStmt(const clang::CompoundStmt *stmt)
