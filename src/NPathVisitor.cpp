@@ -35,7 +35,7 @@ void StmtNPathVisitor::VisitStmt(const Stmt *stmt)
     for(const auto & x : stmt->children())
     {
         Visit(x);
-        result *= count;
+        result += count;
     }
     count = result;
 }
@@ -125,6 +125,3 @@ void StmtNPathVisitor::VisitTry(const clang::CXXTryStmt *stmt)
 {
     int result = 1;
 }
-
-
-

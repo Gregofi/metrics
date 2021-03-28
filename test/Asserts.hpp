@@ -20,10 +20,14 @@ if(a != b)                                                                      
 {                                                                                                           \
 std::cout << std::endl;                                                                                     \
 std::cout << __FILE__ << ":" << __LINE__ << ": assertion failed in " << __PRETTY_FUNCTION__ << std::endl;   \
-std::cout << #a << " = " << a << std::endl;                                                                 \
-std::cout << #b << " = " << b << std::endl;                                                                 \
+std::cout << "a" << " = " << a << std::endl;                                                                 \
+std::cout << "b" << " = " << b << std::endl;                                                                 \
 return EXIT_FAILURE;                                                                                        \
 }
+
+#define TEST(test)                                                                                          \
+if(test() != 0)                                                                                             \
+    return EXIT_FAILURE;
 
 
 #endif //METRICS_ASSERTS_HPP1
