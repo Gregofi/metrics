@@ -23,7 +23,7 @@ std::cout << __FILE__ << ":" << __LINE__ << ": assertion failed in " << __PRETTY
 std::cout << "a" << " = " << a << std::endl;                                                                 \
 std::cout << "b" << " = " << b << std::endl;                                                                 \
 return EXIT_FAILURE;                                                                                        \
-}
+} else void(0)
 
 #define TEST(test)                                                                                          \
 if(test() != 0)                                                                                             \

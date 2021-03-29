@@ -15,22 +15,27 @@
 
 #include "include/AbstractVisitor.hpp"
 
-class StmtNPathVisitor : public clang::ConstStmtVisitor<StmtNPathVisitor>
+class StmtNPathVisitor : public clang::StmtVisitor<StmtNPathVisitor>
 {
 public:
-    void VisitStmt(const clang::Stmt *stmt);
-    void VisitCompoundStmt(const clang::CompoundStmt *stmt);
-    void Visit(const clang::Stmt *stmt) { ConstStmtVisitor<StmtNPathVisitor>::Visit(stmt); }
-    void VisitIfStmt(const clang::IfStmt *stmt);
-    void VisitSwitchStmt(const clang::SwitchStmt *stmt);
-    void VisitWhileStmt(const clang::WhileStmt *stmt);
-    void VisitDoStmt(const clang::DoStmt *stmt);
-    void VisitExpr(const clang::Expr *stmt);
-    void VisitTry(const clang::CXXTryStmt *stmt);
-    void VisitCatch(const clang::CXXCatchStmt *stmt);
+    explicit StmtNPathVisitor(clang::ASTContext *ctx) : ctx(ctx){}
+    void VisitStmt(clang::Stmt *stmt);
+    void VisitCompoundStmt(clang::CompoundStmt *stmt);
+    void Visit(clang::Stmt *stmt) { StmtVisitor<StmtNPathVisitor>::Visit(stmt); }
+    void VisitIfStmt(clang::IfStmt *stmt);
+    void VisitSwitchStmt(clang::SwitchStmt *stmt);
+    void VisitWhileStmt(clang::WhileStmt *stmt);
+    void VisitDoStmt(clang::DoStmt *stmt);
+    void VisitExpr(clang::Expr *stmt);
+    void VisitCXXTryStmt(clang::CXXTryStmt *stmt);
+    void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
+    void VisitForStmt(clang::ForStmt *stmt);
+    int CountLogicalOperators(clang::Stmt *stmt);
     int GetCount() const { return count; }
+    void VisitReturnStmt(clang::ReturnStmt *stmt);
 
 protected:
+    clang::ASTContext *ctx;
     int count = 0;
 };
 

@@ -4,8 +4,10 @@
 
 #include "include/NPathVisitor.hpp"
 #include "include/Logging.hpp"
+#include "include/ASTMatcherVisitor.hpp"
 
 using namespace clang;
+using namespace clang::ast_matchers;
 
 NPathVisitor::NPathVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx)
 {
@@ -20,7 +22,7 @@ void NPathVisitor::CalcMetrics(clang::Decl *decl)
 bool NPathVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 {
     auto *body = llvm::dyn_cast<CompoundStmt>(decl->getBody());
-    StmtNPathVisitor visitor;
+    StmtNPathVisitor visitor(context);
     visitor.Visit(body);
     metrics.push_back({"NPATH", visitor.GetCount()});
     return true;
@@ -28,7 +30,7 @@ bool NPathVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
 /*-----------------------------------------------------------------------------------*/
 
-void StmtNPathVisitor::VisitStmt(const Stmt *stmt)
+void StmtNPathVisitor::VisitStmt(Stmt *stmt)
 {
     LOG("Visiting statement: " << stmt->getStmtClassName());
     int result = 1;
@@ -40,54 +42,54 @@ void StmtNPathVisitor::VisitStmt(const Stmt *stmt)
     count = result;
 }
 
-void StmtNPathVisitor::VisitCompoundStmt(const clang::CompoundStmt *stmt)
+void StmtNPathVisitor::VisitCompoundStmt(clang::CompoundStmt *stmt)
 {
     int result = 1;
     for(const auto &x : stmt->children())
     {
         Visit(x);
-        result *= count;
+        /* TODO: Unfortunely, some clang statements are expressions(for example 'a += 3' is expr),
+         * and expressions returns number of logic operators. That would mess up our counting. */
+        result *= count != 0 ? count : 1;
     }
     count = result;
 }
 
-void StmtNPathVisitor::VisitExpr(const clang::Expr *stmt)
+void StmtNPathVisitor::VisitExpr(clang::Expr *stmt)
 {
     LOG("Visiting expr: " << stmt->getStmtClassName());
     int result = 0;
     for(const auto & x : stmt->children())
     {
         Visit(x);
-        result *= count;
+        result += count;
     }
     count = result;
 }
 
-void StmtNPathVisitor::VisitDoStmt(const clang::DoStmt *stmt)
+void StmtNPathVisitor::VisitDoStmt(clang::DoStmt *stmt)
 {
     int result = 1;
-    Visit(stmt->getCond());
-    result += count;
+    result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getBody());
     result += count;
     count = result;
 }
 
-void StmtNPathVisitor::VisitWhileStmt(const clang::WhileStmt *stmt)
+void StmtNPathVisitor::VisitWhileStmt(clang::WhileStmt *stmt)
 {
     int result = 1;
-    Visit(stmt->getCond());
-    result += count;
+    result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getBody());
     result += count;
     count = result;
 }
 
-void StmtNPathVisitor::VisitSwitchStmt(const clang::SwitchStmt *stmt)
+void StmtNPathVisitor::VisitSwitchStmt(clang::SwitchStmt *stmt)
 {
     int result = 1;
-    Visit(stmt->getCond());
-    for(const clang::SwitchCase *c = stmt->getSwitchCaseList(); c != nullptr; c = c->getNextSwitchCase() )
+    result += CountLogicalOperators(stmt->getCond());
+    for(clang::SwitchCase *c = stmt->getSwitchCaseList(); c != nullptr; c = c->getNextSwitchCase() )
     {
         Visit(c);
         result += count;
@@ -95,33 +97,65 @@ void StmtNPathVisitor::VisitSwitchStmt(const clang::SwitchStmt *stmt)
     result += 1;
 }
 
-void StmtNPathVisitor::VisitIfStmt(const clang::IfStmt *stmt)
+void StmtNPathVisitor::VisitIfStmt(clang::IfStmt *stmt)
 {
-    LOG("Visiting statement: " << stmt->getStmtClassName());
     int result = 1 - (stmt->getElse() != nullptr);
-    Visit(stmt->getCond());
-    result += count;
-    LOG("Visited expr: " << count);
+    result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getThen());
     result += count;
-    LOG("Visited then: " << count);
 
     if(decltype(stmt->getElse()) e = stmt->getElse())
     {
         Visit(e);
         result += count;
-        LOG("Visited else: " << count);
     }
 
     count = result;
 }
 
-void StmtNPathVisitor::VisitCatch(const clang::CXXCatchStmt *stmt)
+void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
 {
+    LOG("Entering for");
     int result = 1;
+    result += CountLogicalOperators(stmt->getInit());
+    LOG("Visited init: " << count);
+    result += CountLogicalOperators(stmt->getCond());
+    LOG("Visited cond: " << count);
+    result += CountLogicalOperators(stmt->getInc());
+    LOG("Visited Inc: " << count);
+    Visit(stmt->getBody());
+    result += count;
+    LOG("Visited Body: " << count);
+    count = result;
+    LOG("Leaving for: " << result);
 }
 
-void StmtNPathVisitor::VisitTry(const clang::CXXTryStmt *stmt)
+void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
 {
-    int result = 1;
+
 }
+
+void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
+{
+
+}
+
+int StmtNPathVisitor::CountLogicalOperators(clang::Stmt *stmt)
+{
+    if(!stmt) return 0;
+    ASTMatcherVisitor vis(ctx);
+    Counter c;
+    vis.AddMatchers({binaryOperator(hasOperatorName("&&")),
+                     binaryOperator(hasOperatorName("and")),
+                     binaryOperator(hasOperatorName("or")),
+                     binaryOperator(hasOperatorName("||"))}, &c);
+    vis.TraverseStmt(stmt);
+    return c.getCount();
+}
+
+void StmtNPathVisitor::VisitReturnStmt(clang::ReturnStmt *stmt)
+{
+    count = CountLogicalOperators(stmt->getRetValue()) + 1;
+    LOG("Number of operators: " << count);
+}
+
