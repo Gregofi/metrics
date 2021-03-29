@@ -19,7 +19,8 @@ using namespace clang;
 
 /**
  * AST Visitor that visits every node in given subtree and tries to match
- * it with given matchers.
+ * it with given matchers. To run it, call one of the Traverse* function that
+ * it inherits from RecursiveASTVisitor.
  *
  * ---
  * There is a much easier way to do this, however it requires to edit
@@ -35,8 +36,6 @@ public:
      * Creates visitor that visits every node, tries to match it with given matchers and
      * if it is matched, callback will be called.
      * @param context
-     * @param callback
-     * @param matchers
      */
     ASTMatcherVisitor(ASTContext *context) : context(context)
     {
@@ -60,17 +59,15 @@ public:
             finder.addMatcher(x, callback);
     }
 
-
-
-    bool VisitDecl(Decl *decl)
+    bool VisitDecl(const Decl *d)
     {
-        finder.match(*decl, *context);
+        finder.match(*d, *context);
         return true;
     }
 
-    bool VisitStmt(Stmt *stmt)
+    bool VisitStmt(const Stmt *s)
     {
-        finder.match(*stmt, *context);
+        finder.match(*s, *context);
         return true;
     }
 
