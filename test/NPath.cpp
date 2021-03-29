@@ -41,6 +41,8 @@ int IfStmt()
     ASSERT_EQ(GET_VAL("if(true) { if(true) {int a;} int b;} if(true) {int c;}"), 6);
 
     ASSERT_EQ(GET_VAL("if(int a = 1; a < 2) {}"), 2);
+
+    ASSERT_EQ(GET_VAL("int a, b; if(a || b) { if(a && b) {} } else {}"), 5);
     return 0;
 }
 
@@ -61,6 +63,21 @@ int ForStmt()
     return 0;
 }
 
+int WhileStmt()
+{
+    ASSERT_EQ(GET_VAL("int a; int b; while(a < b) { a ++; }"), 2);
+    ASSERT_EQ(GET_VAL("int a; int b; while(a < b) { if(a + 10 < b) {} }"), 3);
+    ASSERT_EQ(GET_VAL("int a; int b; while(a < b) {return -1;} while(a > b) {return 1;} return 0;"), 4);
+    return 0;
+}
+
+int DoStmt()
+{
+    ASSERT_EQ(GET_VAL("int a; int b; do{a++;}while(a < b);"), 2);
+    ASSERT_EQ(GET_VAL("int a; int b; do{ if(a + 10 < b) do {} while(a + 10 < b); }while(a < b);"), 4);
+    return 0;
+}
+
 int main()
 {
     TEST(NoConditions);
@@ -68,4 +85,6 @@ int main()
     TEST(IfStmt);
     TEST(IfElseStmt);
     TEST(ForStmt);
+    TEST(WhileStmt);
+    TEST(DoStmt);
 }
