@@ -2,14 +2,14 @@
 // Created by filip on 3/26/21.
 //
 
-#include "include/NPathVisitor.hpp"
+#include "include/metrics/NPathVisitor.hpp"
 #include "include/Logging.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 
 using namespace clang;
 using namespace clang::ast_matchers;
 
-NPathVisitor::NPathVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx)
+NPathVisitor::NPathVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx)
 {
 
 }

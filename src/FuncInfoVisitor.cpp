@@ -10,7 +10,7 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "include/FuncInfoVisitor.hpp"
+#include "include/metrics/FuncInfoVisitor.hpp"
 
 using namespace clang;
 

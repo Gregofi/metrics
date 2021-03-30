@@ -11,7 +11,7 @@
 #include "test/Asserts.hpp"
 #include "test/TestToolRun.hpp"
 
-#include "include/NPathVisitor.hpp"
+#include "include/metrics/NPathVisitor.hpp"
 
 #define GET_VAL(code) ConstructMetricsOneFunction<NPathVisitor>(code)[0].val
 

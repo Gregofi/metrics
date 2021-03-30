@@ -73,7 +73,7 @@ private:
  *
  * Operands:
  */
-class HalsteadVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<HalsteadVisitor>
+class HalsteadVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<HalsteadVisitor>
 {
 public:
     explicit HalsteadVisitor(clang::ASTContext *ctx);

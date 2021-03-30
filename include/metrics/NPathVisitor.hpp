@@ -13,7 +13,8 @@
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/StmtVisitor.h"
 
-#include "include/AbstractVisitor.hpp"
+#include "include/FunctionVisitor.hpp"
+#include "include/ASTMatcherVisitor.hpp"
 
 class StmtNPathVisitor : public clang::StmtVisitor<StmtNPathVisitor>
 {
@@ -39,7 +40,7 @@ protected:
     int count = 0;
 };
 
-class NPathVisitor : public clang::RecursiveASTVisitor<NPathVisitor>, public AbstractVisitor
+class NPathVisitor : public clang::RecursiveASTVisitor<NPathVisitor>, public FunctionVisitor
 {
 public:
     NPathVisitor(clang::ASTContext *ctx);

@@ -13,7 +13,7 @@
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "llvm/Support/CommandLine.h"
 
-#include "include/AbstractVisitor.hpp"
+#include "include/FunctionVisitor.hpp"
 
 
 
@@ -22,7 +22,7 @@
  * Is aimed at metrics that only analyze single function. For example this isn't aimed
  * at Henry and Kafura fan-{in,out}, because these needs to know about other functions aswell.
  *
- * @tparam T_Visitor - AbstractVisitor to test
+ * @tparam T_Visitor - FunctionVisitor to test
  * @param function_body - Body of the function from which AST will be created.
  *                        This is only body without opening { and } braces,
  *                        so if you want your function to look like this

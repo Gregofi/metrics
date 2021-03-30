@@ -12,12 +12,12 @@
 
 #include "include/MetricVisitor.hpp"
 #include "include/Metric.hpp"
-#include "include/AbstractVisitor.hpp"
+#include "include/FunctionVisitor.hpp"
 
 /**
  *
  */
-class CyclomaticVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
+class CyclomaticVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
 {
 public:
     explicit CyclomaticVisitor(clang::ASTContext *context);

@@ -12,13 +12,13 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "include/CyclomaticVisitor.hpp"
+#include "include/metrics/CyclomaticVisitor.hpp"
 #include "include/MetricVisitor.hpp"
-#include "include/FuncInfoVisitor.hpp"
-#include "include/HalsteadVisitor.hpp"
-#include "include/NPathVisitor.hpp"
+#include "include/metrics/FuncInfoVisitor.hpp"
+#include "include/metrics/HalsteadVisitor.hpp"
+#include "include/metrics/NPathVisitor.hpp"
 
-#include "include/AbstractVisitor.hpp"
+#include "include/FunctionVisitor.hpp"
 
 
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
@@ -34,7 +34,7 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
     std::cout << decl->getQualifiedNameAsString() << "\n";
 
-    std::vector<std::unique_ptr<AbstractVisitor> > visitors;
+    std::vector<std::unique_ptr<FunctionVisitor> > visitors;
     visitors.emplace_back(std::make_unique<FuncInfoVisitor>(context));
     visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
     visitors.emplace_back(std::make_unique<HalsteadVisitor>(context));
@@ -46,6 +46,18 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
         x->Export(std::cout);
     }
     std::cout << std::endl;
+
+    return true;
+}
+
+bool MetricVisitor::VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl)
+{
+    clang::SourceManager &sm(context->getSourceManager());
+
+    if(!sm.isInMainFile(decl->getLocation()))
+        return true;
+
+    std::vector<std::unique_ptr<
 
     return true;
 }

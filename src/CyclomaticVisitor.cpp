@@ -7,7 +7,7 @@
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
-#include "include/CyclomaticVisitor.hpp"
+#include "include/metrics/CyclomaticVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/Metric.hpp"
 
@@ -43,7 +43,7 @@ CyclomaticVisitor::~CyclomaticVisitor()
 
 }
 
-CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : AbstractVisitor(context)
+CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : FunctionVisitor(context)
 {
 
 }

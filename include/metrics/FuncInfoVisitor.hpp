@@ -18,9 +18,9 @@
 
 #include "include/Metric.hpp"
 #include "include/MetricVisitor.hpp"
-#include "include/AbstractVisitor.hpp"
+#include "include/FunctionVisitor.hpp"
 
-class FuncInfoVisitor : public AbstractVisitor, public clang::RecursiveASTVisitor<FuncInfoVisitor>
+class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<FuncInfoVisitor>
 {
     /* Statements that contains other statements */
     static const std::array<clang::Stmt::StmtClass, 10> compoundStatements;
@@ -32,7 +32,7 @@ class FuncInfoVisitor : public AbstractVisitor, public clang::RecursiveASTVisito
 
 
 public:
-    FuncInfoVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx) {}
+    FuncInfoVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx) {}
     virtual ~FuncInfoVisitor() = default;
     /**
      * Calculates number of lines for given function body.

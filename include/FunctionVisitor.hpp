@@ -15,12 +15,14 @@
 
 #include "include/Metric.hpp"
 
-
-class AbstractVisitor
+/**
+ * This class represents an interface for visitors that only examine one function at a time.
+ */
+class FunctionVisitor
 {
 public:
-    AbstractVisitor(clang::ASTContext *ctx) : context(ctx) {}
-    virtual ~AbstractVisitor() = default;
+    explicit FunctionVisitor(clang::ASTContext *ctx) : context(ctx) {}
+    virtual ~FunctionVisitor() = default;
     virtual std::ostream& Export(std::ostream &os) const
     {
         for(const auto & x : metrics)

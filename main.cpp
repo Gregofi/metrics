@@ -24,6 +24,8 @@ public:
     {
         metricVisitor.TraverseDecl(context.getTranslationUnitDecl());
     }
+
+
 private:
     MetricVisitor metricVisitor;
 };

@@ -4,7 +4,7 @@
 
 #include <array>
 
-#include "include/HalsteadVisitor.hpp"
+#include "include/metrics/HalsteadVisitor.hpp"
 
 
 using namespace clang;
@@ -67,7 +67,7 @@ const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::oper
     varDecl().bind("decl"),
 };
 
-HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : AbstractVisitor(ctx), matcher(ctx), tk_operators(true)
+HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx), matcher(ctx), tk_operators(true)
 {
     matcher.AddMatchers(operators_stmt, &tk_operators);
     matcher.AddMatchers(operators_decl, &tk_operators);
