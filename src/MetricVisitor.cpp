@@ -50,17 +50,6 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     return true;
 }
 
-bool MetricVisitor::VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl)
-{
-    clang::SourceManager &sm(context->getSourceManager());
-
-    if(!sm.isInMainFile(decl->getLocation()))
-        return true;
-
-    std::vector<std::unique_ptr<
-
-    return true;
-}
 
 
 

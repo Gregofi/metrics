@@ -15,7 +15,7 @@
 
 #define GET_VAL(code) ConstructMetricsOneFunction<NPathVisitor>(code)[0].val
 
-int NoConditions()
+int NoConditionsTest()
 {
     ASSERT_EQ(GET_VAL(""), 1);
     ASSERT_EQ(GET_VAL("return 1;"), 1);
@@ -25,13 +25,13 @@ int NoConditions()
     return 0;
 }
 
-int LogicalOperators()
+int LogicalOperatorsTest()
 {
     ASSERT_EQ(GET_VAL("int a, b, c; return a && b || c;"), 3);
     return 0;
 }
 
-int IfStmt()
+int IfStmtTest()
 {
     ASSERT_EQ(GET_VAL("if(true) {}"), 2);
     ASSERT_EQ(GET_VAL("if(true) {} if(true) {}"), 4);
@@ -46,7 +46,7 @@ int IfStmt()
     return 0;
 }
 
-int IfElseStmt()
+int IfElseStmtTest()
 {
     ASSERT_EQ(GET_VAL("if(true) {int a;int b;} else {int a;}"), 2);
     ASSERT_EQ(GET_VAL("if(true) { if(true) {} else {} } else {int a = 3; a += 2; return a;}"), 3);
@@ -54,7 +54,7 @@ int IfElseStmt()
     return 0;
 }
 
-int ForStmt()
+int ForStmtTest()
 {
     ASSERT_EQ(GET_VAL("for(;;){}"), 2);
     ASSERT_EQ(GET_VAL("for(int a = 0; a < 10; ++ a) {int b = 2;}"), 2);
@@ -63,7 +63,7 @@ int ForStmt()
     return 0;
 }
 
-int WhileStmt()
+int WhileStmtTest()
 {
     ASSERT_EQ(GET_VAL("int a; int b; while(a < b) { a ++; }"), 2);
     ASSERT_EQ(GET_VAL("int a; int b; while(a < b) { if(a + 10 < b) {} }"), 3);
@@ -71,7 +71,7 @@ int WhileStmt()
     return 0;
 }
 
-int DoStmt()
+int DoStmtTest()
 {
     ASSERT_EQ(GET_VAL("int a; int b; do{a++;}while(a < b);"), 2);
     ASSERT_EQ(GET_VAL("int a; int b; do{ if(a + 10 < b) do {} while(a + 10 < b); }while(a < b);"), 4);
@@ -80,11 +80,11 @@ int DoStmt()
 
 int main()
 {
-    TEST(NoConditions);
-    TEST(LogicalOperators);
-    TEST(IfStmt);
-    TEST(IfElseStmt);
-    TEST(ForStmt);
-    TEST(WhileStmt);
-    TEST(DoStmt);
+    TEST(NoConditionsTest);
+    TEST(LogicalOperatorsTest);
+    TEST(IfStmtTest);
+    TEST(IfElseStmtTest);
+    TEST(ForStmtTest);
+    TEST(WhileStmtTest);
+    TEST(DoStmtTest);
 }

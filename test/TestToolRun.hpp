@@ -40,4 +40,31 @@ std::vector<Metric> ConstructMetricsOneFunction(const std::string &function_body
     return vis.GetMetrics();
 }
 
+class CGetNames : public clang::RecursiveASTVisitor<CGetNames>
+{
+public:
+    bool VisitFunctionDecl(clang::FunctionDecl *decl)
+    {
+        names[decl->getNameAsString()] = decl->getID();
+        return true;
+    }
+
+    bool VisitMethodDecl(clang::CXXMethodDecl *decl)
+    {
+        names[decl->getNameAsString()] = decl->getID();
+        return true;
+    }
+
+    std::map<std::string, size_t> GetNames() const { return names; }
+private:
+    std::map<std::string, size_t> names;
+};
+
+std::map<std::string, size_t> GetFuncNameMap(clang::Decl *decl)
+{
+    CGetNames x;
+    x.TraverseDecl(decl);
+    return x.GetNames();
+}
+
 #endif //METRICS_TESTTOOLRUN_HPP
