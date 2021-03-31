@@ -20,12 +20,12 @@ Info GetMetric(const std::string &code)
     return {names, vis};
 }
 
-int main()
+int BasicTest()
 {
     auto info = GetMetric(""
-                         "void foo() {}"
-                         "void bar() { foo();  }"
-                         "int main() {bar(); }");
+                          "void foo() {}"
+                          "void bar() { foo();  }"
+                          "int main() {bar(); }");
     auto names = info.names;
     auto vis   = info.vis;
     ASSERT_EQ(vis.FanIn(names["foo"]), 0);
@@ -36,4 +36,10 @@ int main()
 
     ASSERT_EQ(vis.FanIn(names["main"]), 1);
     ASSERT_EQ(vis.FanOut(names["main"]), 0);
+    return 0;
+}
+
+int main()
+{
+    TEST(BasicTest);
 }
