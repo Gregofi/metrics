@@ -24,7 +24,7 @@
 class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
-    TokenCounter(bool isOperator = false) : isOperator(isOperator) {}
+    explicit TokenCounter(bool isOperator = false) : isOperator(isOperator) {}
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
     int getCount() const { return count; }
     int getUniqueCount() const { return seen_tokens_stmt.size() + seen_tokens_decl.size() + seen_tokens_type.size(); }
