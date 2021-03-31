@@ -4,10 +4,14 @@
 
 bool ChidKemVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
-    if(!decl->isThisDeclarationADefinition())
+    if(!decl->isThisDeclarationADefinition() )
         return true;
+    LOG(decl->getNameAsString());
+    if(!classes.count(decl->getID()))
+        classes[decl->getID()];
     for(const auto &base : decl->bases())
     {
+        LOG("Class " << decl->getNameAsString() << " : parent " << base.getType()->getAsCXXRecordDecl()->getNameAsString());
         classes[base.getType()->getAsCXXRecordDecl()->getID()].children_count += 1;
         classes[decl->getID()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getID());
     }
@@ -21,7 +25,7 @@ bool ChidKemVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
     vis.AddMatchers({cxxMemberCallExpr().bind("member_call"), memberExpr().bind("member_access")}, &callback);
     vis.TraverseDecl(decl);
     auto set = callback.GetClasses();
-    classes[decl->getID()].couples.insert(set.begin(), set.end());
+    classes[decl->getParent()->getID()].couples.insert(set.begin(), set.end());
     return true;
 }
 
@@ -41,9 +45,8 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
         if(access->getMemberDecl()->isCXXClassMember())
         {
             /** Get id of the class that the member belongs to, check its this class id */
-            if(unsigned int id = access->getMemberDecl()->getType()->getAsCXXRecordDecl()->getID();
-                currFunctionID == id)
-                instance_vars.insert(id);
+            if(const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl());d && d->getParent()->getID() != currFunctionID)
+                instance_vars.insert(d->getParent()->getID());
         }
     }
 }
