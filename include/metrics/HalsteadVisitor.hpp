@@ -25,26 +25,7 @@ class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
     TokenCounter(bool isOperator = false) : isOperator(isOperator) {}
-    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override
-    {
-        count += 1;
-        if(const auto *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
-        {
-            seen_tokens_stmt.emplace(s->getStmtClass());
-        }
-        if(const Type *t = Result.Nodes.getNodeAs<clang::Type>("type"))
-        {
-            seen_tokens_type.emplace(t->getTypeClass());
-        }
-        if(const Decl *d = Result.Nodes.getNodeAs<clang::Decl>("decl"))
-        {
-            seen_tokens_decl.emplace(d->getKind());
-            if(const auto *vardecl = llvm::dyn_cast<clang::VarDecl>(d); isOperator && vardecl)
-            {
-                count += vardecl->hasInit();
-            }
-        }
-    }
+    void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
     int getCount() const { return count; }
     int getUniqueCount() const { return seen_tokens_stmt.size() + seen_tokens_decl.size() + seen_tokens_type.size(); }
 private:

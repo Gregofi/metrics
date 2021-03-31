@@ -47,14 +47,6 @@ public:
     virtual ~NPathVisitor() override = default;
     virtual void CalcMetrics(clang::Decl *decl) override;
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
-//    int HandleStmt(clang::IfStmt *stmt);
-//    int HandleStmt(clang::WhileStmt *stmt);
-//    int HandleStmt(clang::DoStmt *stmt);
-//    int HandleStmt(clang::ForStmt *stmt);
-//    int HandleStmt(clang::SwitchStmt *stmt);
-//    int HandleStmt(clang::ConditionalOperator *stmt);
-//    int HandleStmt(clang::Expr *stmt);
-//    int HandleStmt(clang::CompoundStmt);
 };
 
 

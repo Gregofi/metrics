@@ -18,6 +18,8 @@
 /**
  * This class represents an interface for visitors that only examine one function at a time.
  */
+#include "include/Metric.hpp"
+
 class FunctionVisitor
 {
 public:

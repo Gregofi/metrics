@@ -8,31 +8,8 @@ class FanCount : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
     void SetCurrFuncId(size_t id) { curr_func = id; InitFunction(id); }
-    void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override
-    {
-        if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
-        {
-            fan_in[curr_func] += 1;
-            fan_out[s->getCalleeDecl()->getID()] += 1;
-        }
-        if(const auto *s = Result.Nodes.getNodeAs<clang::CXXOperatorCallExpr>("call"))
-        {
-            fan_in[curr_func] += 1;
-            fan_out[s->getCalleeDecl()->getID()] += 1;
-        }
-        if(const auto *s = Result.Nodes.getNodeAs<clang::CXXMemberCallExpr>("call"))
-        {
-            fan_in[curr_func] += 1;
-            fan_out[s->getCalleeDecl()->getID()] += 1;
-        }
-    }
-    void InitFunction(size_t id)
-    {
-        if(!fan_out.count(id))
-            fan_out[id];
-        if(!fan_in.count(id))
-            fan_in[id];
-    }
+    void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
+    void InitFunction(size_t id);
     const std::map<size_t, int>& GetFanIn()  { return fan_in;  }
     const std::map<size_t, int>& GetFanOut() { return fan_out; }
 protected:

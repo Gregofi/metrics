@@ -50,6 +50,11 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     return true;
 }
 
+bool MetricVisitor::VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl)
+{
+    return true;
+}
+
 
 
 

@@ -23,3 +23,30 @@ bool FansVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
     return true;
 
 }
+
+void FanCount::run(const MatchFinder::MatchResult &Result)
+{
+    if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
+    {
+        fan_in[curr_func] += 1;
+        fan_out[s->getCalleeDecl()->getID()] += 1;
+    }
+    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXOperatorCallExpr>("call"))
+    {
+        fan_in[curr_func] += 1;
+        fan_out[s->getCalleeDecl()->getID()] += 1;
+    }
+    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXMemberCallExpr>("call"))
+    {
+        fan_in[curr_func] += 1;
+        fan_out[s->getCalleeDecl()->getID()] += 1;
+    }
+}
+
+void FanCount::InitFunction(size_t id)
+{
+    if(!fan_out.count(id))
+        fan_out[id];
+    if(!fan_in.count(id))
+        fan_in[id];
+}

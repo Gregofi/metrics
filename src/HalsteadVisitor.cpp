@@ -75,3 +75,24 @@ HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx),
     matcher.AddMatchers(operands_stmt, &tk_operand);
     matcher.AddMatchers(operands_decl, &tk_operand);
 }
+
+void TokenCounter::run(const MatchFinder::MatchResult &Result)
+{
+    count += 1;
+    if(const auto *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
+    {
+        seen_tokens_stmt.emplace(s->getStmtClass());
+    }
+    if(const Type *t = Result.Nodes.getNodeAs<clang::Type>("type"))
+    {
+        seen_tokens_type.emplace(t->getTypeClass());
+    }
+    if(const Decl *d = Result.Nodes.getNodeAs<clang::Decl>("decl"))
+    {
+        seen_tokens_decl.emplace(d->getKind());
+        if(const auto *vardecl = llvm::dyn_cast<clang::VarDecl>(d); isOperator && vardecl)
+        {
+            count += vardecl->hasInit();
+        }
+    }
+}
