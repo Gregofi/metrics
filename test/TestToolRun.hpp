@@ -45,26 +45,33 @@ class CGetNames : public clang::RecursiveASTVisitor<CGetNames>
 public:
     bool VisitFunctionDecl(clang::FunctionDecl *decl)
     {
-        names[decl->getNameAsString()] = decl->getID();
+        func_names[decl->getNameAsString()] = decl->getID();
         return true;
     }
 
     bool VisitMethodDecl(clang::CXXMethodDecl *decl)
     {
-        names[decl->getNameAsString()] = decl->getID();
+        func_names[decl->getNameAsString()] = decl->getID();
         return true;
     }
 
-    std::map<std::string, size_t> GetNames() const { return names; }
+    bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
+    {
+        class_names[decl->getNameAsString()] = decl->getID();
+        return true;
+    }
+
+    std::map<std::string, size_t> GetFuncNames() const { return func_names; }
 private:
-    std::map<std::string, size_t> names;
+    std::map<std::string, size_t> func_names;
+    std::map<std::string, size_t> class_names;
 };
 
 std::map<std::string, size_t> GetFuncNameMap(clang::Decl *decl)
 {
     CGetNames x;
     x.TraverseDecl(decl);
-    return x.GetNames();
+    return x.GetFuncNames();
 }
 
 #endif //METRICS_TESTTOOLRUN_HPP
