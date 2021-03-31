@@ -16,7 +16,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -I${PROJECT_SOURCE_DIR}")
 
-add_executable(metrics main.cpp src/FuncInfoVisitor.cpp src/CyclomaticVisitor.cpp src/MetricVisitor.cpp src/HalsteadVisitor.cpp src/NPathVisitor.cpp src/FansVisitor.cpp)
+add_executable(metrics main.cpp src/FuncInfoVisitor.cpp src/CyclomaticVisitor.cpp src/MetricVisitor.cpp
+        src/HalsteadVisitor.cpp src/NPathVisitor.cpp src/FansVisitor.cpp src/ChidKemVisitor.cpp)
 
 target_link_libraries(metrics
         PRIVATE
