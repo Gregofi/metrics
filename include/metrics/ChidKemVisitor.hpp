@@ -6,7 +6,6 @@
 
 #include "include/ASTMatcherVisitor.hpp"
 
-typedef long unsigned FunctionID_t ;
 typedef long unsigned ClassID_t ;
 
 /**
@@ -30,6 +29,8 @@ public:
      * @return
      */
     std::set<long unsigned> GetInstanceVars() { return std::move(instance_vars); }
+
+
 protected:
     long unsigned currFunctionID{};
     long unsigned currClassID;
@@ -73,6 +74,25 @@ public:
      * @return - Lenght of inheritance chain
      */
     int GetInheritanceChainLen(long unsigned id) const;
+    /**
+     * Returns true if both sets have atleast one same element, otherwise returns false.
+     * @param s1
+     * @param s2
+     * @return
+     */
+    static bool Similiar(const std::set<long unsigned> &s1, const std::set<long unsigned> &s2);
+
+    /**
+     * Calculates the 'lack of cohesion' metric for given class.
+     *
+     * @details The Lack of cohesion calculates how methods use its class instance variables.
+     * Two methods are similiar if they use atleast one same instance variable. For all pairs of
+     * methods, substract the count of similiar from not similiar.
+     *
+     * @param id - ID of the class
+     * @return - Lack of cohesion metric value
+     */
+    int LackOfCohesion(unsigned long id) const;
 protected:
     std::map<ClassID_t, Class> classes;
     clang::ASTContext *ctx;

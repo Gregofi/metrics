@@ -20,6 +20,8 @@ bool ChidKemVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 
 bool ChidKemVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
+    if(!decl->isThisDeclarationADefinition() )
+        return true;
     ASTMatcherVisitor vis(ctx);
     MethodCallback callback(decl->getParent()->getID());
     vis.AddMatchers({cxxMemberCallExpr().bind("member_call"), memberExpr().bind("member_access")}, &callback);
@@ -40,6 +42,32 @@ int ChidKemVisitor::GetInheritanceChainLen(unsigned long id) const
     for(const auto &c : chain)
         res = std::max(GetInheritanceChainLen(c) + 1, res);
     return res;
+}
+
+bool ChidKemVisitor::Similiar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
+{
+    for(auto it1 = s1.begin(), it2 = s2.begin(); it1 != s1.end() && it2 != s2.end();)
+    {
+        if(*it1 == *it2)
+            return true;
+        if(*it1 < *it2)
+            ++it1;
+        else
+            ++it2;
+    }
+    return false;
+}
+
+int ChidKemVisitor::LackOfCohesion(unsigned long id) const
+{
+    auto c = classes.at(id);
+
+    c.functions.size();
+    int LOC = 0;
+    for(size_t i = 0; i < c.functions.size(); ++ i)
+        for(size_t j = i + 1; j < c.functions.size(); ++ j)
+            LOC += Similiar(c.functions[i], c.functions[j]) ? -1 : 1;
+    return std::max(LOC, 0);
 }
 
 void MethodCallback::run(const MatchFinder::MatchResult &Result)
