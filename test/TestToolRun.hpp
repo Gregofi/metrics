@@ -5,6 +5,8 @@
 #ifndef METRICS_TESTTOOLRUN_HPP
 #define METRICS_TESTTOOLRUN_HPP
 
+#include <fstream>
+
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -40,6 +42,10 @@ std::vector<Metric> ConstructMetricsOneFunction(const std::string &function_body
     return vis.GetMetrics();
 }
 
+/**
+ * Class that should only be used for testing. Traverses AST and maps function
+ * and class string names to their ids. Does not handle overloads.
+ */
 class CGetNames : public clang::RecursiveASTVisitor<CGetNames>
 {
 public:
@@ -61,8 +67,6 @@ public:
         return true;
     }
 
-    std::map<std::string, size_t> GetFuncNames() const { return func_names; }
-private:
     std::map<std::string, size_t> func_names;
     std::map<std::string, size_t> class_names;
 };
@@ -71,7 +75,7 @@ std::map<std::string, size_t> GetFuncNameMap(clang::Decl *decl)
 {
     CGetNames x;
     x.TraverseDecl(decl);
-    return x.GetFuncNames();
+    return x.func_names;
 }
 
 #endif //METRICS_TESTTOOLRUN_HPP
