@@ -14,6 +14,7 @@ public:
 
 class foo{};
 
+template<typename T>
 class bar : public foo
 {
 public:
