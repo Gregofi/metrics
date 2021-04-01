@@ -51,6 +51,35 @@ class d : c
 int main(){}
 )";
 
+const char *members = R"(
+class a
+{
+public:
+    int foo()
+    {
+        int tmp = a * b;
+        tmp += a;
+        tmp += a * b;
+        return tmp;
+    }
+
+    int bar()
+    {
+        int tmp = a * b;
+        tmp = a + b;
+        tmp += c;
+        return tmp;
+    }
+
+    int rab()
+    {
+        return c;
+    }
+private:
+    int a{}, b{}, c{};
+};
+)";
+
 struct Info
 {
     CGetNames names;
@@ -104,9 +133,23 @@ int InheritanceChainTest()
     return 0;
 }
 
+int MemberAccessTest()
+{
+    auto v = Eval(members);
+    auto cnames = v.names.class_names;
+    auto fnames = v.names.func_names;
+    auto vis = v.vis;
+
+    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[0].size(), 2);
+    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[1].size(), 3);
+    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[2].size(), 1);
+    return 0;
+};
+
 int main()
 {
     TEST(BasicCasesTest);
     TEST(InheritanceChainTest);
+    TEST(MemberAccessTest);
     return 0;
 }
