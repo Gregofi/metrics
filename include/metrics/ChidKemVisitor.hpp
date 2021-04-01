@@ -1,22 +1,39 @@
 #ifndef METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP
 #define METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP
 
-#include <clang/ASTMatchers/ASTMatchFinder.h>
-#include <include/ASTMatcherVisitor.hpp>
+#include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/AST/RecursiveASTVisitor.h"
+
+#include "include/ASTMatcherVisitor.hpp"
 
 typedef long unsigned FunctionID_t ;
 typedef long unsigned ClassID_t ;
 
+/**
+ * Used on single method of class, traverses method body and collects:
+ *  - IDs of classes from which are methods that this class calls (doesn't add current class)
+ *  - IDs of instance variables from this class that current method uses
+ */
 class MethodCallback : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
-    explicit MethodCallback(long unsigned currFunctionID) : currFunctionID(currFunctionID) {}
+    explicit MethodCallback(long unsigned currClassID) noexcept : currClassID(currClassID) {}
+    void SetCurrentFunction(long unsigned funcID) { currFunctionID = funcID; }
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
+    /**
+     * Returns ID of classes which this method called, original set is moved.
+     * @return
+     */
     std::set<long unsigned> GetClasses() { return std::move(classes); }
+    /**
+     * Returns ID of instance var which this method used, original set is moved.
+     * @return
+     */
+    std::set<long unsigned> GetInstanceVars() { return std::move(instance_vars); }
 protected:
-    long unsigned currFunctionID;
-    std::set<long unsigned> classes;
+    long unsigned currFunctionID{};
+    long unsigned currClassID;
+    std::set<ClassID_t> classes;
     std::set<long unsigned> instance_vars;
 };
 
@@ -38,10 +55,14 @@ protected:
          * Contains classes whose methods this class calls
          */
         std::set<ClassID_t> couples;
+        /**
+         * Contains vector of sets which contains used instance variables by each method
+         */
+        std::vector<std::set<long unsigned> > functions;
     };
 
 public:
-    ChidKemVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
+    explicit ChidKemVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
 protected:
