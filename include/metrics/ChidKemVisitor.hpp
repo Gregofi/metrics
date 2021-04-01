@@ -65,6 +65,14 @@ public:
     explicit ChidKemVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
+    const Class& GetConstClass(long unsigned id) const { return classes.at(id); }
+    /**
+     * Returns length of inheritance chain from this class to root class (class that doesn't inherit from any other
+     * classes). If there are multiple chains, returns length of the longest one.
+     * @param id - ID of the class
+     * @return - Lenght of inheritance chain
+     */
+    int GetInheritanceChainLen(long unsigned id) const;
 protected:
     std::map<ClassID_t, Class> classes;
     clang::ASTContext *ctx;

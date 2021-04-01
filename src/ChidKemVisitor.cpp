@@ -31,6 +31,17 @@ bool ChidKemVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
     return true;
 }
 
+int ChidKemVisitor::GetInheritanceChainLen(unsigned long id) const
+{
+    const auto &chain = classes.at(id).inheritance_chain;
+    if(chain.empty())
+        return 0;
+    int res = 0;
+    for(const auto &c : chain)
+        res = std::max(GetInheritanceChainLen(c) + 1, res);
+    return res;
+}
+
 void MethodCallback::run(const MatchFinder::MatchResult &Result)
 {
     Decl *parent;
@@ -48,7 +59,7 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
         /** Check if member is from CXXClass (it can also be from enum or union) */
         if(access->getMemberDecl()->isCXXClassMember())
         {
-            LOG("matched CXXMember access");
+            LOG("matched CXXMember access " << access->getMemberDecl()->getNameAsString());
             /** Get id of the class that the member belongs to, check its this class id */
             if(const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl()); d && d->getParent()->getID() == currClassID)
             {
