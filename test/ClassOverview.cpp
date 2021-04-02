@@ -1,5 +1,5 @@
 #include <clang/Tooling/Tooling.h>
-#include "include/metrics/ChidKemVisitor.hpp"
+#include "include/metrics/ClassOverviewVisitor.hpp"
 #include "test/TestToolRun.hpp"
 #include "test/Asserts.hpp"
 
@@ -98,13 +98,13 @@ public:
 struct Info
 {
     CGetNames names;
-    ChidKemVisitor vis;
+    ClassOverviewVisitor vis;
 };
 
 Info Eval(const std::string &code)
 {
     auto AST = clang::tooling::buildASTFromCode(code);
-    ChidKemVisitor vis(&AST->getASTContext());
+    ClassOverviewVisitor vis(&AST->getASTContext());
     vis.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
     CGetNames names;
     names.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
@@ -176,10 +176,10 @@ int LackOfCohesionTest()
 
 int main()
 {
-    ASSERT_EQ(ChidKemVisitor::Similiar({1,2,3}, {2,5,6}), true);
-    ASSERT_EQ(ChidKemVisitor::Similiar({1,2,3}, {0,3,6}), true);
-    ASSERT_EQ(ChidKemVisitor::Similiar({1,2,4}, {3,5}), false);
-    ASSERT_EQ(ChidKemVisitor::Similiar({}, {1}), false);
+    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 3}, {2, 5, 6}), true);
+    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 3}, {0, 3, 6}), true);
+    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 4}, {3, 5}), false);
+    ASSERT_EQ(ClassOverviewVisitor::Similiar({}, {1}), false);
 
     TEST(BasicCasesTest);
     TEST(InheritanceChainTest);

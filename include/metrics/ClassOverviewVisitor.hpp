@@ -38,7 +38,26 @@ protected:
     std::set<long unsigned> instance_vars;
 };
 
-class ChidKemVisitor : public clang::RecursiveASTVisitor<ChidKemVisitor>
+/**
+ *  This calculates metrics about class design.
+ *  For each class, this calculates:
+ *    Chidamber and Kemerer metrics:
+ *      - Number of immediate children
+ *      - Length of inheritance chain
+ *      - Lack of cohesion
+ *      - Coupling
+ *    Lorenz and Kidd metrics:
+ *      - Public member variable count
+ *      - Member variable count
+ *      - Public not inherited methods
+ *      - Not inherited methods
+ *      - Overriden methods
+ *
+ *  It is stored in the structure Class which can be returned. Or all the values can
+ *  be returned separately by using the corresponding getters. These classes are identified
+ *  by their clang ids.
+ */
+class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>
 {
 protected:
     struct Class
@@ -46,7 +65,7 @@ protected:
         /**
          * Number of children for given Key
          */
-        int children_count;
+        int children_count{0};
         /**
          * For given Key returns all functions, from which Key directly derives
          */
@@ -60,10 +79,22 @@ protected:
          * Contains vector of sets which contains used instance variables by each method
          */
         std::vector<std::set<long unsigned> > functions;
+
+        /**
+         * Number of public methods (except default ones)
+         */
+        int public_methods_count{0};
+        /**
+         * Number of all methods (except default ones)
+         */
+        int methods_count{0};
+        int instance_vars_count{0};
+        int public_instance_vars_count{0};
+        int overriden_methods_count{0};
     };
 
 public:
-    explicit ChidKemVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
+    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
     const Class& GetConstClass(long unsigned id) const { return classes.at(id); }
@@ -93,6 +124,12 @@ public:
      * @return - Lack of cohesion metric value
      */
     int LackOfCohesion(unsigned long id) const;
+
+    /**
+     * This calculates lorenz and kidd metrics for given class.
+     * @param decl - class to calculate the metrics.
+     */
+    void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
 protected:
     std::map<ClassID_t, Class> classes;
     clang::ASTContext *ctx;

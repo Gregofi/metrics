@@ -1,12 +1,14 @@
-#include "include/metrics/ChidKemVisitor.hpp"
+#include "include/metrics/ClassOverviewVisitor.hpp"
 #include "include/Logging.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 
-bool ChidKemVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
+bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     if(!decl->isThisDeclarationADefinition() )
         return true;
     LOG(decl->getNameAsString());
+    /* Create new class in map, this is important because if there is an empty class (class A{};), it
+     * wouldn't be added otherwise */
     if(!classes.count(decl->getID()))
         classes[decl->getID()];
     for(const auto &base : decl->bases())
@@ -15,10 +17,12 @@ bool ChidKemVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
         classes[base.getType()->getAsCXXRecordDecl()->getID()].children_count += 1;
         classes[decl->getID()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getID());
     }
+
+
     return true;
 }
 
-bool ChidKemVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
+bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
     if(!decl->isThisDeclarationADefinition() )
         return true;
@@ -33,7 +37,7 @@ bool ChidKemVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
     return true;
 }
 
-int ChidKemVisitor::GetInheritanceChainLen(unsigned long id) const
+int ClassOverviewVisitor::GetInheritanceChainLen(unsigned long id) const
 {
     const auto &chain = classes.at(id).inheritance_chain;
     if(chain.empty())
@@ -44,7 +48,7 @@ int ChidKemVisitor::GetInheritanceChainLen(unsigned long id) const
     return res;
 }
 
-bool ChidKemVisitor::Similiar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
+bool ClassOverviewVisitor::Similiar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
 {
     for(auto it1 = s1.begin(), it2 = s2.begin(); it1 != s1.end() && it2 != s2.end();)
     {
@@ -58,7 +62,7 @@ bool ChidKemVisitor::Similiar(const std::set<unsigned long> &s1, const std::set<
     return false;
 }
 
-int ChidKemVisitor::LackOfCohesion(unsigned long id) const
+int ClassOverviewVisitor::LackOfCohesion(unsigned long id) const
 {
     auto c = classes.at(id);
 
@@ -94,5 +98,24 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
                 instance_vars.insert(d->getID());
             }
         }
+    }
+}
+
+void ClassOverviewVisitor::CalculateLorKiddMetrics(clang::CXXRecordDecl *decl)
+{
+    auto id = decl->getID();
+    for(const auto &m : decl->methods())
+    {
+        if(!m->isDefaulted())
+        {
+            classes[id].methods_count += 1;
+            classes[id].public_methods_count += m->getAccess() == clang::AccessSpecifier::AS_public;
+            classes[id].overriden_methods_count += !m->overridden_methods().empty();
+        }
+    }
+    for(const auto &d: decl->fields())
+    {
+        classes[id].public_instance_vars_count +=  d->getAccess() == clang::AccessSpecifier::AS_public;
+        classes[id].instance_vars_count += 1;
     }
 }
