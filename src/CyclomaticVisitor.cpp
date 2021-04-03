@@ -22,6 +22,7 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     = {
             clang::ast_matchers::forStmt(),
             clang::ast_matchers::binaryConditionalOperator(),
+            clang::ast_matchers::conditionalOperator(),
             clang::ast_matchers::whileStmt(),
             clang::ast_matchers::cxxTryStmt(),
             clang::ast_matchers::caseStmt(),
