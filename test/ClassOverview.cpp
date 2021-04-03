@@ -10,6 +10,9 @@ class foreigner
 public:
     void kil() const {}
     int member;
+private:
+    int hidden;
+    void hidden_m() {}
 };
 
 class foo{};
@@ -95,6 +98,25 @@ public:
 };
 )";
 
+const char *inner_classes = R"(
+class a
+{
+public:
+    int a, b, c;
+    void f1() {}
+private:
+    int d;
+    void f2() {}
+    class b {
+    public:
+        void f3() {}
+    private:
+    int e;
+    };
+};
+
+)";
+
 struct Info
 {
     CGetNames names;
@@ -118,13 +140,24 @@ int BasicCasesTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetConstClass(cnames["foo"]).children_count, 1);
-    ASSERT_EQ(vis.GetConstClass(cnames["bar"]).children_count, 0);
-    ASSERT_EQ(vis.GetConstClass(cnames["foreigner"]).children_count, 0);
+    ASSERT_EQ(vis.GetRefClass(cnames["foo"]).children_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).children_count, 0);
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).children_count, 0);
 
-    ASSERT_EQ(vis.GetConstClass(cnames["bar"]).inheritance_chain.front(), cnames["foo"]);
-    ASSERT_EQ(vis.GetConstClass(cnames["bar"]).functions[0].size(), 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).inheritance_chain.front(), cnames["foo"]);
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).functions[0].size(), 2);
     ASSERT_EQ(vis.GetInheritanceChainLen(cnames["bar"]), 1);
+
+    /* Test counts */
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).methods_count, 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).instance_vars_count, 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).public_instance_vars_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).overriden_methods_count, 0);
+
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).instance_vars_count, 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).public_instance_vars_count, 0);
     return 0;
 }
 
@@ -140,10 +173,10 @@ int InheritanceChainTest()
     ASSERT_EQ(vis.GetInheritanceChainLen(cnames["a"]), 0);
     ASSERT_EQ(vis.GetInheritanceChainLen(cnames["d"]), 3);
 
-    ASSERT_EQ(vis.GetConstClass(cnames["a"]).children_count, 2);
-    ASSERT_EQ(vis.GetConstClass(cnames["b"]).children_count, 1);
-    ASSERT_EQ(vis.GetConstClass(cnames["c"]).children_count, 1);
-    ASSERT_EQ(vis.GetConstClass(cnames["d"]).children_count, 0);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).children_count, 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["b"]).children_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["c"]).children_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["d"]).children_count, 0);
 
     return 0;
 }
@@ -155,11 +188,18 @@ int MemberAccessTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[2].size(), 2);
-    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[0].size(), 3);
-    ASSERT_EQ(vis.GetConstClass(cnames["a"]).functions[1].size(), 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[2].size(), 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[0].size(), 3);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[1].size(), 1);
 
     ASSERT_EQ(vis.LackOfCohesion(cnames["a"]), 0);
+
+    /* Test counts */
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).instance_vars_count, 3);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_instance_vars_count, 0);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).methods_count, 3);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_methods_count, 3);
+
     return 0;
 };
 
@@ -174,6 +214,25 @@ int LackOfCohesionTest()
     return 0;
 }
 
+int InnerClassTest()
+{
+    auto v = Eval(inner_classes);
+    auto cnames = v.names.class_names;
+    auto fnames = v.names.func_names;
+    auto vis = v.vis;
+
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).methods_count, 2);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).instance_vars_count, 4);
+    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_instance_vars_count, 3);
+    ASSERT_EQ(vis.GetRefClass(cnames["b"]).methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["b"]).public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["b"]).instance_vars_count, 1);
+    ASSERT_EQ(vis.GetRefClass(cnames["b"]).public_instance_vars_count, 0);
+
+    return 0;
+}
+
 int main()
 {
     ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 3}, {2, 5, 6}), true);
@@ -185,5 +244,6 @@ int main()
     TEST(InheritanceChainTest);
     TEST(MemberAccessTest);
     TEST(LackOfCohesionTest);
+    TEST(InnerClassTest);
     return 0;
 }
