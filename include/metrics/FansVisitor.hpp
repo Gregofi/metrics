@@ -20,6 +20,13 @@ protected:
     std::map<size_t, int> fan_in;
 };
 
+/**
+ * Calculates the Fan-In and Fan-Out metric for each function. Fan-in is how many functions
+ * has this function called and Fan-Out is how many times this function has been called.
+ *
+ * This Visitor needs to visit whole scope of calculated functions, not only one.
+ * Often times you want it to visit whole TranslationUnitDecl.
+ */
 class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>
 {
 public:

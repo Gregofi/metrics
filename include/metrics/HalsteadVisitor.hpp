@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/22/21.
-//
-
 #ifndef METRICS_HALSTEADVISITOR_HPP
 #define METRICS_HALSTEADVISITOR_HPP
 

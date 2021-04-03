@@ -1,4 +1,3 @@
-
 #include "test/Asserts.hpp"
 #include "test/TestToolRun.hpp"
 

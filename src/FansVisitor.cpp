@@ -1,4 +1,3 @@
-
 #include "clang/AST/Decl.h"
 #include "include/metrics/FansVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"

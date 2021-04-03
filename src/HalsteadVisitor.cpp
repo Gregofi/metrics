@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/22/21.
-//
-
 #include <array>
 
 #include "include/metrics/HalsteadVisitor.hpp"

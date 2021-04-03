@@ -1,4 +1,3 @@
-
 #ifndef METRICS_CYCLOMATICVISITOR_HPP
 #define METRICS_CYCLOMATICVISITOR_HPP
 
@@ -15,7 +14,7 @@
 #include "include/FunctionVisitor.hpp"
 
 /**
- *
+ * Calculates cyclomatic complexity for given function.
  */
 class CyclomaticVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
 {

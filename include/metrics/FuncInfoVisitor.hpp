@@ -1,4 +1,3 @@
-
 #ifndef METRICS_FUNCINFO_HPP
 #define METRICS_FUNCINFO_HPP
 

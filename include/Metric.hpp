@@ -11,7 +11,7 @@
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
 /**
- * Simple callback class that counts how many times a match has been found.
+ * Simple callback class for matchers that counts how many times a match has been found.
  */
 class Counter : public clang::ast_matchers::MatchFinder::MatchCallback
 {

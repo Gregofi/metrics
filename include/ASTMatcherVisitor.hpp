@@ -1,8 +1,3 @@
-
-//
-// Created by filip on 2/28/21.
-//
-
 #ifndef METRICS_ASTMATCHERVISITOR_HPP
 #define METRICS_ASTMATCHERVISITOR_HPP
 

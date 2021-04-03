@@ -3,7 +3,6 @@
 #include "test/TestToolRun.hpp"
 #include "test/Asserts.hpp"
 
-
 const char *code1 = R"(
 class foreigner
 {
@@ -33,88 +32,6 @@ protected:
 };
 
 int main(){}
-)";
-
-const char *inh_chain = R"(
-class a
-{
-};
-
-class b : a
-{
-};
-
-class c : virtual b, virtual a
-{
-};
-
-class d : c
-{
-};
-
-int main(){}
-)";
-
-const char *members = R"(
-class a
-{
-public:
-    int foo();
-
-    int bar()
-    {
-        int tmp = a * b;
-        tmp = a + b;
-        tmp += c;
-        return tmp;
-    }
-
-    int rab()
-    {
-        return c;
-    }
-private:
-    int a{}, b{}, c{};
-};
-
-int a::foo()
-{
-    int tmp = a * b;
-    tmp += a;
-    tmp += a * b;
-    return tmp;
-}
-)";
-
-const char *cohesion = R"(
-class a
-{
-public:
-    int a, b, c, d;
-    void f1() { a = 1; b = 1; }
-    void f2() { a = 1; }
-    void f3() {d = 3; }
-    void f4() {c = 5; }
-};
-)";
-
-const char *inner_classes = R"(
-class a
-{
-public:
-    int a, b, c;
-    void f1() {}
-private:
-    int d;
-    void f2() {}
-    class b {
-    public:
-        void f3() {}
-    private:
-    int e;
-    };
-};
-
 )";
 
 struct Info
@@ -161,6 +78,26 @@ int BasicCasesTest()
     return 0;
 }
 
+const char *inh_chain = R"(
+class a
+{
+};
+
+class b : a
+{
+};
+
+class c : virtual b, virtual a
+{
+};
+
+class d : c
+{
+};
+
+int main(){}
+)";
+
 int InheritanceChainTest()
 {
     auto v = Eval(inh_chain);
@@ -180,6 +117,37 @@ int InheritanceChainTest()
 
     return 0;
 }
+
+const char *members = R"(
+class a
+{
+public:
+    int foo();
+
+    int bar()
+    {
+        int tmp = a * b;
+        tmp = a + b;
+        tmp += c;
+        return tmp;
+    }
+
+    int rab()
+    {
+        return c;
+    }
+private:
+    int a{}, b{}, c{};
+};
+
+int a::foo()
+{
+    int tmp = a * b;
+    tmp += a;
+    tmp += a * b;
+    return tmp;
+}
+)";
 
 int MemberAccessTest()
 {
@@ -203,6 +171,18 @@ int MemberAccessTest()
     return 0;
 };
 
+const char *cohesion = R"(
+class a
+{
+public:
+    int a, b, c, d;
+    void f1() { a = 1; b = 1; }
+    void f2() { a = 1; }
+    void f3() {d = 3; }
+    void f4() {c = 5; }
+};
+)";
+
 int LackOfCohesionTest()
 {
     auto v = Eval(cohesion);
@@ -213,6 +193,25 @@ int LackOfCohesionTest()
     ASSERT_EQ(vis.LackOfCohesion(cnames["a"]), 4);
     return 0;
 }
+
+const char *inner_classes = R"(
+class a
+{
+public:
+    int a, b, c;
+    void f1() {}
+private:
+    int d;
+    void f2() {}
+    class b {
+    public:
+        void f3() {}
+    private:
+    int e;
+    };
+};
+
+)";
 
 int InnerClassTest()
 {

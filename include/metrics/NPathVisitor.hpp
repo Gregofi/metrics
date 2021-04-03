@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/26/21.
-//
-
 #ifndef METRICS_NPATHVISITOR_HPP
 #define METRICS_NPATHVISITOR_HPP
 
@@ -15,7 +11,9 @@
 
 #include "include/FunctionVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
-
+/**
+ * Visitor which visits statements and calculates NPath complexity for given compound statement.
+ */
 class StmtNPathVisitor : public clang::StmtVisitor<StmtNPathVisitor>
 {
 public:
@@ -32,14 +30,20 @@ public:
     void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
     void VisitForStmt(clang::ForStmt *stmt);
     int CountLogicalOperators(clang::Stmt *stmt);
+    /**
+     * Returns calculated NPATH complexity.
+     * @return - Calculated NPATH complexity.
+     */
     int GetCount() const { return count; }
     void VisitReturnStmt(clang::ReturnStmt *stmt);
-
 protected:
     clang::ASTContext *ctx;
     int count = 0;
 };
 
+/**
+ * Calculates NPATH complexity for given function declaration.
+ */
 class NPathVisitor : public clang::RecursiveASTVisitor<NPathVisitor>, public FunctionVisitor
 {
 public:

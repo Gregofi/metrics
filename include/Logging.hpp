@@ -1,13 +1,9 @@
-//
-// Created by filip on 3/26/21.
-//
-
 #ifndef METRICS_LOGGING_HPP
 #define METRICS_LOGGING_HPP
+#include <iostream>
 
 
 #ifdef DEBUG
-    #include <iostream>
     #define LOG(MESSAGE) std::cout << __FILE__ << "(" << __LINE__ << "):" << MESSAGE << std::endl
 #else
     #include <iostream>

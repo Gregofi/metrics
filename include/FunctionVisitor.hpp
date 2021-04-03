@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/22/21.
-//
-
 #ifndef METRICS_ABSTRACTVISITOR_HPP
 #define METRICS_ABSTRACTVISITOR_HPP
 
@@ -14,12 +10,11 @@
 #include "clang/Tooling/Tooling.h"
 
 #include "include/Metric.hpp"
+#include "include/Metric.hpp"
 
 /**
  * This class represents an interface for visitors that only examine one function at a time.
  */
-#include "include/Metric.hpp"
-
 class FunctionVisitor
 {
 public:

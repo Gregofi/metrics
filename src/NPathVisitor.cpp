@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/26/21.
-//
-
 #include "include/metrics/NPathVisitor.hpp"
 #include "include/Logging.hpp"
 #include "include/ASTMatcherVisitor.hpp"

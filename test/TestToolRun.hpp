@@ -1,7 +1,3 @@
-//
-// Created by filip on 3/28/21.
-//
-
 #ifndef METRICS_TESTTOOLRUN_HPP
 #define METRICS_TESTTOOLRUN_HPP
 
@@ -17,7 +13,6 @@
 
 #include "include/FunctionVisitor.hpp"
 #include "include/ClassVisitor.hpp"
-
 
 
 /**
