@@ -29,8 +29,11 @@ public:
         this->TraverseDecl(decl);
     }
 
+    int GetValue() const { return count; }
+
+    virtual std::ostream &Export(std::ostream &os) const override;
 protected:
-    size_t count = 0;
+    int count{1};
 };
 
 

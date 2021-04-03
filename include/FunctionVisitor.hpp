@@ -20,18 +20,12 @@ class FunctionVisitor
 public:
     explicit FunctionVisitor(clang::ASTContext *ctx) : context(ctx) {}
     virtual ~FunctionVisitor() = default;
-    virtual std::ostream& Export(std::ostream &os) const
-    {
-        for(const auto & x : metrics)
-            os << x.name << " - " << x.val << "\n";
-        return os;
-    };
+    virtual std::ostream& Export(std::ostream &os) const = 0;
     virtual void CalcMetrics(clang::Decl *decl) = 0;
-    std::vector<Metric> GetMetrics() const { return metrics; }
 protected:
-    std::vector<Metric> metrics;
     clang::ASTContext *context;
 };
+
 
 
 #endif //METRICS_ABSTRACTVISITOR_HPP

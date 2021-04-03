@@ -57,21 +57,37 @@ public:
 
     virtual void CalcMetrics(clang::Decl *decl) override
     {
+        TokenCounter tk_operators(true);
+        TokenCounter tk_operand;
+
+        ASTMatcherVisitor matcher(context);
+        matcher.AddMatchers(operators_stmt, &tk_operators);
+        matcher.AddMatchers(operators_decl, &tk_operators);
+
+        matcher.AddMatchers(operands_stmt, &tk_operand);
+        matcher.AddMatchers(operands_decl, &tk_operand);
         matcher.TraverseDecl(decl);
-        metrics.push_back({"Operator count", tk_operators.getCount()});
-        metrics.push_back({"Operand count", tk_operand.getCount()});
+
+        unique_operators = tk_operators.getUniqueCount();
+        unique_operands = tk_operand.getUniqueCount();
+        operators = tk_operators.getCount();
+        operands = tk_operand.getCount();
     }
 
+    int GetOperatorCount() const {return operators;}
+    int GetOperandCount() const {return operands;}
+    int GetUniqueOperandCount() const {return unique_operands;}
+    int GetUniqueOperatorCount() const {return unique_operators;}
+
+    virtual std::ostream &Export(std::ostream &os) const override;
 protected:
-    TokenCounter tk_operators;
-    TokenCounter tk_operand;
-    ASTMatcherVisitor matcher;
-    std::set<clang::Stmt> seen_operators;
-    std::set<int> seen_operands;
+    int operators;
+    int operands;
+    int unique_operators;
+    int unique_operands;
 
     static const std::vector<clang::ast_matchers::StatementMatcher>   operators_stmt;
     static const std::vector<clang::ast_matchers::DeclarationMatcher> operators_decl;
-    static const std::vector<clang::ast_matchers::TypeMatcher>        operators_type;
 
     static const std::vector<clang::ast_matchers::StatementMatcher> operands_stmt;
     static const std::vector<clang::ast_matchers::DeclarationMatcher> operands_decl;

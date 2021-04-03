@@ -13,7 +13,7 @@
 
 #include "include/metrics/NPathVisitor.hpp"
 
-#define GET_VAL(code) ConstructMetricsOneFunction<NPathVisitor>(code)[0].val
+#define GET_VAL(code) ConstructMetricsOneFunction<NPathVisitor>(code).GetValue()
 
 int NoConditionsTest()
 {

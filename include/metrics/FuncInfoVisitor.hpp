@@ -24,7 +24,7 @@ class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisito
     /* Statements that contains other statements */
     static const std::array<clang::Stmt::StmtClass, 10> compoundStatements;
 
-    struct Function
+    struct FunctionInfo
     {
         int statements;
         int statements_tbd;
@@ -38,7 +38,15 @@ public:
     {
         this->TraverseDecl(decl);
     }
-    Function GetResult() const { return f; }
+    FunctionInfo GetResult() const { return f; }
+    virtual std::ostream &Export(std::ostream &os) const override;
+    /**
+     * Calculates range of function declaration.
+     * @param decl
+     * @return
+     */
+    bool VisitFunctionDecl(clang::FunctionDecl *decl);
+    bool VisitStmt(clang::Stmt *stmt);
 private:
     /**
      * Calculates number of lines for given function body.
@@ -53,29 +61,23 @@ private:
      * Handles calculation of depth and statements for if statement.
      * @param stmt - If statement
      * @param depth - current depth
-     * @return - Function struct containing maximum depth of this statement and number of statements in this statement.
+     * @return - FunctionInfo struct containing maximum depth of this statement and number of statements in this statement.
      *
      * If statement needs to be done separately, because the 'else' branch is child of the 'if' statement(its not on the same level),
      * and depth would not be calculated properly.
      */
-    Function HandleIfStatement(const clang::IfStmt *stmt, int depth);
+    std::pair<int, int> HandleIfStatement(const clang::IfStmt *stmt, int depth);
 
-    Function HandleOtherCompounds(const clang::Stmt *body, int depth);
+    std::pair<int, int> HandleOtherCompounds(const clang::Stmt *body, int depth);
 
-    Function StmtCount(const clang::Stmt *body, int depth = 0);
+    std::pair<int, int> StmtCount(const clang::Stmt *body, int depth = 0);
 
-    /**
-     * Calculates range of function declaration.
-     * @param decl
-     * @return
-     */
-    bool VisitFunctionDecl(clang::FunctionDecl *decl);
-    bool VisitStmt(clang::Stmt *stmt);
 
+private:
     /**
      * Stores current metric values.
      */
-    Function f;
+    FunctionInfo f;
 };
 
 #endif //METRICS_FUNCINFO_HPP

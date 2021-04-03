@@ -28,6 +28,8 @@ public:
      */
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
+    bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
+
     /**
      * Calls every metric visitor that needs to traverse whole code, for example Fan-{in, out} or metrics
      * that investigate class relationships.
@@ -37,6 +39,8 @@ public:
     bool VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl);
 
 protected:
+    std::map<size_t, std::pair<std::string, std::vector<std::unique_ptr<FunctionVisitor> > > > functions;
+    std::vector<std::pair<std::string, size_t> > classes;
     clang::ASTContext *context;
 };
 

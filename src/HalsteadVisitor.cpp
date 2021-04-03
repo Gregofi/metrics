@@ -63,13 +63,18 @@ const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::oper
     varDecl().bind("decl"),
 };
 
-HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx), matcher(ctx), tk_operators(true)
+HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx)
 {
-    matcher.AddMatchers(operators_stmt, &tk_operators);
-    matcher.AddMatchers(operators_decl, &tk_operators);
 
-    matcher.AddMatchers(operands_stmt, &tk_operand);
-    matcher.AddMatchers(operands_decl, &tk_operand);
+}
+
+std::ostream &HalsteadVisitor::Export(std::ostream &os) const
+{
+    os << "Number of operators: " << operators << "\n";
+    os << "Number of unique operators: " << unique_operators << "\n";
+    os << "Number of operands: " << operands << "\n";
+    os << "Number of unique operands: " << unique_operands << "\n";
+    return os;
 }
 
 void TokenCounter::run(const MatchFinder::MatchResult &Result)

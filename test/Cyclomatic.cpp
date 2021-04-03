@@ -2,7 +2,7 @@
 #include "test/Asserts.hpp"
 #include "test/TestToolRun.hpp"
 
-#define GET_VAL(code) ConstructMetricsOneFunction<CyclomaticVisitor>(code)[0].val
+#define GET_VAL(code) ConstructMetricsOneFunction<CyclomaticVisitor>(code).GetValue()
 
 int main()
 {

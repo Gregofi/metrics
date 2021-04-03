@@ -37,23 +37,23 @@ int FuncInfoVisitor::CalcLength(FunctionDecl *decl)
     return 0;
 }
 
-FuncInfoVisitor::Function FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int depth)
+std::pair<int, int> FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int depth)
 {
     using clang::Stmt;
 
     int cnt = 0;
     /* This is the 'if' body */
-    Function res_if = StmtCount(stmt->getThen(), depth);
+    std::pair<int, int> res_if = StmtCount(stmt->getThen(), depth);
     /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
-    Function res_else{0, 0};
+    auto res_else = std::make_pair(0, 0);
     res_else = StmtCount(stmt->getElse(), depth);
 
-    cnt += res_else.statements + res_if.statements;
-    depth = std::max(res_if.depth, res_else.depth);
+    cnt += res_else.first + res_if.first;
+    depth = std::max(res_if.second, res_else.second);
     return {cnt, depth};
 }
 
-FuncInfoVisitor::Function FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int depth)
+std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int depth)
 {
     auto it = body->children().begin();
     auto stmtClass = body->getStmtClass();
@@ -67,7 +67,7 @@ FuncInfoVisitor::Function FuncInfoVisitor::HandleOtherCompounds(const Stmt *body
     if(stmtClass == Stmt::ForStmtClass)
         std::advance(it, 4);
 
-    Function res = {0, depth};
+    std::pair<int, int> res = {0, depth};
     for(;it != body->child_end(); ++it)
     {
         if(!*it)
@@ -80,13 +80,13 @@ FuncInfoVisitor::Function FuncInfoVisitor::HandleOtherCompounds(const Stmt *body
                           || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass
                           || stmtClass == Stmt::CaseStmtClass));
         auto tmp_res = StmtCount(*it, depth + advance);
-        res.statements += tmp_res.statements;
-        res.depth = std::max(res.depth, tmp_res.depth);
+        res.first += tmp_res.second;
+        res.first = std::max(res.second, tmp_res.second);
     }
     return res;
 }
 
-FuncInfoVisitor::Function FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
+std::pair<int, int> FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
 {
     /* Some statements can be null, for example for(;;) has four null statements
      * as its children. */
@@ -100,11 +100,11 @@ FuncInfoVisitor::Function FuncInfoVisitor::StmtCount(const Stmt *body, int depth
             std::find(compoundStatements.begin(), compoundStatements.end(), stmtClass)!= compoundStatements.end();
 
     /* Do not count Compound Statement as statement */
-    Function res = {!(stmtClass == Stmt::CompoundStmtClass), depth};
+    auto res = std::make_pair(!(stmtClass == Stmt::CompoundStmtClass), depth);
 
     if(is_compound)
     {
-        Function tmp_res;
+        std::pair<int, int> tmp_res;
 
         /* Because else branch is child of if statement(ie. it would increase depth), we need to deal with it
          * separately. */
@@ -113,8 +113,8 @@ FuncInfoVisitor::Function FuncInfoVisitor::StmtCount(const Stmt *body, int depth
         else
             tmp_res = HandleOtherCompounds(body, depth);
 
-        res.statements += tmp_res.statements;
-        res.depth = std::max(res.depth, tmp_res.depth);
+        res.first += tmp_res.first;
+        res.second = std::max(res.second, tmp_res.second);
     }
     return res;
 }
@@ -125,22 +125,26 @@ bool FuncInfoVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
-        f.statements = res.statements;
-        f.depth = res.depth;
+        f.statements = res.first;
+        f.depth = res.second;
         f.physical_loc = CalcLength(decl);
-        metrics.insert(this->metrics.end(), {
-            {"Physical Lines of code", CalcLength(decl)},
-            {"Number of statements", res.statements},
-            {"Maximum depth", res.depth},
-        });
     }
     return true;
 }
 
 bool FuncInfoVisitor::VisitStmt(clang::Stmt *stmt)
 {
-    if(llvm::dyn_cast<clang::Expr>(stmt) || stmt->getStmtClass() == clang::Stmt::CompoundStmtClass())
+    if(llvm::dyn_cast<clang::Expr>(stmt) || stmt->getStmtClass() == clang::Stmt::CompoundStmtClass)
         return true;
     f.statements_tbd += 1;
     return true;
+}
+
+std::ostream &FuncInfoVisitor::Export(std::ostream &os) const
+{
+    os << "Lines of code: " << f.physical_loc << "\n";
+    os << "Number of statements: " << f.statements << "\n";
+    os << "Maximum depth: " << f.depth << "\n";
+    os << "Number of statements 2.0:" << f.statements_tbd << "\n";
+    return os;
 }

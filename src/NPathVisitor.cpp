@@ -20,8 +20,14 @@ bool NPathVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     auto *body = llvm::dyn_cast<CompoundStmt>(decl->getBody());
     StmtNPathVisitor visitor(context);
     visitor.Visit(body);
-    metrics.push_back({"NPATH", visitor.GetCount()});
+    count = visitor.GetCount();
     return true;
+}
+
+std::ostream &NPathVisitor::Export(std::ostream &os) const
+{
+    os << "NPATH: " << count << "\n";
+    return os;
 }
 
 /*-----------------------------------------------------------------------------------*/

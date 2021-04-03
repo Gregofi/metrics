@@ -35,7 +35,7 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     ASTMatcherVisitor v(context);
     v.AddMatchers(matchers, &counter);
     v.TraverseDecl(decl);
-    metrics.push_back({"Cyclomatic complexity", counter.getCount() + 1});
+    count = counter.getCount();
     return true;
 }
 
@@ -47,5 +47,11 @@ CyclomaticVisitor::~CyclomaticVisitor()
 CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : FunctionVisitor(context)
 {
 
+}
+
+std::ostream &CyclomaticVisitor::Export(std::ostream &os) const
+{
+    os << "Cyclomatic complexity: " << count;
+    return os;
 }
 

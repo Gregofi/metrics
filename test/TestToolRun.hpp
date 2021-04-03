@@ -30,12 +30,12 @@
  * @return - Vector of calculated metrics
  */
 template <typename T_Visitor>
-std::vector<Metric> ConstructMetricsOneFunction(const std::string &function_body)
+T_Visitor ConstructMetricsOneFunction(const std::string &function_body)
 {
     auto AST = clang::tooling::buildASTFromCode(std::string("int main(void) { " + function_body + " } "));
     T_Visitor vis(&AST->getASTContext());
     vis.CalcMetrics(AST->getASTContext().getTranslationUnitDecl());
-    return vis.GetMetrics();
+    return vis;
 }
 
 /**
