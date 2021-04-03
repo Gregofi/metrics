@@ -37,15 +37,15 @@ int FuncInfoVisitor::CalcLength(FunctionDecl *decl)
     return 0;
 }
 
-FuncInfoVisitor::Result FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int depth)
+FuncInfoVisitor::Function FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int depth)
 {
     using clang::Stmt;
 
     int cnt = 0;
     /* This is the 'if' body */
-    Result res_if = StmtCount(stmt->getThen(), depth);
+    Function res_if = StmtCount(stmt->getThen(), depth);
     /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
-    Result res_else{0, 0};
+    Function res_else{0, 0};
     res_else = StmtCount(stmt->getElse(), depth);
 
     cnt += res_else.statements + res_if.statements;
@@ -53,7 +53,7 @@ FuncInfoVisitor::Result FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, i
     return {cnt, depth};
 }
 
-FuncInfoVisitor::Result FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int depth)
+FuncInfoVisitor::Function FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int depth)
 {
     auto it = body->children().begin();
     auto stmtClass = body->getStmtClass();
@@ -67,7 +67,7 @@ FuncInfoVisitor::Result FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, 
     if(stmtClass == Stmt::ForStmtClass)
         std::advance(it, 4);
 
-    Result res = {0, depth};
+    Function res = {0, depth};
     for(;it != body->child_end(); ++it)
     {
         if(!*it)
@@ -86,7 +86,7 @@ FuncInfoVisitor::Result FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, 
     return res;
 }
 
-FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
+FuncInfoVisitor::Function FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
 {
     /* Some statements can be null, for example for(;;) has four null statements
      * as its children. */
@@ -100,11 +100,11 @@ FuncInfoVisitor::Result FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
             std::find(compoundStatements.begin(), compoundStatements.end(), stmtClass)!= compoundStatements.end();
 
     /* Do not count Compound Statement as statement */
-    Result res = {!(stmtClass == Stmt::CompoundStmtClass), depth};
+    Function res = {!(stmtClass == Stmt::CompoundStmtClass), depth};
 
     if(is_compound)
     {
-        Result tmp_res;
+        Function tmp_res;
 
         /* Because else branch is child of if statement(ie. it would increase depth), we need to deal with it
          * separately. */
@@ -125,11 +125,22 @@ bool FuncInfoVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     if(decl->isThisDeclarationADefinition())
     {
         auto res = StmtCount(decl->getBody());
+        f.statements = res.statements;
+        f.depth = res.depth;
+        f.physical_loc = CalcLength(decl);
         metrics.insert(this->metrics.end(), {
             {"Physical Lines of code", CalcLength(decl)},
             {"Number of statements", res.statements},
             {"Maximum depth", res.depth},
         });
     }
+    return true;
+}
+
+bool FuncInfoVisitor::VisitStmt(clang::Stmt *stmt)
+{
+    if(llvm::dyn_cast<clang::Expr>(stmt) || stmt->getStmtClass() == clang::Stmt::CompoundStmtClass())
+        return true;
+    f.statements_tbd += 1;
     return true;
 }

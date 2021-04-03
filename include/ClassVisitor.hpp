@@ -9,9 +9,7 @@ public:
     explicit ClassVisitor(clang::ASTContext *ctx) : context(ctx) {}
     virtual ~ClassVisitor() = default;
     virtual void CalcMetrics(clang::CXXRecordDecl *decl) = 0;
-    std::vector<Metric> GetMetrics() const { return metrics; }
 protected:
-    std::vector<Metric> metrics;
     clang::ASTContext *context;
 };
 
