@@ -51,7 +51,7 @@ CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : FunctionVisit
 
 std::ostream &CyclomaticVisitor::Export(std::ostream &os) const
 {
-    os << "Cyclomatic complexity: " << count;
+    os << "Cyclomatic complexity: " << count << "\n";
     return os;
 }
 

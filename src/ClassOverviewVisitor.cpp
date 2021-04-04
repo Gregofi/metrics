@@ -4,7 +4,8 @@
 
 bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
-    if(!decl->isThisDeclarationADefinition() )
+    /* Skip declarations that have no body and that aren't in main file */
+    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()))
         return true;
     LOG(decl->getNameAsString());
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
@@ -24,7 +25,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 
 bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
-    if(!decl->isThisDeclarationADefinition() )
+    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()))
         return true;
     ASTMatcherVisitor vis(ctx);
     MethodCallback callback(decl->getParent()->getID());
@@ -76,7 +77,6 @@ int ClassOverviewVisitor::LackOfCohesion(unsigned long id) const
 
 void MethodCallback::run(const MatchFinder::MatchResult &Result)
 {
-    Decl *parent;
     if(const auto *call = Result.Nodes.getNodeAs<CXXMemberCallExpr>("member_call"))
     {
         /* If this class calls method from other class its coupled with it. Check if the called
@@ -115,7 +115,32 @@ void ClassOverviewVisitor::CalculateLorKiddMetrics(clang::CXXRecordDecl *decl)
     }
     for(const auto &d: decl->fields())
     {
-        classes[id].public_instance_vars_count +=  d->getAccess() == clang::AccessSpecifier::AS_public;
-        classes[id].instance_vars_count += 1;
+        if(d->isCXXInstanceMember())
+        {
+            classes[id].public_instance_vars_count +=  d->getAccess() == clang::AccessSpecifier::AS_public;
+            classes[id].instance_vars_count += 1;
+        }
     }
+}
+
+void ClassOverviewVisitor::CalcMetrics(clang::TranslationUnitDecl *decl)
+{
+    TraverseDecl(decl);
+}
+
+std::ostream &ClassOverviewVisitor::Export(size_t id, std::ostream &os) const
+{
+    const auto& c = classes.at(id);
+    os << "Size:\n"
+       << "  Number of methods: " << c.methods_count << ", " << c.methods_count << " are public.\n"
+       << "  Number of attributes: " << c.instance_vars_count << ", " << c.public_instance_vars_count << " are public.\n"
+       << "\n"
+       << "Inheritance:\n"
+       << "  Number of children: " << c.children_count << "\n"
+       << "  Longest inheritance chain length: " << GetInheritanceChainLen(id) << "\n"
+       << "  Overriden methods: " << c.overriden_methods_count << "\n"
+       << "Other:\n"
+       << "  Number of couples: " << c.couples.size() << "\n"
+       << "  Lack of cohesion : " << LackOfCohesion(id) << "\n";
+    return os;
 }

@@ -22,7 +22,8 @@ public:
 
     virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
-        metricVisitor.TraverseDecl(context.getTranslationUnitDecl());
+        metricVisitor.CalcMetrics(context.getTranslationUnitDecl());
+        metricVisitor.ExportMetrics(std::cout);
     }
 
 

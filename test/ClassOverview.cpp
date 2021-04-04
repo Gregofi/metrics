@@ -36,6 +36,8 @@ int main(){}
 
 struct Info
 {
+    Info(CGetNames names, ClassOverviewVisitor vis) : names(std::move(names)), vis(std::move(vis)){}
+
     CGetNames names;
     ClassOverviewVisitor vis;
 };
@@ -47,7 +49,7 @@ Info Eval(const std::string &code)
     vis.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
     CGetNames names;
     names.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
-    return {names, vis};
+    return {std::move(names), std::move(vis)};
 }
 
 int BasicCasesTest()

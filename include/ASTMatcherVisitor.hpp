@@ -62,6 +62,7 @@ public:
 
     bool VisitStmt(const Stmt *s)
     {
+
         finder.match(*s, *context);
         return true;
     }

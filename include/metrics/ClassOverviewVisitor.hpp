@@ -5,6 +5,7 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 
 #include "include/ASTMatcherVisitor.hpp"
+#include "include/ClassCtxVisitor.hpp"
 
 typedef long unsigned ClassID_t ;
 
@@ -57,7 +58,7 @@ protected:
  *  be returned separately by using the corresponding getters. These classes are identified
  *  by their clang ids.
  */
-class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>
+class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>, public ClassCtxVisitor
 {
 protected:
     struct Class
@@ -75,6 +76,7 @@ protected:
          * Contains classes whose methods this class calls
          */
         std::set<ClassID_t> couples;
+
         /**
          * Contains vector of sets which contains used instance variables by each method
          */
@@ -83,6 +85,7 @@ protected:
         /**
          * Number of public methods (except default ones)
          */
+
         int public_methods_count{0};
         /**
          * Number of all methods (except default ones)
@@ -94,10 +97,11 @@ protected:
     };
 
 public:
-    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
+    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : ClassCtxVisitor(ctx){}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
     const Class& GetRefClass(long unsigned id) const { return classes.at(id); }
+
     /**
      * Returns length of inheritance chain from this class to root class (class that doesn't inherit from any other
      * classes). If there are multiple chains, returns length of the longest one.
@@ -105,6 +109,7 @@ public:
      * @return - Lenght of inheritance chain
      */
     int GetInheritanceChainLen(long unsigned id) const;
+
     /**
      * Returns true if both sets have atleast one same element, otherwise returns false.
      * @param s1
@@ -129,10 +134,12 @@ public:
      * This calculates lorenz and kidd metrics for given class.
      * @param decl - class to calculate the metrics.
      */
-    void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
+
+    virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
+    virtual std::ostream &Export(size_t id, std::ostream &os) const override;
 protected:
+    void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
     std::map<ClassID_t, Class> classes;
-    clang::ASTContext *ctx;
 };
 
 #endif //METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP

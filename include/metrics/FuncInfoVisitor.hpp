@@ -26,10 +26,10 @@ class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisito
 
     struct FunctionInfo
     {
-        int statements;
-        int statements_tbd;
-        int depth;
-        int physical_loc;
+        int statements{0};
+        int statements_tbd{0};
+        int depth{0};
+        int physical_loc{0};
     };
 public:
     FuncInfoVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx) {}
