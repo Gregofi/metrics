@@ -74,34 +74,4 @@ std::map<std::string, size_t> GetFuncNameMap(clang::Decl *decl)
     return x.func_names;
 }
 
-/**
- * Testing class, visits only one class in given AST and calls VisitDecl from T visitor on that decl.
- * @tparam T - subclass of RecursiveASTVisitor
- */
-class VisitOneClass : public clang::RecursiveASTVisitor<VisitOneClass>
-{
-public:
-    VisitOneClass(std::string name, ClassVisitor *v) : name(std::move(name)), vis(v)
-    {
-        this->vis = v;
-        this->vis = v;
-    }
-    bool TraverseCXXRecordDecl(clang::CXXRecordDecl *decl)
-    {
-        if(name == decl->getNameAsString())
-            return clang::RecursiveASTVisitor<VisitOneClass>::TraverseCXXRecordDecl(decl);
-        return true;
-    }
-
-    bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
-    {
-        if(name == decl->getNameAsString())
-            vis->CalcMetrics(decl);
-        return true;
-    }
-
-private:
-    std::string name;
-    ClassVisitor *vis;
-};
 #endif //METRICS_TESTTOOLRUN_HPP

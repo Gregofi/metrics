@@ -38,7 +38,29 @@ int BasicTest()
     return 0;
 }
 
+int ClassesTest()
+{
+    auto info = GetMetric(R"(
+    class Foo {public: Foo(int i) {};void f1() {}; void f2() {}; };
+    void of1() {};
+    void of2() {};
+    int main() {
+        Foo foo(1);
+        foo.f1();
+        foo.f2();
+        of1();
+        of2();
+    }
+    )");
+    auto names = info.names;
+    auto vis = info.vis;
+    ASSERT_EQ(vis.FanIn(names["main"]), 4);
+    ASSERT_EQ(vis.FanOut(names["main"]),0);
+    return 0;
+}
+
 int main()
 {
     TEST(BasicTest);
+    TEST(ClassesTest);
 }
