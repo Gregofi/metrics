@@ -35,7 +35,7 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     ASTMatcherVisitor v(context);
     v.AddMatchers(matchers, &counter);
     v.TraverseDecl(decl);
-    count = counter.getCount();
+    count = counter.getCount() + 1;
     return true;
 }
 

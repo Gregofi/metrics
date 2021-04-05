@@ -45,7 +45,7 @@ std::pair<int, int> FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int d
     /* This is the 'if' body */
     std::pair<int, int> res_if = StmtCount(stmt->getThen(), depth);
     /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
-    auto res_else = std::make_pair(0, 0);
+    std::pair<int, int> res_else = std::make_pair(0, 0);
     res_else = StmtCount(stmt->getElse(), depth);
 
     cnt += res_else.first + res_if.first;
@@ -79,9 +79,9 @@ std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int 
                           || stmtClass == Stmt::ForStmtClass || stmtClass == Stmt::SwitchStmtClass
                           || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass
                           || stmtClass == Stmt::CaseStmtClass));
-        auto tmp_res = StmtCount(*it, depth + advance);
+        std::pair<int, int> tmp_res = StmtCount(*it, depth + advance);
         res.first += tmp_res.second;
-        res.first = std::max(res.second, tmp_res.second);
+        res.second = std::max(res.second, tmp_res.second);
     }
     return res;
 }
@@ -100,7 +100,7 @@ std::pair<int, int> FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
             std::find(compoundStatements.begin(), compoundStatements.end(), stmtClass)!= compoundStatements.end();
 
     /* Do not count Compound Statement as statement */
-    auto res = std::make_pair(!(stmtClass == Stmt::CompoundStmtClass), depth);
+    std::pair<int, int> res = std::make_pair(!(stmtClass == Stmt::CompoundStmtClass), depth);
 
     if(is_compound)
     {
@@ -145,6 +145,6 @@ std::ostream &FuncInfoVisitor::Export(std::ostream &os) const
     os << "Lines of code: " << f.physical_loc << "\n";
     os << "Number of statements: " << f.statements << "\n";
     os << "Maximum depth: " << f.depth << "\n";
-    os << "Number of statements 2.0:" << f.statements_tbd << "\n";
+    os << "Number of statements 2.0: " << f.statements_tbd << "\n";
     return os;
 }
