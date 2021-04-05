@@ -1,22 +1,14 @@
 #include "clang/AST/Decl.h"
 #include "include/metrics/FansVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
-
+#include "include/Logging.hpp"
 
 FansVisitor::FansVisitor(clang::ASTContext *ctx) : FunctionCtxVisitor(ctx), vis(ctx)
 {
-    vis.AddMatchers({callExpr().bind("call"), cxxOperatorCallExpr().bind("call"), cxxMemberCallExpr().bind("call")}, &counter);
+    vis.AddMatchers({callExpr().bind("call")}, &counter);
 }
 
 bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
-{
-    if(!ctx->getSourceManager().isInMainFile(decl->getLocation())) return true;
-    counter.SetCurrFuncId(decl->getID());
-    vis.TraverseDecl(decl);
-    return true;
-}
-
-bool FansVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
     if(!ctx->getSourceManager().isInMainFile(decl->getLocation())) return true;
     counter.SetCurrFuncId(decl->getID());
@@ -40,16 +32,8 @@ void FanCount::run(const MatchFinder::MatchResult &Result)
 {
     if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
     {
-        fan_in[curr_func] += 1;
-        fan_out[s->getCalleeDecl()->getID()] += 1;
-    }
-    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXOperatorCallExpr>("call"))
-    {
-        fan_in[curr_func] += 1;
-        fan_out[s->getCalleeDecl()->getID()] += 1;
-    }
-    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXMemberCallExpr>("call"))
-    {
+        LOG(curr_func);
+        LOG(s->getStmtClassName() << " :" << s->getCalleeDecl()->getID());
         fan_in[curr_func] += 1;
         fan_out[s->getCalleeDecl()->getID()] += 1;
     }

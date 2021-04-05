@@ -33,7 +33,6 @@ class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>, public Funct
 public:
     explicit FansVisitor(clang::ASTContext *ctx);
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
-    bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
     int FanIn(size_t id)  const { return counter.GetFanIn().at(id); }
     int FanOut(size_t id) const { return counter.GetFanOut().at(id); }
 

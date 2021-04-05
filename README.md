@@ -13,7 +13,13 @@ Currently implemented metrics:
 
 ---
 
-This tool is based on clang-libtooling, and requires it to be built.  
+## Metric calculation
+Here, you can find how each metric is calculated.
+### Fan-in, Fan-out
+Counts how many times each function has been called (Fan-out) and how much functions one function calls (Fan-in).
+Function call, member function and overloaded operator call are all considered. Constructor and destructor
+calls are not.
+
 
 ## How to build this (Works, but is currently outdated and there is much easier way to do it.)
 You need to have the llvm and clang sources downloaded to build this.

@@ -13,6 +13,7 @@
 
 using namespace clang;
 using clang::Stmt;
+
 /* ======================================================================================= */
 
 class FunctionInfoConsumer : public clang::ASTConsumer
@@ -25,8 +26,6 @@ public:
         metricVisitor.CalcMetrics(context.getTranslationUnitDecl());
         metricVisitor.ExportMetrics(std::cout);
     }
-
-
 private:
     MetricVisitor metricVisitor;
 };
