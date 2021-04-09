@@ -28,10 +28,12 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     }
 
     std::vector<std::unique_ptr<FunctionVisitor> > visitors;
+
     visitors.emplace_back(std::make_unique<FuncInfoVisitor>(context));
     visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
     visitors.emplace_back(std::make_unique<HalsteadVisitor>(context));
     visitors.emplace_back(std::make_unique<NPathVisitor>(context));
+
     for(const auto & x : visitors)
         x->CalcMetrics(decl);
 
@@ -40,16 +42,11 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     return true;
 }
 
-bool MetricVisitor::VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl)
-{
-    return true;
-}
-
 bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
 
-    if(decl->isLambda() || !decl->hasDefinition() || !sm.isInMainFile(decl->getLocation()))
+    if(decl->isLambda() || !decl->hasDefinition() || !sm.isInMainFile(decl->getLocation()) || decl->isUnion())
         return true;
     classes.emplace_back(decl->getQualifiedNameAsString(), decl->getID());
     return true;

@@ -45,6 +45,8 @@ static llvm::cl::OptionCategory MyToolCategory("metrics options");
 
 int main(int argc, const char **argv)
 {
+    int a;
+    a += 3;
     clang::tooling::CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
     clang::tooling::ClangTool Tool(OptionsParser.getCompilations(), OptionsParser.getSourcePathList());
     /* Add link to clang libraries, path to this can be found by running 'clang --print-file-name=include' */

@@ -16,6 +16,7 @@
 #include "include/MetricVisitor.hpp"
 #include "include/Metric.hpp"
 #include "include/ASTMatcherVisitor.hpp"
+#include "include/Logging.hpp"
 
 class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
 {
@@ -55,25 +56,7 @@ class HalsteadVisitor : public FunctionVisitor, public clang::RecursiveASTVisito
 public:
     explicit HalsteadVisitor(clang::ASTContext *ctx);
 
-    virtual void CalcMetrics(clang::Decl *decl) override
-    {
-        TokenCounter tk_operators(true);
-        TokenCounter tk_operand;
-
-        ASTMatcherVisitor matcher(context);
-        matcher.AddMatchers(operators_stmt, &tk_operators);
-        matcher.AddMatchers(operators_decl, &tk_operators);
-
-        matcher.AddMatchers(operands_stmt, &tk_operand);
-        matcher.AddMatchers(operands_decl, &tk_operand);
-        matcher.TraverseDecl(decl);
-
-        unique_operators = tk_operators.getUniqueCount();
-        unique_operands = tk_operand.getUniqueCount();
-        operators = tk_operators.getCount();
-        operands = tk_operand.getCount();
-    }
-
+    virtual void CalcMetrics(clang::Decl *decl) override;
     int GetOperatorCount() const {return operators;}
     int GetOperandCount() const {return operands;}
     int GetUniqueOperandCount() const {return unique_operands;}

@@ -12,8 +12,7 @@
 
 #include "include/Metric.hpp"
 #include "include/metrics/FuncInfoVisitor.hpp"
-#include "include/ClassCtxVisitor.hpp"
-#include "include/FunctionCtxVisitor.hpp"
+#include "include/CtxVisitor.hpp"
 #include "include/FunctionVisitor.hpp"
 
 
@@ -31,16 +30,7 @@ public:
      * @return
      */
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
-
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
-
-    /**
-     * Calls every metric visitor that needs to traverse whole code, for example Fan-{in, out} or metrics
-     * that investigate class relationships.
-     * @param decl
-     * @return
-     */
-    bool VisitTranslationUnitDecl(clang::TranslationUnitDecl *decl);
 
     void CalcMetrics(clang::TranslationUnitDecl *decl);
     std::ostream& ExportMetrics(std::ostream &os);
@@ -48,8 +38,8 @@ protected:
     std::map<size_t, std::pair<std::string, std::vector<std::unique_ptr<FunctionVisitor> > > > functions;
     std::vector<std::pair<std::string, size_t> > classes;
 
-    std::vector<std::unique_ptr<ClassCtxVisitor> > ctx_vis_cl;
-    std::vector<std::unique_ptr<FunctionCtxVisitor> > ctx_vis_fn;
+    std::vector<std::unique_ptr<CtxVisitor> > ctx_vis_cl;
+    std::vector<std::unique_ptr<CtxVisitor> > ctx_vis_fn;
 
     clang::ASTContext *context;
 };

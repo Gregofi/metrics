@@ -1,5 +1,5 @@
-#ifndef METRICS_PROJECT_CLASSCTXVISITOR_HPP
-#define METRICS_PROJECT_CLASSCTXVISITOR_HPP
+#ifndef METRICS_PROJECT_CTXVISITOR_HPP
+#define METRICS_PROJECT_CTXVISITOR_HPP
 
 #include "clang/AST/ASTContext.h"
 #include <ostream>
@@ -7,11 +7,11 @@
 /* This metric collect information about classes, but it needs to traverse whole unit, not just
  * one class because it's metrics need to know about other classes.
  */
-class ClassCtxVisitor
+class CtxVisitor
 {
 public:
-    explicit ClassCtxVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
-    virtual ~ClassCtxVisitor() = default;
+    explicit CtxVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
+    virtual ~CtxVisitor() = default;
     /**
      * Traverse UnitDecl and gather metrics.
      * @param decl
@@ -26,4 +26,4 @@ protected:
     clang::ASTContext *ctx;
 };
 
-#endif //METRICS_PROJECT_CLASSCTXVISITOR_HPP
+#endif //METRICS_PROJECT_CTXVISITOR_HPP

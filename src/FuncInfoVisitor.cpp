@@ -80,7 +80,7 @@ std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int 
                           || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass
                           || stmtClass == Stmt::CaseStmtClass));
         std::pair<int, int> tmp_res = StmtCount(*it, depth + advance);
-        res.first += tmp_res.second;
+        res.first += tmp_res.first;
         res.second = std::max(res.second, tmp_res.second);
     }
     return res;

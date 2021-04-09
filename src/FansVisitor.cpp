@@ -2,8 +2,9 @@
 #include "include/metrics/FansVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/Logging.hpp"
+#include "include/CtxVisitor.hpp"
 
-FansVisitor::FansVisitor(clang::ASTContext *ctx) : FunctionCtxVisitor(ctx), vis(ctx)
+FansVisitor::FansVisitor(clang::ASTContext *ctx) : CtxVisitor(ctx), vis(ctx)
 {
     vis.AddMatchers({callExpr().bind("call")}, &counter);
 }

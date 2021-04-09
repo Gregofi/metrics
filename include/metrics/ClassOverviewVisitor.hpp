@@ -5,7 +5,7 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 
 #include "include/ASTMatcherVisitor.hpp"
-#include "include/ClassCtxVisitor.hpp"
+#include "include/CtxVisitor.hpp"
 
 typedef long unsigned ClassID_t ;
 
@@ -58,7 +58,7 @@ protected:
  *  be returned separately by using the corresponding getters. These classes are identified
  *  by their clang ids.
  */
-class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>, public ClassCtxVisitor
+class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>, public CtxVisitor
 {
 protected:
     struct Class
@@ -97,7 +97,7 @@ protected:
     };
 
 public:
-    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : ClassCtxVisitor(ctx){}
+    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : CtxVisitor(ctx){}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
     const Class& GetRefClass(long unsigned id) const { return classes.at(id); }

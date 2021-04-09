@@ -3,7 +3,7 @@
 
 #include "include/FunctionVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
-#include "include/FunctionCtxVisitor.hpp"
+#include "include/CtxVisitor.hpp"
 
 class FanCount : public clang::ast_matchers::MatchFinder::MatchCallback
 {
@@ -28,7 +28,7 @@ protected:
  * This Visitor needs to visit whole scope of calculated functions, not only one.
  * Often times you want it to visit whole TranslationUnitDecl.
  */
-class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>, public FunctionCtxVisitor
+class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>, public CtxVisitor
 {
 public:
     explicit FansVisitor(clang::ASTContext *ctx);

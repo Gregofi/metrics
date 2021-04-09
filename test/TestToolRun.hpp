@@ -12,7 +12,7 @@
 #include "llvm/Support/CommandLine.h"
 
 #include "include/FunctionVisitor.hpp"
-#include "include/ClassCtxVisitor.hpp"
+#include "include/CtxVisitor.hpp"
 
 
 /**

@@ -59,7 +59,6 @@ void StmtNPathVisitor::VisitCompoundStmt(clang::CompoundStmt *stmt)
 
 void StmtNPathVisitor::VisitExpr(clang::Expr *stmt)
 {
-    LOG("Visiting expr: " << stmt->getStmtClassName());
     int result = 0;
     for(const auto & x : stmt->children())
     {
@@ -117,19 +116,13 @@ void StmtNPathVisitor::VisitIfStmt(clang::IfStmt *stmt)
 
 void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
 {
-    LOG("Entering for");
     int result = 1;
     result += CountLogicalOperators(stmt->getInit());
-    LOG("Visited init: " << count);
     result += CountLogicalOperators(stmt->getCond());
-    LOG("Visited cond: " << count);
     result += CountLogicalOperators(stmt->getInc());
-    LOG("Visited Inc: " << count);
     Visit(stmt->getBody());
     result += count;
-    LOG("Visited Body: " << count);
     count = result;
-    LOG("Leaving for: " << result);
 }
 
 void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
@@ -160,4 +153,3 @@ void StmtNPathVisitor::VisitReturnStmt(clang::ReturnStmt *stmt)
     count = CountLogicalOperators(stmt->getRetValue()) + 1;
     LOG("Number of operators: " << count);
 }
-

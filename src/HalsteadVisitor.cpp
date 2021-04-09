@@ -77,6 +77,25 @@ std::ostream &HalsteadVisitor::Export(std::ostream &os) const
     return os;
 }
 
+void HalsteadVisitor::CalcMetrics(clang::Decl *decl)
+{
+    TokenCounter tk_operators(true);
+    TokenCounter tk_operand;
+
+    ASTMatcherVisitor matcher(context);
+    matcher.AddMatchers(operators_stmt, &tk_operators);
+    matcher.AddMatchers(operators_decl, &tk_operators);
+
+    matcher.AddMatchers(operands_stmt, &tk_operand);
+    matcher.AddMatchers(operands_decl, &tk_operand);
+    matcher.TraverseDecl(decl);
+
+    unique_operators = tk_operators.getUniqueCount();
+    unique_operands = tk_operand.getUniqueCount();
+    operators = tk_operators.getCount();
+    operands = tk_operand.getCount();
+}
+
 void TokenCounter::run(const MatchFinder::MatchResult &Result)
 {
     count += 1;
