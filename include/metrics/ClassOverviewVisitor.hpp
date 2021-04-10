@@ -67,8 +67,9 @@ protected:
          * Number of children for given Key
          */
         int children_count{0};
+
         /**
-         * For given Key returns all functions, from which Key directly derives
+         * Contains ID of all function from which this class directly derives.
          */
         std::vector<ClassID_t> inheritance_chain;
 
@@ -78,21 +79,29 @@ protected:
         std::set<ClassID_t> couples;
 
         /**
-         * Contains vector of sets which contains used instance variables by each method
+         * Contains sets of integers, each of these sets contains IDs of used instance variables by one method.
          */
         std::vector<std::set<long unsigned> > functions;
 
         /**
          * Number of public methods (except default ones)
          */
-
         int public_methods_count{0};
+
         /**
          * Number of all methods (except default ones)
          */
         int methods_count{0};
+
+        /**
+         * Number of instance variables.
+         */
         int instance_vars_count{0};
         int public_instance_vars_count{0};
+
+        /**
+         * Number of overriden methods.
+         */
         int overriden_methods_count{0};
     };
 

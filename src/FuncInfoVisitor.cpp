@@ -43,13 +43,16 @@ std::pair<int, int> FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int d
 
     int cnt = 0;
     /* This is the 'if' body */
-    std::pair<int, int> res_if = StmtCount(stmt->getThen(), depth);
+    std::pair<int, int> res_if = StmtCount(stmt->getThen(), depth + (stmt->getThen()->getStmtClass() != Stmt::CompoundStmtClass));
     /* This is 'else' branch, for our purposes, this is NOT counted as depth increase. */
     std::pair<int, int> res_else = std::make_pair(0, 0);
-    res_else = StmtCount(stmt->getElse(), depth);
+    if(stmt->getElse())
+        res_else = StmtCount(stmt->getElse(), depth + (stmt->getElse()->getStmtClass() != Stmt::CompoundStmtClass));
 
     cnt += res_else.first + res_if.first;
-    depth = std::max(res_if.second, res_else.second);
+    /* TODO : This -1 is very suspicious, but it may be because else is children of if statement, so
+     * it adds one more depth */
+    depth = std::max(res_if.second, res_else.second - 1);
     return {cnt, depth};
 }
 

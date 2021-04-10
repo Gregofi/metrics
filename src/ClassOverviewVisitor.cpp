@@ -18,6 +18,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
         classes[base.getType()->getAsCXXRecordDecl()->getID()].children_count += 1;
         classes[decl->getID()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getID());
     }
+
     CalculateLorKiddMetrics(decl);
 
     return true;

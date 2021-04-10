@@ -53,6 +53,7 @@ public:
         for(const auto & x : matchers)
             finder.addMatcher(x, callback);
     }
+    
 
     bool VisitDecl(const Decl *d)
     {
@@ -62,7 +63,6 @@ public:
 
     bool VisitStmt(const Stmt *s)
     {
-
         finder.match(*s, *context);
         return true;
     }

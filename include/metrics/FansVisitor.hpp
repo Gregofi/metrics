@@ -5,16 +5,39 @@
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 
+/**
+ * Callback for counting fans.
+ * @detail Implementation is not ideal. Before it is run, it needs to know
+ * about which function it visits. Also, after that it needs to know that
+ * its not in function. So the order should be
+ * SetCurrFuncId(current_function_id);
+ * Visit(decl); // Visitor that tries to match the function body
+ * LeaveFunction();
+ */
 class FanCount : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
-    void SetCurrFuncId(size_t id) { curr_func = id; InitFunction(id); }
+    /**
+     * Fan-in will be counted towards function with id in param.
+     * @param id
+     */
+    void SetCurrFuncId(size_t id) { curr_func = id; InitFunction(id); is_in_func = true; }
+    /**
+     * Callback function for matchers.
+     * @param Result
+     */
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
-    void InitFunction(size_t id);
+    void LeaveFunction() {is_in_func = false;}
     const std::map<size_t, int>& GetFanIn()  const { return fan_in;  }
     const std::map<size_t, int>& GetFanOut() const { return fan_out; }
 protected:
+    /**
+     *
+     * @param id
+     */
+    void InitFunction(size_t id);
     size_t curr_func{};
+    bool is_in_func;
     /** Number of functions, which call function with id in key.  */
     std::map<size_t, int> fan_out;
     /** Number of functions, which function with id in key calls.  */

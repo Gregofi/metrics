@@ -56,6 +56,14 @@ int ClassesTest()
     auto vis = info.vis;
     ASSERT_EQ(vis.FanIn(names["main"]), 4);
     ASSERT_EQ(vis.FanOut(names["main"]),0);
+    ASSERT_EQ(vis.FanOut(names["f1"]), 1);
+    ASSERT_EQ(vis.FanOut(names["f2"]), 1);
+    ASSERT_EQ(vis.FanOut(names["of1"]), 1);
+    ASSERT_EQ(vis.FanOut(names["of2"]), 1);
+    ASSERT_EQ(vis.FanIn(names["f1"]), 0);
+    ASSERT_EQ(vis.FanIn(names["f2"]), 0);
+    ASSERT_EQ(vis.FanIn(names["of1"]), 0);
+    ASSERT_EQ(vis.FanIn(names["of2"]), 0);
     return 0;
 }
 

@@ -14,6 +14,7 @@ bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     if(!ctx->getSourceManager().isInMainFile(decl->getLocation())) return true;
     counter.SetCurrFuncId(decl->getID());
     vis.TraverseDecl(decl);
+    counter.LeaveFunction();
     return true;
 }
 
@@ -31,6 +32,7 @@ std::ostream &FansVisitor::Export(size_t id, std::ostream &os) const
 
 void FanCount::run(const MatchFinder::MatchResult &Result)
 {
+    if(!is_in_func) return;
     if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
     {
         LOG(curr_func);
