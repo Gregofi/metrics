@@ -29,6 +29,7 @@ public:
     void VisitCXXTryStmt(clang::CXXTryStmt *stmt);
     void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
     void VisitForStmt(clang::ForStmt *stmt);
+    void VisitConditionalOperator(ConditionalOperator *op);
     int CountLogicalOperators(clang::Stmt *stmt);
     /**
      * Returns calculated NPATH complexity.

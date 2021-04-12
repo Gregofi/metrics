@@ -72,8 +72,6 @@ void StmtNPathVisitor::VisitExpr(clang::Expr *expr)
          && (bin->getOpcode() == BinaryOperatorKind::BO_LAnd
              || bin->getOpcode() == BinaryOperatorKind::BO_LOr))
         result += 1;
-    if(expr->getStmtClass() == Stmt::ConditionalOperatorClass)
-        result += 1;
     count = result;
 }
 
@@ -84,6 +82,11 @@ void StmtNPathVisitor::VisitDoStmt(clang::DoStmt *stmt)
     Visit(stmt->getBody());
     result += count;
     count = result;
+}
+
+void StmtNPathVisitor::VisitConditionalOperator(clang::ConditionalOperator *op)
+{
+    count = 2 + CountLogicalOperators(op->getCond());
 }
 
 void StmtNPathVisitor::VisitWhileStmt(clang::WhileStmt *stmt)
