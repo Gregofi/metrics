@@ -14,7 +14,7 @@
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
 #include "include/MetricVisitor.hpp"
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/Logging.hpp"
 

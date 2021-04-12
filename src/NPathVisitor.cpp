@@ -34,12 +34,13 @@ std::ostream &NPathVisitor::Export(std::ostream &os) const
 
 void StmtNPathVisitor::VisitStmt(Stmt *stmt)
 {
-    LOG("Visiting statement: " << stmt->getStmtClassName());
     int result = 1;
     for(const auto & x : stmt->children())
     {
+        if(!x)
+            continue;
         Visit(x);
-        result += count;
+        result *= count;
     }
     count = result;
 }
@@ -49,22 +50,30 @@ void StmtNPathVisitor::VisitCompoundStmt(clang::CompoundStmt *stmt)
     int result = 1;
     for(const auto &x : stmt->children())
     {
+        if(!x)
+            continue;
         Visit(x);
-        /* TODO: Unfortunely, some clang statements are expressions(for example 'a += 3' is expr),
-         * and expressions returns number of logic operators. That would mess up our counting. */
-        result *= count != 0 ? count : 1;
+        result *= count;
     }
     count = result;
 }
 
-void StmtNPathVisitor::VisitExpr(clang::Expr *stmt)
+void StmtNPathVisitor::VisitExpr(clang::Expr *expr)
 {
-    int result = 0;
-    for(const auto & x : stmt->children())
+    int result = 1;
+    for(const auto & x : expr->children())
     {
+        if(!x) continue;
         Visit(x);
-        result += count;
+        result *= count;
     }
+    /* Check if currently visited expression is logical and, or, ternary */
+    if(auto *bin = llvm::dyn_cast<BinaryOperator>(expr); bin
+         && (bin->getOpcode() == BinaryOperatorKind::BO_LAnd
+             || bin->getOpcode() == BinaryOperatorKind::BO_LOr))
+        result += 1;
+    if(expr->getStmtClass() == Stmt::ConditionalOperatorClass)
+        result += 1;
     count = result;
 }
 
@@ -151,5 +160,4 @@ int StmtNPathVisitor::CountLogicalOperators(clang::Stmt *stmt)
 void StmtNPathVisitor::VisitReturnStmt(clang::ReturnStmt *stmt)
 {
     count = CountLogicalOperators(stmt->getRetValue()) + 1;
-    LOG("Number of operators: " << count);
 }

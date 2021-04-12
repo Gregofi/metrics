@@ -15,7 +15,7 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
 #include "include/MetricVisitor.hpp"
 #include "include/FunctionVisitor.hpp"
 

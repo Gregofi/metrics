@@ -25,11 +25,4 @@ private:
     int count = 0;
 };
 
-
-struct Metric
-{
-    std::string name;
-    int val;
-};
-
 #endif //METRICS_METRIC_HPP

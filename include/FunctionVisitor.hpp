@@ -9,8 +9,8 @@
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
 
-#include "include/Metric.hpp"
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
+#include "include/Utility.hpp"
 
 /**
  * This class represents an interface for visitors that only examine one function at a time.

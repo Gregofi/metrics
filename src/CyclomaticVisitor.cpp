@@ -8,7 +8,7 @@
 
 #include "include/metrics/CyclomaticVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
 
 using namespace clang::ast_matchers;
 

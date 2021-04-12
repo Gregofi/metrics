@@ -10,7 +10,7 @@
 #include "clang/Tooling/Tooling.h"
 
 #include "include/MetricVisitor.hpp"
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
 #include "include/FunctionVisitor.hpp"
 
 /**

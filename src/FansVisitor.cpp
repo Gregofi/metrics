@@ -9,11 +9,11 @@ FansVisitor::FansVisitor(clang::ASTContext *ctx) : CtxVisitor(ctx), vis(ctx)
     vis.AddMatchers({callExpr().bind("call")}, &counter);
 }
 
-bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
+bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *d)
 {
-    if(!ctx->getSourceManager().isInMainFile(decl->getLocation())) return true;
-    counter.SetCurrFuncId(decl->getID());
-    vis.TraverseDecl(decl);
+    if(!ctx->getSourceManager().isInMainFile(d->getLocation()) || !d->isThisDeclarationADefinition()) return true;
+    counter.SetCurrFuncId(d->getID());
+    vis.TraverseDecl(d);
     counter.LeaveFunction();
     return true;
 }
@@ -35,10 +35,9 @@ void FanCount::run(const MatchFinder::MatchResult &Result)
     if(!is_in_func) return;
     if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
     {
-        LOG(curr_func);
-        LOG(s->getStmtClassName() << " :" << s->getCalleeDecl()->getID());
         fan_in[curr_func] += 1;
-        fan_out[s->getCalleeDecl()->getID()] += 1;
+        if(s->getCalleeDecl())
+            fan_out[s->getCalleeDecl()->getID()] += 1;
     }
 }
 

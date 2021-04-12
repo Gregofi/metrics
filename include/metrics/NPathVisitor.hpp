@@ -25,7 +25,7 @@ public:
     void VisitSwitchStmt(clang::SwitchStmt *stmt);
     void VisitWhileStmt(clang::WhileStmt *stmt);
     void VisitDoStmt(clang::DoStmt *stmt);
-    void VisitExpr(clang::Expr *stmt);
+    void VisitExpr(clang::Expr *expr);
     void VisitCXXTryStmt(clang::CXXTryStmt *stmt);
     void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
     void VisitForStmt(clang::ForStmt *stmt);

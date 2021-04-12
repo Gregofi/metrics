@@ -10,7 +10,7 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/AST/ASTContext.h"
 
-#include "include/Metric.hpp"
+#include "include/Utility.hpp"
 #include "include/metrics/FuncInfoVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 #include "include/FunctionVisitor.hpp"

@@ -78,6 +78,13 @@ int DoStmtTest()
     return 0;
 }
 
+int ExprTest()
+{
+    ASSERT_EQ(GET_VAL("1 && 2;"), 2);
+    ASSERT_EQ(GET_VAL("if(true) { int a = 1 ? 0 : 2;} "), 3);
+    return 0;
+}
+
 int main()
 {
     TEST(NoConditionsTest);
@@ -87,4 +94,5 @@ int main()
     TEST(ForStmtTest);
     TEST(WhileStmtTest);
     TEST(DoStmtTest);
+    TEST(ExprTest);
 }
