@@ -30,6 +30,12 @@ std::ostream &FansVisitor::Export(size_t id, std::ostream &os) const
     return os;
 }
 
+std::ostream &FansVisitor::ExportXML(size_t id, std::ostream &os) const
+{
+    os << Tag("fan_in", FanIn(id)) << Tag("fan_out", FanOut(id));
+    return os;
+}
+
 void FanCount::run(const MatchFinder::MatchResult &Result)
 {
     if(!is_in_func) return;

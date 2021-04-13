@@ -1,20 +1,19 @@
 #include "include/metrics/ClassOverviewVisitor.hpp"
 #include "include/Logging.hpp"
 #include "include/ASTMatcherVisitor.hpp"
+#include "include/Utility.hpp"
 
 bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     /* Skip declarations that have no body and that aren't in main file */
     if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()))
         return true;
-    LOG(decl->getNameAsString());
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
      * wouldn't be added otherwise */
     if(!classes.count(decl->getID()))
         classes[decl->getID()];
     for(const auto &base : decl->bases())
     {
-        LOG("Class " << decl->getNameAsString() << " : parent " << base.getType()->getAsCXXRecordDecl()->getNameAsString());
         classes[base.getType()->getAsCXXRecordDecl()->getID()].children_count += 1;
         classes[decl->getID()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getID());
     }
@@ -92,7 +91,6 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
         /** Check if member is from CXXClass (it can also be from enum or union) */
         if(access->getMemberDecl()->isCXXClassMember())
         {
-            LOG("matched CXXMember access " << access->getMemberDecl()->getNameAsString());
             /** Get id of the class that the member belongs to, check its this class id */
             if(const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl()); d && d->getParent()->getID() == currClassID)
             {
@@ -133,7 +131,7 @@ std::ostream &ClassOverviewVisitor::Export(size_t id, std::ostream &os) const
 {
     const auto& c = classes.at(id);
     os << "Size:\n"
-       << "  Number of methods: " << c.methods_count << ", " << c.methods_count << " are public.\n"
+       << "  Number of methods: " << c.methods_count << ", " << c.public_methods_count << " are public.\n"
        << "  Number of attributes: " << c.instance_vars_count << ", " << c.public_instance_vars_count << " are public.\n"
        << "\n"
        << "Inheritance:\n"
@@ -143,5 +141,26 @@ std::ostream &ClassOverviewVisitor::Export(size_t id, std::ostream &os) const
        << "Other:\n"
        << "  Number of couples: " << c.couples.size() << "\n"
        << "  Lack of cohesion : " << LackOfCohesion(id) << "\n";
+    return os;
+}
+
+std::ostream &ClassOverviewVisitor::ExportXML(size_t id, std::ostream &os) const
+{
+    const auto& c = classes.at(id);
+    os << Tag("size",
+            "\n"
+            + Tag("methods", c.methods_count)
+            + Tag("public_methods", c.public_methods_count)
+            + Tag("attributes", c.instance_vars_count)
+            + Tag("public_attributes", c.public_instance_vars_count))
+       << Tag("inheritance",
+            "\n"
+            + Tag("children", c.children_count)
+            + Tag("inheritance_chain", GetInheritanceChainLen(id))
+            + Tag("overriden_methods", c.overriden_methods_count))
+       << Tag("other",
+             "\n"
+             + Tag("couples", c.couples.size())
+             + Tag("LOC", LackOfCohesion(id)));
     return os;
 }

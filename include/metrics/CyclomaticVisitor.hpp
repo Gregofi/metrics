@@ -31,6 +31,7 @@ public:
 
     int GetValue() const { return count; }
 
+    virtual std::ostream &ExportXML(std::ostream &os) const override;
     virtual std::ostream &Export(std::ostream &os) const override;
 protected:
     int count{1};

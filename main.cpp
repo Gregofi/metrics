@@ -24,7 +24,7 @@ public:
     virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
         metricVisitor.CalcMetrics(context.getTranslationUnitDecl());
-        metricVisitor.ExportMetrics(std::cout);
+        metricVisitor.ExportXMLMetrics(std::cout);
     }
 private:
     MetricVisitor metricVisitor;
@@ -45,8 +45,6 @@ static llvm::cl::OptionCategory MyToolCategory("metrics options");
 
 int main(int argc, const char **argv)
 {
-    int a;
-    a += 3;
     clang::tooling::CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
     clang::tooling::ClangTool Tool(OptionsParser.getCompilations(), OptionsParser.getSourcePathList());
     /* Add link to clang libraries, path to this can be found by running 'clang --print-file-name=include' */

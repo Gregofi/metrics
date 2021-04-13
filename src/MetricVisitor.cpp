@@ -96,3 +96,35 @@ MetricVisitor::MetricVisitor(clang::ASTContext *context) : context(context)
     ctx_vis_cl.emplace_back(std::make_unique<ClassOverviewVisitor>(context));
     ctx_vis_fn.emplace_back(std::make_unique<FansVisitor>(context));
 }
+
+std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
+{
+    os << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    os << "<metrics>\n";
+    os << "<functions>\n";
+    for(const auto &f : functions)
+    {
+        os << "<function name=\"" + Escape(f.second.first) << "\">\n";
+        for(const auto &m: f.second.second)
+            m->ExportXML(os);
+        for(const auto &m: ctx_vis_fn)
+            m->ExportXML(f.first, os);
+        os << "</function>\n";
+    }
+    os << "</functions>\n";
+
+    os << "<oop>\n";
+    for(const auto &cl : classes)
+    {
+        os << "<class name=\"" + Escape(cl.first) << "\">\n";
+        for(const auto &cvis: ctx_vis_cl)
+        {
+            cvis->ExportXML(cl.second, os);
+        }
+        os << "</class>\n";
+    }
+    os << "</oop>\n";
+    os << "</metrics>\n";
+
+    return os;
+}

@@ -55,3 +55,9 @@ std::ostream &CyclomaticVisitor::Export(std::ostream &os) const
     return os;
 }
 
+std::ostream &CyclomaticVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("cyclomatic", count);
+    return os;
+}
+

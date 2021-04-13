@@ -40,6 +40,7 @@ public:
     }
     FunctionInfo GetResult() const { return f; }
     virtual std::ostream &Export(std::ostream &os) const override;
+    virtual std::ostream &ExportXML(std::ostream &os) const override;
     /**
      * Calculates range of function declaration.
      * @param decl

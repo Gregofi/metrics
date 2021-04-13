@@ -111,6 +111,7 @@ public:
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
     const Class& GetRefClass(long unsigned id) const { return classes.at(id); }
 
+    virtual std::ostream &ExportXML(size_t id, std::ostream &os) const override;
     /**
      * Returns length of inheritance chain from this class to root class (class that doesn't inherit from any other
      * classes). If there are multiple chains, returns length of the longest one.

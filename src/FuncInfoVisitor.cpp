@@ -151,3 +151,9 @@ std::ostream &FuncInfoVisitor::Export(std::ostream &os) const
     os << "Number of statements 2.0: " << f.statements_tbd << "\n";
     return os;
 }
+
+std::ostream &FuncInfoVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("lines", f.physical_loc) << Tag("statements", f.statements) << Tag("depth", f.depth);
+    return os;
+}

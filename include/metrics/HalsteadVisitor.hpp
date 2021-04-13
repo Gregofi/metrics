@@ -63,6 +63,7 @@ public:
     int GetUniqueOperatorCount() const {return unique_operators;}
 
     virtual std::ostream &Export(std::ostream &os) const override;
+    virtual std::ostream &ExportXML(std::ostream &os) const override;
 protected:
     int operators;
     int operands;

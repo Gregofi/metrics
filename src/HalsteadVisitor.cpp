@@ -96,6 +96,13 @@ void HalsteadVisitor::CalcMetrics(clang::Decl *decl)
     operands = tk_operand.getCount();
 }
 
+std::ostream &HalsteadVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("operators", operators) << Tag("unique_operators", unique_operators)
+       << Tag("operands", operands) << Tag("unique_operands", unique_operands);
+    return os;
+}
+
 void TokenCounter::run(const MatchFinder::MatchResult &Result)
 {
     count += 1;

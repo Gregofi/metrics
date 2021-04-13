@@ -52,6 +52,7 @@ public:
     virtual ~NPathVisitor() override = default;
     virtual void CalcMetrics(clang::Decl *decl) override;
     virtual std::ostream &Export(std::ostream &os) const override;
+    virtual std::ostream &ExportXML(std::ostream &os) const override;
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
     int GetValue() const { return count; }
 private:

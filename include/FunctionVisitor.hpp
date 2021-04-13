@@ -21,6 +21,7 @@ public:
     explicit FunctionVisitor(clang::ASTContext *ctx) : context(ctx) {}
     virtual ~FunctionVisitor() = default;
     virtual std::ostream& Export(std::ostream &os) const = 0;
+    virtual std::ostream& ExportXML(std::ostream &os) const = 0;
     virtual void CalcMetrics(clang::Decl *decl) = 0;
 protected:
     clang::ASTContext *context;

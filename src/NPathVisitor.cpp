@@ -30,6 +30,12 @@ std::ostream &NPathVisitor::Export(std::ostream &os) const
     return os;
 }
 
+std::ostream &NPathVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("npath", count);
+    return os;
+}
+
 /*-----------------------------------------------------------------------------------*/
 
 void StmtNPathVisitor::VisitStmt(Stmt *stmt)

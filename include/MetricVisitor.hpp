@@ -34,6 +34,7 @@ public:
 
     void CalcMetrics(clang::TranslationUnitDecl *decl);
     std::ostream& ExportMetrics(std::ostream &os);
+    std::ostream& ExportXMLMetrics(std::ostream &os);
 protected:
     std::map<size_t, std::pair<std::string, std::vector<std::unique_ptr<FunctionVisitor> > > > functions;
     std::vector<std::pair<std::string, size_t> > classes;

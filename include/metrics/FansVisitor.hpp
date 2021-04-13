@@ -61,6 +61,7 @@ public:
 
     virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
     virtual std::ostream &Export(size_t id, std::ostream &os) const override;
+    virtual std::ostream &ExportXML(size_t id, std::ostream &os) const override;
 protected:
     ASTMatcherVisitor vis;
     FanCount counter;
