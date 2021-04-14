@@ -14,6 +14,12 @@
 using namespace clang;
 using clang::Stmt;
 
+/* Command line args */
+static llvm::cl::OptionCategory MyToolCategory("metrics options");
+static llvm::cl::opt<std::string> XMLOutputOpt("xml",
+                                               llvm::cl::desc("App will export measured data to XML, specify name of output file"),
+                                               llvm::cl::value_desc("filename"));
+
 /* ======================================================================================= */
 
 class FunctionInfoConsumer : public clang::ASTConsumer
@@ -24,7 +30,17 @@ public:
     virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
         metricVisitor.CalcMetrics(context.getTranslationUnitDecl());
-        metricVisitor.ExportXMLMetrics(std::cout);
+        if(!XMLOutputOpt.empty())
+        {
+            std::ofstream of(XMLOutputOpt.c_str());
+            if(!of.good())
+                throw std::io_errc(1);
+            metricVisitor.ExportXMLMetrics(of);
+        }
+        else
+        {
+            metricVisitor.ExportMetrics(std::cout);
+        }
     }
 private:
     MetricVisitor metricVisitor;
@@ -41,7 +57,6 @@ public:
     }
 };
 
-static llvm::cl::OptionCategory MyToolCategory("metrics options");
 
 int main(int argc, const char **argv)
 {
@@ -51,5 +66,13 @@ int main(int argc, const char **argv)
     clang::tooling::ArgumentsAdjuster ardj1 =
             clang::tooling::getInsertArgumentAdjuster("-I/usr/lib/clang/11.1.0/include");
     Tool.appendArgumentsAdjuster(ardj1);
-    Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
+    try
+    {
+        Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
+    }
+    catch(const std::io_errc &ex)
+    {
+        llvm::errs() << "Error while writing to output stream\n";
+        return 1;
+    }
 }
