@@ -104,7 +104,7 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
     os << "<functions>\n";
     for(const auto &f : functions)
     {
-        os << "<function name=\"" + Escape(f.second.first) << "\">\n";
+        os << "<function name=\"" + EscapeXML(f.second.first) << "\">\n";
         for(const auto &m: f.second.second)
             m->ExportXML(os);
         for(const auto &m: ctx_vis_fn)
@@ -116,7 +116,7 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
     os << "<oop>\n";
     for(const auto &cl : classes)
     {
-        os << "<class name=\"" + Escape(cl.first) << "\">\n";
+        os << "<class name=\"" + EscapeXML(cl.first) << "\">\n";
         for(const auto &cvis: ctx_vis_cl)
         {
             cvis->ExportXML(cl.second, os);

@@ -6,7 +6,7 @@
 #ifdef DEBUG
     #define LOG(MESSAGE) std::cout << __FILE__ << "(" << __LINE__ << "):" << MESSAGE << std::endl
 #else
-    void(0)
+    #define LOG(MESSAGE) void(0)
 #endif
 
 #endif //METRICS_LOGGING_HPP

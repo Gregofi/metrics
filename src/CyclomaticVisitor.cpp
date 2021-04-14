@@ -12,9 +12,29 @@
 
 using namespace clang::ast_matchers;
 
+CyclomaticVisitor::~CyclomaticVisitor()
+{
 
+}
 
-bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
+CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : FunctionVisitor(context)
+{
+
+}
+
+std::ostream &CyclomaticVisitor::Export(std::ostream &os) const
+{
+    os << "Cyclomatic complexity: " << count << "\n";
+    return os;
+}
+
+std::ostream &CyclomaticVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("cyclomatic", count);
+    return os;
+}
+
+void CyclomaticVisitor::CalcMetrics(clang::Decl *decl)
 {
     Counter counter;
     /* Statements that make the code branch */
@@ -36,28 +56,5 @@ bool CyclomaticVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     v.AddMatchers(matchers, &counter);
     v.TraverseDecl(decl);
     count = counter.getCount() + 1;
-    return true;
-}
-
-CyclomaticVisitor::~CyclomaticVisitor()
-{
-
-}
-
-CyclomaticVisitor::CyclomaticVisitor(clang::ASTContext *context) : FunctionVisitor(context)
-{
-
-}
-
-std::ostream &CyclomaticVisitor::Export(std::ostream &os) const
-{
-    os << "Cyclomatic complexity: " << count << "\n";
-    return os;
-}
-
-std::ostream &CyclomaticVisitor::ExportXML(std::ostream &os) const
-{
-    os << Tag("cyclomatic", count);
-    return os;
 }
 

@@ -16,19 +16,14 @@
 /**
  * Calculates cyclomatic complexity for given function.
  */
-class CyclomaticVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<CyclomaticVisitor>
+class CyclomaticVisitor : public FunctionVisitor
 {
 public:
     explicit CyclomaticVisitor(clang::ASTContext *context);
 
     virtual ~CyclomaticVisitor();
-    bool VisitFunctionDecl(clang::FunctionDecl *decl);
 
-    virtual void CalcMetrics(clang::Decl *decl) override
-    {
-        this->TraverseDecl(decl);
-    }
-
+    virtual void CalcMetrics(clang::Decl *decl) override;
     int GetValue() const { return count; }
 
     virtual std::ostream &ExportXML(std::ostream &os) const override;
