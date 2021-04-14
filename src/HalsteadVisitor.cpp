@@ -77,7 +77,7 @@ std::ostream &HalsteadVisitor::Export(std::ostream &os) const
     return os;
 }
 
-void HalsteadVisitor::CalcMetrics(clang::Decl *decl)
+void HalsteadVisitor::CalcMetrics(clang::FunctionDecl *decl)
 {
     TokenCounter tk_operators(true);
     TokenCounter tk_operand;
