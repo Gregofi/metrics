@@ -1,5 +1,6 @@
-# Metrics
-Calculates software metrics for given source codes, targeted for C/C++ sources.  
+# Metrics :straight_ruler:
+Software based on Clang Libtooling API.It calculates software metrics for given C and C++ source codes.
+
 Currently implemented metrics:  
 * For each function, it calculates following:
     * Lines of code (Including comments and empty lines)
@@ -90,7 +91,7 @@ So, for class `X` it would be 2.
 #### Lack of cohesion
 #### Coupling
 
-## How to build.
+## How to build :hammer:
 This was tested on Ubuntu 20.04.2 LTS and Arch linux.
 You need following packages:
 - cmake
