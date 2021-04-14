@@ -10,18 +10,11 @@ NPathVisitor::NPathVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx)
 
 }
 
-void NPathVisitor::CalcMetrics(clang::Decl *decl)
+void NPathVisitor::CalcMetrics(clang::FunctionDecl *decl)
 {
-    this->TraverseDecl(decl);
-}
-
-bool NPathVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
-{
-    auto *body = llvm::dyn_cast<CompoundStmt>(decl->getBody());
     StmtNPathVisitor visitor(context);
-    visitor.Visit(body);
+    visitor.Visit(decl->getBody());
     count = visitor.GetCount();
-    return true;
 }
 
 std::ostream &NPathVisitor::Export(std::ostream &os) const

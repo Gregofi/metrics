@@ -34,7 +34,7 @@ std::ostream &CyclomaticVisitor::ExportXML(std::ostream &os) const
     return os;
 }
 
-void CyclomaticVisitor::CalcMetrics(clang::Decl *decl)
+void CyclomaticVisitor::CalcMetrics(clang::FunctionDecl *decl)
 {
     Counter counter;
     /* Statements that make the code branch */

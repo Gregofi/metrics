@@ -34,7 +34,7 @@ class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisito
 public:
     FuncInfoVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx) {}
     virtual ~FuncInfoVisitor() = default;
-    virtual void CalcMetrics(clang::Decl *decl) override
+    virtual void CalcMetrics(clang::FunctionDecl *decl) override
     {
         this->TraverseDecl(decl);
     }
@@ -73,8 +73,6 @@ private:
 
     std::pair<int, int> StmtCount(const clang::Stmt *body, int depth = 0);
 
-
-private:
     /**
      * Stores current metric values.
      */

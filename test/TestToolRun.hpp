@@ -34,7 +34,10 @@ T_Visitor ConstructMetricsOneFunction(const std::string &function_body)
 {
     auto AST = clang::tooling::buildASTFromCode(std::string("int main(void) { " + function_body + " } "));
     T_Visitor vis(&AST->getASTContext());
-    vis.CalcMetrics(AST->getASTContext().getTranslationUnitDecl());
+    auto decl = AST->getASTContext().getTranslationUnitDecl()->decls_begin();
+    while(decl->getKind() != clang::Decl::Function)
+        std::advance(decl, 1);
+    vis.CalcMetrics(llvm::dyn_cast<clang::FunctionDecl>(*decl));
     return vis;
 }
 

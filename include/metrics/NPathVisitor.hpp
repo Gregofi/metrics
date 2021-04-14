@@ -45,12 +45,12 @@ protected:
 /**
  * Calculates NPATH complexity for given function declaration.
  */
-class NPathVisitor : public clang::RecursiveASTVisitor<NPathVisitor>, public FunctionVisitor
+class NPathVisitor : public FunctionVisitor
 {
 public:
     NPathVisitor(clang::ASTContext *ctx);
     virtual ~NPathVisitor() override = default;
-    virtual void CalcMetrics(clang::Decl *decl) override;
+    virtual void CalcMetrics(clang::FunctionDecl *decl) override;
     virtual std::ostream &Export(std::ostream &os) const override;
     virtual std::ostream &ExportXML(std::ostream &os) const override;
     bool VisitFunctionDecl(clang::FunctionDecl *decl);

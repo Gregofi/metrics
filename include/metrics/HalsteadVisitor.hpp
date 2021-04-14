@@ -51,12 +51,12 @@ private:
  *
  * Operands:
  */
-class HalsteadVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<HalsteadVisitor>
+class HalsteadVisitor : public FunctionVisitor
 {
 public:
     explicit HalsteadVisitor(clang::ASTContext *ctx);
 
-    virtual void CalcMetrics(clang::Decl *decl) override;
+    virtual void CalcMetrics(clang::FunctionDecl *decl) override;
     int GetOperatorCount() const {return operators;}
     int GetOperandCount() const {return operands;}
     int GetUniqueOperandCount() const {return unique_operands;}

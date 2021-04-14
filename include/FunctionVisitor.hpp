@@ -37,7 +37,7 @@ public:
      * Calculate metrics.
      * @param decl - Declaration for which metrics should be calculated, this should typically be function declaration.
      */
-    virtual void CalcMetrics(clang::Decl *decl) = 0;
+    virtual void CalcMetrics(clang::FunctionDecl *decl) = 0;
 protected:
     clang::ASTContext *context;
 };

@@ -23,7 +23,7 @@ public:
 
     virtual ~CyclomaticVisitor();
 
-    virtual void CalcMetrics(clang::Decl *decl) override;
+    virtual void CalcMetrics(clang::FunctionDecl *decl) override;
     int GetValue() const { return count; }
 
     virtual std::ostream &ExportXML(std::ostream &os) const override;
