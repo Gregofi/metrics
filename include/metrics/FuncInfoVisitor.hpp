@@ -19,7 +19,7 @@
 #include "include/MetricVisitor.hpp"
 #include "include/FunctionVisitor.hpp"
 
-class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisitor<FuncInfoVisitor>
+class FuncInfoVisitor : public FunctionVisitor
 {
     /* Statements that contains other statements */
     static const std::array<clang::Stmt::StmtClass, 10> compoundStatements;
@@ -34,20 +34,10 @@ class FuncInfoVisitor : public FunctionVisitor, public clang::RecursiveASTVisito
 public:
     FuncInfoVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx) {}
     virtual ~FuncInfoVisitor() = default;
-    virtual void CalcMetrics(clang::FunctionDecl *decl) override
-    {
-        this->TraverseDecl(decl);
-    }
+    virtual void CalcMetrics(clang::FunctionDecl *decl) override;
     FunctionInfo GetResult() const { return f; }
     virtual std::ostream &Export(std::ostream &os) const override;
     virtual std::ostream &ExportXML(std::ostream &os) const override;
-    /**
-     * Calculates range of function declaration.
-     * @param decl
-     * @return
-     */
-    bool VisitFunctionDecl(clang::FunctionDecl *decl);
-    bool VisitStmt(clang::Stmt *stmt);
 private:
     /**
      * Calculates number of lines for given function body.

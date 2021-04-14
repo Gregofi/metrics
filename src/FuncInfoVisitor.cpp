@@ -122,7 +122,21 @@ std::pair<int, int> FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
     return res;
 }
 
-bool FuncInfoVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
+std::ostream &FuncInfoVisitor::Export(std::ostream &os) const
+{
+    os << "Lines of code: " << f.physical_loc << "\n";
+    os << "Number of statements: " << f.statements << "\n";
+    os << "Maximum depth: " << f.depth << "\n";
+    return os;
+}
+
+std::ostream &FuncInfoVisitor::ExportXML(std::ostream &os) const
+{
+    os << Tag("lines", f.physical_loc) << Tag("statements", f.statements) << Tag("depth", f.depth);
+    return os;
+}
+
+void FuncInfoVisitor::CalcMetrics(clang::FunctionDecl *decl)
 {
     /* Only calculate length if its also a definition */
     if(decl->isThisDeclarationADefinition())
@@ -132,28 +146,4 @@ bool FuncInfoVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
         f.depth = res.second;
         f.physical_loc = CalcLength(decl);
     }
-    return true;
-}
-
-bool FuncInfoVisitor::VisitStmt(clang::Stmt *stmt)
-{
-    if(llvm::dyn_cast<clang::Expr>(stmt) || stmt->getStmtClass() == clang::Stmt::CompoundStmtClass)
-        return true;
-    f.statements_tbd += 1;
-    return true;
-}
-
-std::ostream &FuncInfoVisitor::Export(std::ostream &os) const
-{
-    os << "Lines of code: " << f.physical_loc << "\n";
-    os << "Number of statements: " << f.statements << "\n";
-    os << "Maximum depth: " << f.depth << "\n";
-    os << "Number of statements 2.0: " << f.statements_tbd << "\n";
-    return os;
-}
-
-std::ostream &FuncInfoVisitor::ExportXML(std::ostream &os) const
-{
-    os << Tag("lines", f.physical_loc) << Tag("statements", f.statements) << Tag("depth", f.depth);
-    return os;
 }
