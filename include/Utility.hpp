@@ -57,25 +57,6 @@ std::string Tag(const std::string &tag, const T &inside, bool newline = true)
  * @param text - Text to be escaped.
  * @return Escaped string
  */
-std::string Escape(const std::string &text)
-{
-    std::string result;
-    for(char c: text)
-    {
-        if(c == '&')
-            result += "&amp;";
-        else if(c == '<')
-            result += "&lt;";
-        else if(c == '>')
-            result += "&gt;";
-        else if(c == '"')
-            result += "&quot;";
-        else if(c == '\'')
-            result += "&apos;";
-        else
-            result += c;
-    }
-    return result;
-}
+std::string EscapeXML(const std::string &text);
 
 #endif //METRICS_METRIC_HPP
