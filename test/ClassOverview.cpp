@@ -236,10 +236,10 @@ int InnerClassTest()
 
 int main()
 {
-    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 3}, {2, 5, 6}), true);
-    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 3}, {0, 3, 6}), true);
-    ASSERT_EQ(ClassOverviewVisitor::Similiar({1, 2, 4}, {3, 5}), false);
-    ASSERT_EQ(ClassOverviewVisitor::Similiar({}, {1}), false);
+    ASSERT_EQ(ClassOverviewVisitor::Similar({1, 2, 3}, {2, 5, 6}), true);
+    ASSERT_EQ(ClassOverviewVisitor::Similar({1, 2, 3}, {0, 3, 6}), true);
+    ASSERT_EQ(ClassOverviewVisitor::Similar({1, 2, 4}, {3, 5}), false);
+    ASSERT_EQ(ClassOverviewVisitor::Similar({}, {1}), false);
 
     TEST(BasicCasesTest);
     TEST(InheritanceChainTest);

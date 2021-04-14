@@ -26,6 +26,16 @@ private:
     int count = 0;
 };
 
+/**
+ * Intended for XML exports. Creates a tag with tagname 'tag' and with 'inside' content.
+ * @tparam T - Type of the tag content
+ * @param tag - Name of the tag
+ * @param inside - Content of the tag, needs to have overloaded stream << operator
+ * @param newline - If newline should be put after the end of tag.
+ * @return - String containing the tag text.
+ *
+ * @example for call Tag("employee", Tag("pay", 1, false)) it returns "<employee><pay>1</pay></employee>"
+ */
 template <typename T>
 std::string Tag(const std::string &tag, const T &inside, bool newline = true)
 {
@@ -36,6 +46,17 @@ std::string Tag(const std::string &tag, const T &inside, bool newline = true)
     return oss.str();
 }
 
+/**
+ * Escapes XML text, does following replacements:
+ *  & -> &amp;
+ *  < -> &lt;
+ *  > -> &gt;
+ *  " -> &quot;
+ *  ' -> &apos;
+ * including the semicolons.
+ * @param text - Text to be escaped.
+ * @return Escaped string
+ */
 std::string Escape(const std::string &text)
 {
     std::string result;

@@ -8,11 +8,11 @@
 /**
  * Callback for counting fans.
  * @detail Implementation is not ideal. Before it is run, it needs to know
- * about which function it visits. Also, after that it needs to know that
- * its not in function. So the order should be
- * SetCurrFuncId(current_function_id);
- * Visit(decl); // Visitor that tries to match the function body
- * LeaveFunction();
+ * about which function it visits. Also, after it is done visiting it needs to know that
+ * its not in a function anymore. So the order should be
+ *   - SetCurrFuncId(current_function_id);
+ *   - Visit(decl); // Visitor that tries to match the function body
+ *   - LeaveFunction();
  */
 class FanCount : public clang::ast_matchers::MatchFinder::MatchCallback
 {
@@ -31,10 +31,6 @@ public:
     const std::map<size_t, int>& GetFanIn()  const { return fan_in;  }
     const std::map<size_t, int>& GetFanOut() const { return fan_out; }
 protected:
-    /**
-     *
-     * @param id
-     */
     void InitFunction(size_t id);
     size_t curr_func{};
     bool is_in_func;
@@ -49,14 +45,24 @@ protected:
  * has this function called and Fan-Out is how many times this function has been called.
  *
  * This Visitor needs to visit whole scope of calculated functions, not only one.
- * Often times you want it to visit whole TranslationUnitDecl.
+ * Most times you want it to visit whole TranslationUnitDecl.
  */
 class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>, public CtxVisitor
 {
 public:
     explicit FansVisitor(clang::ASTContext *ctx);
     bool VisitFunctionDecl(clang::FunctionDecl *d);
+    /**
+     * Returns fan-in value for given functionID
+     * @throws - std::out_of_range if metrics haven't been calculated for given classID (Either CalcMetrics wasn't called
+     *              or class with given ID doesn't exist).
+     */
     int FanIn(size_t id)  const { return counter.GetFanIn().at(id); }
+    /**
+     * Returns fan-out value for given functionID
+     * @throws - std::out_of_range if metrics haven't been calculated for given classID (Either CalcMetrics wasn't called
+     *              or class with given ID doesn't exist).
+     */
     int FanOut(size_t id) const { return counter.GetFanOut().at(id); }
 
     virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;

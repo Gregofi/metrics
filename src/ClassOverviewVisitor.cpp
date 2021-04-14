@@ -49,7 +49,7 @@ int ClassOverviewVisitor::GetInheritanceChainLen(unsigned long id) const
     return res;
 }
 
-bool ClassOverviewVisitor::Similiar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
+bool ClassOverviewVisitor::Similar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
 {
     for(auto it1 = s1.begin(), it2 = s2.begin(); it1 != s1.end() && it2 != s2.end();)
     {
@@ -71,7 +71,7 @@ int ClassOverviewVisitor::LackOfCohesion(unsigned long id) const
     int LOC = 0;
     for(size_t i = 0; i < c.functions.size(); ++ i)
         for(size_t j = i + 1; j < c.functions.size(); ++ j)
-            LOC += Similiar(c.functions[i], c.functions[j]) ? -1 : 1;
+            LOC += Similar(c.functions[i], c.functions[j]) ? -1 : 1;
     return std::max(LOC, 0);
 }
 

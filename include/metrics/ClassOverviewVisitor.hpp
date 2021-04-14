@@ -126,7 +126,7 @@ public:
      * @param s2
      * @return
      */
-    static bool Similiar(const std::set<long unsigned> &s1, const std::set<long unsigned> &s2);
+    static bool Similar(const std::set<long unsigned> &s1, const std::set<long unsigned> &s2);
 
     /**
      * Calculates the 'lack of cohesion' metric for given class.
@@ -144,7 +144,6 @@ public:
      * This calculates lorenz and kidd metrics for given class.
      * @param decl - class to calculate the metrics.
      */
-
     virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
     virtual std::ostream &Export(size_t id, std::ostream &os) const override;
 protected:
