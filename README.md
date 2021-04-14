@@ -99,8 +99,8 @@ You need following packages:
 - llvm-dev
 - libclang-dev
 
-You need to have the llvm and clang sources downloaded to build this.
+Follow these steps
 1. Clone this repository.
-2. Create a build folder. Run `cmake` from it, as argument give it the path to the cloned repository.
+2. Create a build folder. Run `cmake` from it, as argument give it path to the cloned repository.
 3. Run `make`.
 4. Optionally run unit tests via `make test`.
