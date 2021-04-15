@@ -11,10 +11,16 @@ FansVisitor::FansVisitor(clang::ASTContext *ctx) : CtxVisitor(ctx), vis(ctx)
 
 bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *d)
 {
-    if(!ctx->getSourceManager().isInMainFile(d->getLocation()) || !d->isThisDeclarationADefinition()) return true;
+    if(!ctx->getSourceManager().isInMainFile(d->getLocation())
+        || !d->isThisDeclarationADefinition()) return true;
     counter.SetCurrFuncId(d->getID());
     vis.TraverseDecl(d);
     counter.LeaveFunction();
+    return true;
+}
+
+bool FansVisitor::TraverseLambdaExpr(clang::LambdaExpr *e)
+{
     return true;
 }
 

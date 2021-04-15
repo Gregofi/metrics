@@ -66,6 +66,12 @@ public:
     int FanOut(size_t id) const { return counter.GetFanOut().at(id); }
 
     virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
+    /**
+     * All lambdas are skipped, because they are already traversed by the matchers.
+     * @param expr
+     * @return
+     */
+    bool TraverseLambdaExpr(clang::LambdaExpr *expr);
     virtual std::ostream &Export(size_t id, std::ostream &os) const override;
     virtual std::ostream &ExportXML(size_t id, std::ostream &os) const override;
 protected:

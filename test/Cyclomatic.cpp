@@ -9,4 +9,14 @@ int main()
     ASSERT_EQ(GET_VAL("for(;;){}; if(1 && 2 || 3){};while(true){};do{}while(true); 1 == 2-"
                                "1 ? true : false; int a; switch(a) {case 1: break; case 2: break;}"), 10);
     ASSERT_EQ(GET_VAL("if(true && false) { if(true && false) if(true || false) {} else { if(true) {} } } else if(true && false) {}"), 10);
+    ASSERT_EQ(GET_VAL(R"(    int i;
+                             auto l = [&](int a)
+                             {
+                                if(a > 10)
+                                    return a * i;
+                                else
+                                    return i;
+                             };
+                             if(l(1)) return i;
+                    )"), 3);
 }
