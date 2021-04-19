@@ -6,7 +6,7 @@
 bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     /* Skip declarations that have no body and that aren't in main file */
-    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()))
+    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()) || decl->isLambda())
         return true;
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
      * wouldn't be added otherwise */
@@ -25,7 +25,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 
 bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
-    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()))
+    if(!decl->isThisDeclarationADefinition() || !ctx->getSourceManager().isInMainFile(decl->getLocation()) || decl->getParent()->isLambda())
         return true;
     ASTMatcherVisitor vis(ctx);
     MethodCallback callback(decl->getParent()->getID());

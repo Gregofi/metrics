@@ -163,3 +163,8 @@ void StmtNPathVisitor::VisitReturnStmt(clang::ReturnStmt *stmt)
 {
     count = CountLogicalOperators(stmt->getRetValue()) + 1;
 }
+
+void StmtNPathVisitor::VisitLambdaExpr(clang::LambdaExpr *expr)
+{
+    Visit(expr->getBody());
+}
