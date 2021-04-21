@@ -21,23 +21,23 @@ public:
      * Fan-in will be counted towards function with id in param.
      * @param id
      */
-    void SetCurrFuncId(size_t id) { curr_func = id; InitFunction(id); is_in_func = true; }
+    void SetCurrFuncId(const std::string &s) { curr_func = s; InitFunction(s); is_in_func = true; }
     /**
      * Callback function for matchers.
      * @param Result
      */
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
     void LeaveFunction() {is_in_func = false;}
-    const std::map<size_t, int>& GetFanIn()  const { return fan_in;  }
-    const std::map<size_t, int>& GetFanOut() const { return fan_out; }
+    const std::map<std::string, int>& GetFanIn()  const { return fan_in;  }
+    const std::map<std::string, int>& GetFanOut() const { return fan_out; }
 protected:
-    void InitFunction(size_t id);
-    size_t curr_func{};
+    void InitFunction(const std::string &s);
+    std::string curr_func;
     bool is_in_func;
     /** Number of functions, which call function with id in key.  */
-    std::map<size_t, int> fan_out;
+    std::map<std::string, int> fan_out;
     /** Number of functions, which function with id in key calls.  */
-    std::map<size_t, int> fan_in;
+    std::map<std::string, int> fan_in;
 };
 
 /**
@@ -50,32 +50,30 @@ protected:
 class FansVisitor : public clang::RecursiveASTVisitor<FansVisitor>, public CtxVisitor
 {
 public:
-    explicit FansVisitor(clang::ASTContext *ctx);
     bool VisitFunctionDecl(clang::FunctionDecl *d);
     /**
      * Returns fan-in value for given functionID
      * @throws - std::out_of_range if metrics haven't been calculated for given classID (Either CalcMetrics wasn't called
      *              or class with given ID doesn't exist).
      */
-    int FanIn(size_t id)  const { return counter.GetFanIn().at(id); }
+    int FanIn(const std::string &s)  const { return counter.GetFanIn().at(s); }
     /**
      * Returns fan-out value for given functionID
      * @throws - std::out_of_range if metrics haven't been calculated for given classID (Either CalcMetrics wasn't called
      *              or class with given ID doesn't exist).
      */
-    int FanOut(size_t id) const { return counter.GetFanOut().at(id); }
+    int FanOut(const std::string &s) const { return counter.GetFanOut().at(s); }
 
-    virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
+    virtual void CalcMetrics(clang::ASTContext *ctx) override;
     /**
      * All lambdas are skipped, because they are already traversed by the matchers.
      * @param expr
      * @return
      */
     bool TraverseLambdaExpr(clang::LambdaExpr *expr);
-    virtual std::ostream &Export(size_t id, std::ostream &os) const override;
-    virtual std::ostream &ExportXML(size_t id, std::ostream &os) const override;
+    virtual std::ostream &Export(const std::string &s, std::ostream &os) const override;
+    virtual std::ostream &ExportXML(const std::string &s, std::ostream &os) const override;
 protected:
-    ASTMatcherVisitor vis;
     FanCount counter;
 };
 

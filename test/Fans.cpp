@@ -13,8 +13,8 @@ struct Info
 Info GetMetric(const std::string &code)
 {
     auto AST = clang::tooling::buildASTFromCode(std::string(code));
-    FansVisitor vis(&AST->getASTContext());
-    vis.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
+    FansVisitor vis;
+    vis.CalcMetrics(&AST->getASTContext());
     std::map<std::string, size_t> names = GetFuncNameMap(AST->getASTContext().getTranslationUnitDecl());
     return {names, vis};
 }
@@ -27,14 +27,14 @@ int BasicTest()
                           "int main() {bar(); }");
     auto names = info.names;
     auto vis   = info.vis;
-    ASSERT_EQ(vis.FanIn(names["foo"]), 0);
-    ASSERT_EQ(vis.FanOut(names["foo"]), 1);
+    ASSERT_EQ(vis.FanIn("foo()"), 0);
+    ASSERT_EQ(vis.FanOut("foo()"), 1);
 
-    ASSERT_EQ(vis.FanIn(names["bar"]), 1);
-    ASSERT_EQ(vis.FanOut(names["bar"]), 1);
+    ASSERT_EQ(vis.FanIn("bar()"), 1);
+    ASSERT_EQ(vis.FanOut("bar()"), 1);
 
-    ASSERT_EQ(vis.FanIn(names["main"]), 1);
-    ASSERT_EQ(vis.FanOut(names["main"]), 0);
+    ASSERT_EQ(vis.FanIn("main()"), 1);
+    ASSERT_EQ(vis.FanOut("main()"), 0);
     return 0;
 }
 
@@ -54,16 +54,16 @@ int ClassesTest()
     )");
     auto names = info.names;
     auto vis = info.vis;
-    ASSERT_EQ(vis.FanIn(names["main"]), 4);
-    ASSERT_EQ(vis.FanOut(names["main"]),0);
-    ASSERT_EQ(vis.FanOut(names["f1"]), 1);
-    ASSERT_EQ(vis.FanOut(names["f2"]), 1);
-    ASSERT_EQ(vis.FanOut(names["of1"]), 1);
-    ASSERT_EQ(vis.FanOut(names["of2"]), 1);
-    ASSERT_EQ(vis.FanIn(names["f1"]), 0);
-    ASSERT_EQ(vis.FanIn(names["f2"]), 0);
-    ASSERT_EQ(vis.FanIn(names["of1"]), 0);
-    ASSERT_EQ(vis.FanIn(names["of2"]), 0);
+    ASSERT_EQ(vis.FanIn("main()"), 4);
+    ASSERT_EQ(vis.FanOut("main()"),0);
+    ASSERT_EQ(vis.FanOut("Foo::f1()"), 1);
+    ASSERT_EQ(vis.FanOut("Foo::f2()"), 1);
+    ASSERT_EQ(vis.FanOut("of1()"), 1);
+    ASSERT_EQ(vis.FanOut("of2()"), 1);
+    ASSERT_EQ(vis.FanIn("Foo::f1()"), 0);
+    ASSERT_EQ(vis.FanIn("Foo::f2()"), 0);
+    ASSERT_EQ(vis.FanIn("of1()"), 0);
+    ASSERT_EQ(vis.FanIn("of2()"), 0);
     return 0;
 }
 

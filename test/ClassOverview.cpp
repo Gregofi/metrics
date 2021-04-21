@@ -45,8 +45,8 @@ struct Info
 Info Eval(const std::string &code)
 {
     auto AST = clang::tooling::buildASTFromCode(code);
-    ClassOverviewVisitor vis(&AST->getASTContext());
-    vis.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
+    ClassOverviewVisitor vis;
+    vis.CalcMetrics(&AST->getASTContext());
     CGetNames names;
     names.TraverseDecl(AST->getASTContext().getTranslationUnitDecl());
     return {std::move(names), std::move(vis)};
@@ -55,28 +55,26 @@ Info Eval(const std::string &code)
 int BasicCasesTest()
 {
     auto v = Eval(code1);
-    auto cnames = v.names.class_names;
-    auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetRefClass(cnames["foo"]).children_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).children_count, 0);
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).children_count, 0);
+    ASSERT_EQ(vis.GetRefClass("foo").children_count, 1);
+    ASSERT_EQ(vis.GetRefClass("bar").children_count, 0);
+    ASSERT_EQ(vis.GetRefClass("foreigner").children_count, 0);
 
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).inheritance_chain.front(), cnames["foo"]);
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).functions[0].size(), 2);
-    ASSERT_EQ(vis.GetInheritanceChainLen(cnames["bar"]), 1);
+    ASSERT_EQ(vis.GetRefClass("bar").inheritance_chain.front(), "foo");
+    ASSERT_EQ(vis.GetRefClass("bar").functions[0].size(), 2);
+    ASSERT_EQ(vis.GetInheritanceChainLen("bar"), 1);
 
     /* Test counts */
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).methods_count, 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).public_methods_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).instance_vars_count, 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).public_instance_vars_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["foreigner"]).overriden_methods_count, 0);
+    ASSERT_EQ(vis.GetRefClass("foreigner").methods_count, 2);
+    ASSERT_EQ(vis.GetRefClass("foreigner").public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass("foreigner").instance_vars_count, 2);
+    ASSERT_EQ(vis.GetRefClass("foreigner").public_instance_vars_count, 1);
+    ASSERT_EQ(vis.GetRefClass("foreigner").overriden_methods_count, 0);
 
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).methods_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).instance_vars_count, 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["bar"]).public_instance_vars_count, 0);
+    ASSERT_EQ(vis.GetRefClass("bar").methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass("bar").instance_vars_count, 2);
+    ASSERT_EQ(vis.GetRefClass("bar").public_instance_vars_count, 0);
     return 0;
 }
 
@@ -107,15 +105,15 @@ int InheritanceChainTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetInheritanceChainLen(cnames["c"]), 2);
-    ASSERT_EQ(vis.GetInheritanceChainLen(cnames["b"]), 1);
-    ASSERT_EQ(vis.GetInheritanceChainLen(cnames["a"]), 0);
-    ASSERT_EQ(vis.GetInheritanceChainLen(cnames["d"]), 3);
+    ASSERT_EQ(vis.GetInheritanceChainLen("c"), 2);
+    ASSERT_EQ(vis.GetInheritanceChainLen("b"), 1);
+    ASSERT_EQ(vis.GetInheritanceChainLen("a"), 0);
+    ASSERT_EQ(vis.GetInheritanceChainLen("d"), 3);
 
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).children_count, 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["b"]).children_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["c"]).children_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["d"]).children_count, 0);
+    ASSERT_EQ(vis.GetRefClass("a").children_count, 2);
+    ASSERT_EQ(vis.GetRefClass("b").children_count, 1);
+    ASSERT_EQ(vis.GetRefClass("c").children_count, 1);
+    ASSERT_EQ(vis.GetRefClass("d").children_count, 0);
 
     return 0;
 }
@@ -158,17 +156,17 @@ int MemberAccessTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[2].size(), 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[0].size(), 3);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).functions[1].size(), 1);
+    ASSERT_EQ(vis.GetRefClass("a").functions[2].size(), 2);
+    ASSERT_EQ(vis.GetRefClass("a").functions[0].size(), 3);
+    ASSERT_EQ(vis.GetRefClass("a").functions[1].size(), 1);
 
-    ASSERT_EQ(vis.LackOfCohesion(cnames["a"]), 0);
+    ASSERT_EQ(vis.LackOfCohesion("a"), 0);
 
     /* Test counts */
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).instance_vars_count, 3);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_instance_vars_count, 0);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).methods_count, 3);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_methods_count, 3);
+    ASSERT_EQ(vis.GetRefClass("a").instance_vars_count, 3);
+    ASSERT_EQ(vis.GetRefClass("a").public_instance_vars_count, 0);
+    ASSERT_EQ(vis.GetRefClass("a").methods_count, 3);
+    ASSERT_EQ(vis.GetRefClass("a").public_methods_count, 3);
 
     return 0;
 };
@@ -192,7 +190,7 @@ int LackOfCohesionTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.LackOfCohesion(cnames["a"]), 4);
+    ASSERT_EQ(vis.LackOfCohesion("a"), 4);
     return 0;
 }
 
@@ -222,14 +220,14 @@ int InnerClassTest()
     auto fnames = v.names.func_names;
     auto vis = v.vis;
 
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_methods_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).methods_count, 2);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).instance_vars_count, 4);
-    ASSERT_EQ(vis.GetRefClass(cnames["a"]).public_instance_vars_count, 3);
-    ASSERT_EQ(vis.GetRefClass(cnames["b"]).methods_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["b"]).public_methods_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["b"]).instance_vars_count, 1);
-    ASSERT_EQ(vis.GetRefClass(cnames["b"]).public_instance_vars_count, 0);
+    ASSERT_EQ(vis.GetRefClass("a").public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass("a").methods_count, 2);
+    ASSERT_EQ(vis.GetRefClass("a").instance_vars_count, 4);
+    ASSERT_EQ(vis.GetRefClass("a").public_instance_vars_count, 3);
+    ASSERT_EQ(vis.GetRefClass("a::b").methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass("a::b").public_methods_count, 1);
+    ASSERT_EQ(vis.GetRefClass("a::b").instance_vars_count, 1);
+    ASSERT_EQ(vis.GetRefClass("a::b").public_instance_vars_count, 0);
 
     return 0;
 }

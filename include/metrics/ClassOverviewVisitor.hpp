@@ -7,8 +7,6 @@
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 
-typedef long unsigned ClassID_t ;
-
 /**
  * Used on single method of class, traverses method body and collects:
  *  - IDs of classes from which are methods that this class calls (doesn't add current class)
@@ -17,14 +15,14 @@ typedef long unsigned ClassID_t ;
 class MethodCallback : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
-    explicit MethodCallback(long unsigned currClassID) noexcept : currClassID(currClassID) {}
-    void SetCurrentFunction(long unsigned funcID) { currFunctionID = funcID; }
+    explicit MethodCallback(std::string currClassName) noexcept : currClassID(std::move(currClassName)) {}
+    void SetCurrentFunction(std::string s) { currFunction = std::move(s); }
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
     /**
      * Returns ID of classes which this method called, original set is moved.
      * @return
      */
-    std::set<long unsigned> GetClasses() { return std::move(classes); }
+    std::set<std::string> GetClasses() { return std::move(classes); }
     /**
      * Returns ID of instance var which this method used, original set is moved.
      * @return
@@ -33,9 +31,9 @@ public:
 
 
 protected:
-    long unsigned currFunctionID{};
-    long unsigned currClassID;
-    std::set<ClassID_t> classes;
+    std::string currFunction{};
+    std::string currClassID;
+    std::set<std::string> classes;
     std::set<long unsigned> instance_vars;
 };
 
@@ -71,17 +69,17 @@ protected:
         /**
          * Contains ID of all function from which this class directly derives.
          */
-        std::vector<ClassID_t> inheritance_chain;
+        std::vector<std::string> inheritance_chain;
 
         /**
          * Contains classes whose methods this class calls
          */
-        std::set<ClassID_t> couples;
+        std::set<std::string> couples;
 
         /**
          * Contains sets of integers, each of these sets contains IDs of used instance variables by one method.
          */
-        std::vector<std::set<long unsigned> > functions;
+        std::vector<std::set<size_t> > functions;
 
         /**
          * Number of public methods (except default ones)
@@ -106,19 +104,18 @@ protected:
     };
 
 public:
-    explicit ClassOverviewVisitor(clang::ASTContext *ctx) : CtxVisitor(ctx){}
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
-    const Class& GetRefClass(long unsigned id) const { return classes.at(id); }
+    const Class& GetRefClass(const std::string &s) const { return classes.at(s); }
 
-    virtual std::ostream &ExportXML(size_t id, std::ostream &os) const override;
+    virtual std::ostream &ExportXML(const std::string &s, std::ostream &os) const override;
     /**
      * Returns length of inheritance chain from this class to root class (class that doesn't inherit from any other
      * classes). If there are multiple chains, returns length of the longest one.
      * @param id - ID of the class
      * @return - Lenght of inheritance chain
      */
-    int GetInheritanceChainLen(long unsigned id) const;
+    int GetInheritanceChainLen(const std::string &s) const;
 
     /**
      * Returns true if both sets have atleast one same element, otherwise returns false.
@@ -138,17 +135,17 @@ public:
      * @param id - ID of the class
      * @return - Lack of cohesion metric value
      */
-    int LackOfCohesion(unsigned long id) const;
+    int LackOfCohesion(const std::string &s) const;
 
     /**
      * This calculates lorenz and kidd metrics for given class.
      * @param decl - class to calculate the metrics.
      */
-    virtual void CalcMetrics(clang::TranslationUnitDecl *decl) override;
-    virtual std::ostream &Export(size_t id, std::ostream &os) const override;
+    virtual void CalcMetrics(clang::ASTContext *ctx) override;
+    virtual std::ostream &Export(const std::string &s, std::ostream &os) const override;
 protected:
     void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
-    std::map<ClassID_t, Class> classes;
+    std::map<std::string, Class> classes;
 };
 
 #endif //METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP

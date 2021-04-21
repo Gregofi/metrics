@@ -19,31 +19,21 @@ static llvm::cl::OptionCategory MyToolCategory("metrics options");
 static llvm::cl::opt<std::string> XMLOutputOpt("xml",
                                                llvm::cl::desc("App will export measured data to XML, specify name of output file"),
                                                llvm::cl::value_desc("filename"));
+MetricVisitor g_metricVisitor;
+
 
 /* ======================================================================================= */
 
 class FunctionInfoConsumer : public clang::ASTConsumer
 {
 public:
-    explicit FunctionInfoConsumer(ASTContext *context) : metricVisitor(context)  {}
+    explicit FunctionInfoConsumer(ASTContext *context)  {}
 
     virtual void HandleTranslationUnit(clang::ASTContext &context) override
     {
-        metricVisitor.CalcMetrics(context.getTranslationUnitDecl());
-        if(!XMLOutputOpt.empty())
-        {
-            std::ofstream of(XMLOutputOpt.c_str());
-            if(!of.good())
-                throw std::io_errc(1);
-            metricVisitor.ExportXMLMetrics(of);
-        }
-        else
-        {
-            metricVisitor.ExportMetrics(std::cout);
-        }
+        g_metricVisitor.CalcMetrics(&context);
     }
 private:
-    MetricVisitor metricVisitor;
 };
 
 class FunctionInfoAction : public clang::ASTFrontendAction
@@ -66,13 +56,17 @@ int main(int argc, const char **argv)
     clang::tooling::ArgumentsAdjuster ardj1 =
             clang::tooling::getInsertArgumentAdjuster("-I/usr/lib/clang/11.1.0/include");
     Tool.appendArgumentsAdjuster(ardj1);
-    try
+    Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
+    if(!XMLOutputOpt.empty())
     {
-        Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
+        std::ofstream of(XMLOutputOpt.c_str());
+        if(!of.good())
+            throw std::io_errc(1);
+        g_metricVisitor.ExportXMLMetrics(of);
     }
-    catch(const std::io_errc &ex)
+    else
     {
-        llvm::errs() << "Error while writing to output stream\n";
-        return 1;
+        g_metricVisitor.ExportMetrics(std::cout);
     }
 }
+

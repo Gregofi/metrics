@@ -12,8 +12,8 @@
 #include "include/metrics/NPathVisitor.hpp"
 #include "include/metrics/ClassOverviewVisitor.hpp"
 #include "include/metrics/FansVisitor.hpp"
-
 #include "include/FunctionVisitor.hpp"
+#include "include/Utility.hpp"
 
 
 bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
@@ -36,8 +36,7 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
     for(const auto & x : visitors)
         x->CalcMetrics(decl);
-
-    functions[decl->getID()] = {decl->getQualifiedNameAsString(), std::move(visitors)};
+    functions[GetFunctionHead(decl)] = std::move(visitors);
 
     return true;
 }
@@ -46,19 +45,22 @@ bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
 
-    if(decl->isLambda() || !decl->hasDefinition() || !sm.isInMainFile(decl->getLocation()) || decl->isUnion())
+    if(decl->isLambda() || !decl->hasDefinition() || sm.isInSystemHeader(decl->getLocation())
+            || decl->isUnion() || classes.count(decl->getQualifiedNameAsString()))
         return true;
-    classes.emplace_back(decl->getQualifiedNameAsString(), decl->getID());
+    classes.insert(decl->getQualifiedNameAsString());
     return true;
 }
 
-void MetricVisitor::CalcMetrics(clang::TranslationUnitDecl *decl)
+void MetricVisitor::CalcMetrics(clang::ASTContext *ctx)
 {
-    TraverseTranslationUnitDecl(decl);
+    context = ctx;
+    TraverseTranslationUnitDecl(ctx->getTranslationUnitDecl());
     for(auto &x :ctx_vis_cl)
-        x->CalcMetrics(decl);
+        x->CalcMetrics(ctx);
     for(auto &x :ctx_vis_fn)
-        x->CalcMetrics(decl);
+        x->CalcMetrics(ctx);
+    context = nullptr;
 }
 
 std::ostream& MetricVisitor::ExportMetrics(std::ostream &os)
@@ -69,8 +71,8 @@ std::ostream& MetricVisitor::ExportMetrics(std::ostream &os)
     {
         if(!first)
             os << "--------------------------------\n";
-        os << f.second.first << "\n";
-        for(const auto &m: f.second.second)
+        os << f.first << "\n";
+        for(const auto &m: f.second)
             m->Export(os);
         for(const auto &m: ctx_vis_fn)
             m->Export(f.first, os);
@@ -79,22 +81,21 @@ std::ostream& MetricVisitor::ExportMetrics(std::ostream &os)
     os << "OOP metrics:\n";
     for(const auto &cl : classes)
     {
-
         if(!first)
             os << "--------------------------------\n";
         for(const auto &cvis: ctx_vis_cl)
         {
-            cvis->Export(cl.second, os);
+            cvis->Export(cl, os);
         }
         first = false;
     }
     return os;
 }
 
-MetricVisitor::MetricVisitor(clang::ASTContext *context) : context(context)
+MetricVisitor::MetricVisitor()
 {
-    ctx_vis_cl.emplace_back(std::make_unique<ClassOverviewVisitor>(context));
-    ctx_vis_fn.emplace_back(std::make_unique<FansVisitor>(context));
+    ctx_vis_cl.emplace_back(std::make_unique<ClassOverviewVisitor>());
+    ctx_vis_fn.emplace_back(std::make_unique<FansVisitor>());
 }
 
 std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
@@ -104,8 +105,8 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
     os << "<functions>\n";
     for(const auto &f : functions)
     {
-        os << "<function name=\"" + EscapeXML(f.second.first) << "\">\n";
-        for(const auto &m: f.second.second)
+        os << "<function name=\"" + EscapeXML(f.first) << "\">\n";
+        for(const auto &m: f.second)
             m->ExportXML(os);
         for(const auto &m: ctx_vis_fn)
             m->ExportXML(f.first, os);
@@ -116,10 +117,10 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
     os << "<oop>\n";
     for(const auto &cl : classes)
     {
-        os << "<class name=\"" + EscapeXML(cl.first) << "\">\n";
+        os << "<class name=\"" + EscapeXML(cl) << "\">\n";
         for(const auto &cvis: ctx_vis_cl)
         {
-            cvis->ExportXML(cl.second, os);
+            cvis->ExportXML(cl, os);
         }
         os << "</class>\n";
     }

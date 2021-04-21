@@ -10,13 +10,13 @@
 class CtxVisitor
 {
 public:
-    explicit CtxVisitor(clang::ASTContext *ctx) : ctx(ctx) {}
+    CtxVisitor() : ctx(nullptr){}
     virtual ~CtxVisitor() = default;
     /**
      * Traverse UnitDecl and gather metrics.
      * @param decl - Translation unit for which metric will be calculated.
      */
-    virtual void CalcMetrics(clang::TranslationUnitDecl *decl) = 0;
+    virtual void CalcMetrics(clang::ASTContext *ctx) = 0;
 
     /**
      * Export metrics to given stream, intended to be human readable.
@@ -24,7 +24,7 @@ public:
      * @param os - output stream to export to.
      * @return - given output stream.
      */
-    virtual std::ostream& Export(size_t id, std::ostream &os) const = 0;
+    virtual std::ostream& Export(const std::string &s, std::ostream &os) const = 0;
 
     /**
      * Export metric to given stream in XML format.
@@ -32,7 +32,7 @@ public:
      * @param os - output stream to export to.
      * @return - given output stream.
      */
-    virtual std::ostream& ExportXML(size_t id, std::ostream &os) const = 0;
+    virtual std::ostream& ExportXML(const std::string &s, std::ostream &os) const = 0;
 protected:
     clang::ASTContext *ctx;
 };

@@ -20,3 +20,16 @@ std::string EscapeXML(const std::string &text)
     }
     return result;
 }
+
+std::string GetFunctionHead(const clang::FunctionDecl *decl)
+{
+    std::string res = decl->getQualifiedNameAsString() + "(";
+    for(size_t i = 0; i < decl->getNumParams(); ++ i)
+    {
+        res += decl->getParamDecl(i)->getType().getAsString();
+        if(i + 1 != decl->getNumParams())
+            res += ", ";
+    }
+    res += ")";
+    return res;
+}
