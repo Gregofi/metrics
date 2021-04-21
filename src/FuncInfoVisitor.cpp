@@ -62,7 +62,7 @@ std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int 
     auto stmtClass = body->getStmtClass();
     /* First children of these statements are some sort of conditions or initializations, skip that */
     if(stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::SwitchStmtClass
-       || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CaseStmtClass)
+       || stmtClass == Stmt::CaseStmtClass)
         std::advance(it, 1);
 
     /* Here, for cycle contains four other statements before body, also just
@@ -113,6 +113,11 @@ std::pair<int, int> FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
          * separately. */
         if(stmtClass == Stmt::IfStmtClass)
             tmp_res = HandleIfStatement(llvm::dyn_cast<IfStmt>(body), depth);
+        else if(stmtClass == Stmt::CXXForRangeStmtClass)
+        {
+            const CXXForRangeStmt *forRange = llvm::dyn_cast<CXXForRangeStmt>(body);
+            tmp_res = StmtCount(forRange->getBody(), depth + (forRange->getBody()->getStmtClass() != Stmt::CompoundStmtClass));
+        }
         else
             tmp_res = HandleOtherCompounds(body, depth);
 
