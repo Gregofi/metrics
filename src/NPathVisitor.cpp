@@ -168,3 +168,9 @@ void StmtNPathVisitor::VisitLambdaExpr(clang::LambdaExpr *expr)
 {
     Visit(expr->getBody());
 }
+
+void StmtNPathVisitor::VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt)
+{
+    Visit(stmt->getBody());
+    count += 1;
+}
