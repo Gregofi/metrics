@@ -9,7 +9,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
     if(!decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
-        || decl->isLambda() || classes.count(decl->getQualifiedNameAsString()))
+        || decl->isLambda() || classes.count(decl->getQualifiedNameAsString()) || (!decl->isClass() && !decl->isStruct()))
         return true;
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
      * wouldn't be added otherwise */
@@ -17,8 +17,12 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
         classes[decl->getQualifiedNameAsString()];
     for(const auto &base : decl->bases())
     {
-        classes[base.getType()->getAsCXXRecordDecl()->getQualifiedNameAsString()].children_count += 1;
-        classes[decl->getQualifiedNameAsString()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getQualifiedNameAsString());
+        /* Base can also be template argument, only count if its concrete class */
+        if(base.getType()->getAsCXXRecordDecl())
+        {
+            classes[base.getType()->getAsCXXRecordDecl()->getQualifiedNameAsString()].children_count += 1;
+            classes[decl->getQualifiedNameAsString()].inheritance_chain.emplace_back(base.getType()->getAsCXXRecordDecl()->getQualifiedNameAsString());
+        }
     }
 
     CalculateLorKiddMetrics(decl);
