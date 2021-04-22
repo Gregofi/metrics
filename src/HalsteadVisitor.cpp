@@ -20,7 +20,7 @@ const std::vector<StatementMatcher> HalsteadVisitor::operators_stmt {
         caseStmt().bind("stmt"),
         breakStmt().bind("stmt"),
         continueStmt().bind("stmt"),
-        cxxForRangeStmt().bind("stmt"),
+        cxxForRangeStmt().bind("forRange"),
         cxxCatchStmt().bind("stmt"),
         cxxThrowExpr().bind("stmt"),
         defaultStmt().bind("stmt"),
@@ -30,13 +30,14 @@ const std::vector<StatementMatcher> HalsteadVisitor::operators_stmt {
         conditionalOperator().bind("stmt"),
         binaryConditionalOperator().bind("stmt"),
         unaryOperator().bind("stmt"),
-        cxxOperatorCallExpr(), /* Overloaded operators */
         cxxNewExpr().bind("stmt"),
         cxxDeleteExpr().bind("stmt"),
         /* function calls */
         callExpr().bind("stmt"),
         /* explicit casts */
         explicitCastExpr().bind("stmt"),
+
+        memberExpr().bind("member"),
 };
 
 const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::operators_decl {
@@ -88,7 +89,7 @@ void HalsteadVisitor::CalcMetrics(clang::FunctionDecl *decl)
 
     matcher.AddMatchers(operands_stmt, &tk_operand);
     matcher.AddMatchers(operands_decl, &tk_operand);
-    matcher.TraverseDecl(decl);
+    matcher.TraverseStmt(decl->getBody());
 
     unique_operators = tk_operators.getUniqueCount();
     unique_operands = tk_operand.getUniqueCount();
@@ -106,6 +107,18 @@ std::ostream &HalsteadVisitor::ExportXML(std::ostream &os) const
 void TokenCounter::run(const MatchFinder::MatchResult &Result)
 {
     count += 1;
+    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXForRangeStmt>("forRange"); isOperator && s)
+    {
+        if(s->getEndStmt() != nullptr)
+            count -= 1;
+        if(s->getCond() != nullptr)
+            count -= 1;
+    }
+    if(const auto *s = Result.Nodes.getNodeAs<clang::MemberExpr>("member"))
+    {
+        if(s->getBase()->isImplicitCXXThis())
+            count -= 1;
+    }
     if(const auto *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
     {
         seen_tokens_stmt.emplace(s->getStmtClass());
