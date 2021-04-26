@@ -52,8 +52,8 @@ std::pair<int, int> FuncInfoVisitor::HandleIfStatement(const IfStmt *stmt, int d
     cnt += res_else.first + res_if.first;
     /* TODO : This -1 is very suspicious, but it may be because else is children of if statement, so
      * it adds one more depth */
-    depth = std::max(res_if.second, res_else.second - 1);
-    return {cnt, depth};
+    depth = std::max(res_if.second, res_else.second);
+    return {cnt + (stmt->getElse() != nullptr), depth};
 }
 
 std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int depth)
