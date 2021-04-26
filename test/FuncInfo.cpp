@@ -33,8 +33,28 @@ const char *ifstmt = R"(
     int a;
     if(a > 10)
         return 1;
-    else if(int b = a * 10; b < 50)
+    else
+    {
+        if(int b = a * 10; b < 50)
+            return 2;
+    }
+)";
+
+const char *ifstmt2 = R"(
+    int a;
+    if(a > 10)
+        return 1;
+    else
         return 2;
+)";
+
+const char *ifstmt3 = R"(
+    int a;
+    if(a > 10)
+        return 1;
+    else {
+        return 2;
+    }
 )";
 
 const char *tryStmt = R"(
@@ -59,8 +79,14 @@ int main()
     ASSERT_EQ(vis.GetResult().statements, 14);
     ASSERT_EQ(vis.GetResult().depth, 3);
     vis = ConstructMetricsOneFunction<FuncInfoVisitor>(ifstmt);
-    ASSERT_EQ(vis.GetResult().statements, 5);
+    ASSERT_EQ(vis.GetResult().statements, 6);
+    ASSERT_EQ(vis.GetResult().depth, 3);
+    vis = ConstructMetricsOneFunction<FuncInfoVisitor>(ifstmt2);
     ASSERT_EQ(vis.GetResult().depth, 2);
+    ASSERT_EQ(vis.GetResult().statements, 5);
+    vis = ConstructMetricsOneFunction<FuncInfoVisitor>(ifstmt3);
+    ASSERT_EQ(vis.GetResult().depth, 2);
+    ASSERT_EQ(vis.GetResult().statements, 5);
     vis = ConstructMetricsOneFunction<FuncInfoVisitor>(tryStmt);
     ASSERT_EQ(vis.GetResult().statements, 8);
     ASSERT_EQ(vis.GetResult().depth, 2);
