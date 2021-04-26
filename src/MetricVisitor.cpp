@@ -45,7 +45,7 @@ bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
 
-    if(decl->isLambda() || !decl->hasDefinition() || sm.isInSystemHeader(decl->getLocation())
+    if(decl->isLambda() || !decl->isThisDeclarationADefinition() || sm.isInSystemHeader(decl->getLocation())
             || decl->isUnion() || classes.count(decl->getQualifiedNameAsString()))
         return true;
     classes.insert(decl->getQualifiedNameAsString());
@@ -83,6 +83,7 @@ std::ostream& MetricVisitor::ExportMetrics(std::ostream &os)
     {
         if(!first)
             os << "--------------------------------\n";
+        os << cl << "\n";
         for(const auto &cvis: ctx_vis_cl)
         {
             cvis->Export(cl, os);
@@ -128,4 +129,12 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
     os << "</metrics>\n";
 
     return os;
+}
+
+bool MetricVisitor::TraverseDecl(clang::Decl *decl)
+{
+    /* Skip files that are in system files */
+    if(!decl || context->getSourceManager().isInSystemHeader(decl->getLocation()))
+        return true;
+    return RecursiveASTVisitor::TraverseDecl(decl);
 }
