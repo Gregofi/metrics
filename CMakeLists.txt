@@ -24,8 +24,6 @@ target_link_libraries(metrics
         clang-cpp
 )
 
-
-
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 enable_testing()
 add_subdirectory(test)

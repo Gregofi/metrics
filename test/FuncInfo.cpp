@@ -37,6 +37,19 @@ const char *ifstmt = R"(
         return 2;
 )";
 
+const char *tryStmt = R"(
+    try {
+        int a;
+        a += 3;
+        a += 4;
+    } catch(...) {
+        int b;
+        b += 1;
+        b += 2;
+    }
+
+)";
+
 int main()
 {
     auto vis = ConstructMetricsOneFunction<FuncInfoVisitor>(basic);
@@ -47,5 +60,8 @@ int main()
     ASSERT_EQ(vis.GetResult().depth, 3);
     vis = ConstructMetricsOneFunction<FuncInfoVisitor>(ifstmt);
     ASSERT_EQ(vis.GetResult().statements, 5);
+    ASSERT_EQ(vis.GetResult().depth, 2);
+    vis = ConstructMetricsOneFunction<FuncInfoVisitor>(tryStmt);
+    ASSERT_EQ(vis.GetResult().statements, 8);
     ASSERT_EQ(vis.GetResult().depth, 2);
 }

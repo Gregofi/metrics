@@ -48,7 +48,9 @@ void FanCount::run(const MatchFinder::MatchResult &Result)
     if(!is_in_func) return;
     if(const auto *s = Result.Nodes.getNodeAs<clang::CallExpr>("call"))
     {
-        fan_in[curr_func] += 1;
+        /* Skip operator calls */
+        if(s->getStmtClass() != Stmt::CXXOperatorCallExprClass)
+            fan_in[curr_func] += 1;
         if(s->getDirectCallee())
             fan_out[GetFunctionHead(s->getDirectCallee())] += 1;
     }
@@ -60,4 +62,12 @@ void FanCount::InitFunction(const std::string &s)
         fan_out[s];
     if(!fan_in.count(s))
         fan_in[s];
+}
+
+bool FansVisitor::TraverseDecl(clang::Decl *decl)
+{
+    /* Skip files that are in system files */
+    if(!decl || ctx->getSourceManager().isInSystemHeader(decl->getLocation()))
+        return true;
+    return RecursiveASTVisitor::TraverseDecl(decl);
 }

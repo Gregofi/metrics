@@ -143,7 +143,8 @@ void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
 
 void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
 {
-
+    Visit(stmt->getTryBlock());
+    count += 1;
 }
 
 int StmtNPathVisitor::CountLogicalOperators(clang::Stmt *stmt)

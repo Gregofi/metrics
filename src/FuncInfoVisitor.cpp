@@ -118,11 +118,12 @@ std::pair<int, int> FuncInfoVisitor::StmtCount(const Stmt *body, int depth)
             const CXXForRangeStmt *forRange = llvm::dyn_cast<CXXForRangeStmt>(body);
             tmp_res = StmtCount(forRange->getBody(), depth + (forRange->getBody()->getStmtClass() != Stmt::CompoundStmtClass));
         }
-        else if(stmtClass == Stmt::CXXTryStmtClass)
+        else if(stmtClass == Stmt::CXXCatchStmtClass)
         {
-            const CXXTryStmt *tryStmt = llvm::dyn_cast<CXXTryStmt>(body);
-            /* No need to check if body is compound or simple because try body is always compound statement */
-            tmp_res = StmtCount(tryStmt->getTryBlock(), depth);
+            const CXXCatchStmt *catchStmt = llvm::dyn_cast<CXXCatchStmt>(body);
+            tmp_res = StmtCount(llvm::dyn_cast<CompoundStmt>(catchStmt->getHandlerBlock()), depth);
+            /* Catch is child of try, so decrease the depth. */
+            tmp_res.second -= 1;
         }
         else
             tmp_res = HandleOtherCompounds(body, depth);

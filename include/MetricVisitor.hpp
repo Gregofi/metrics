@@ -35,6 +35,7 @@ public:
     void CalcMetrics(clang::ASTContext *ctx);
     std::ostream& ExportMetrics(std::ostream &os);
     std::ostream& ExportXMLMetrics(std::ostream &os);
+    bool TraverseDecl(clang::Decl *decl);
 protected:
     std::map<std::string, std::vector<std::unique_ptr<FunctionVisitor> > > functions;
     std::set<std::string> classes;

@@ -42,7 +42,7 @@ public:
     virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) override
     {
         /* Mute all clang output (ie. warning and error in compiling) */
-        Compiler.getDiagnostics().setClient(new IgnoringDiagConsumer());
+//        Compiler.getDiagnostics().setClient(new IgnoringDiagConsumer());
         return std::make_unique<FunctionInfoConsumer>(&Compiler.getASTContext());
     }
 };

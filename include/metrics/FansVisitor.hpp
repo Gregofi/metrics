@@ -71,6 +71,12 @@ public:
      * @return
      */
     bool TraverseLambdaExpr(clang::LambdaExpr *expr);
+    /**
+     * Skips all declarations that are in system files.
+     * @param decl
+     * @return
+     */
+    bool TraverseDecl(clang::Decl *decl);
     virtual std::ostream &Export(const std::string &s, std::ostream &os) const override;
     virtual std::ostream &ExportXML(const std::string &s, std::ostream &os) const override;
 protected:

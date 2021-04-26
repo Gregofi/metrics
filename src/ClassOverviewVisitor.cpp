@@ -9,7 +9,8 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
     if(!decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
-        || decl->isLambda() || classes.count(decl->getQualifiedNameAsString()) || (!decl->isClass() && !decl->isStruct()))
+        || decl->isLambda() || classes.count(decl->getQualifiedNameAsString())
+        || (!decl->isClass() && !decl->isStruct()))
         return true;
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
      * wouldn't be added otherwise */
@@ -173,4 +174,12 @@ std::ostream &ClassOverviewVisitor::ExportXML(const std::string &s, std::ostream
              + Tag("couples", c.couples.size())
              + Tag("LOC", LackOfCohesion(s)));
     return os;
+}
+
+bool ClassOverviewVisitor::TraverseDecl(clang::Decl *decl)
+{
+    /* Skip files that are in system files */
+    if(!decl || ctx->getSourceManager().isInSystemHeader(decl->getLocation()))
+        return true;
+    return RecursiveASTVisitor::TraverseDecl(decl);
 }

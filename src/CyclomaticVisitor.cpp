@@ -45,7 +45,7 @@ void CyclomaticVisitor::CalcMetrics(clang::FunctionDecl *decl)
                     clang::ast_matchers::conditionalOperator(),
                     clang::ast_matchers::cxxForRangeStmt(),
                     clang::ast_matchers::whileStmt(),
-                    clang::ast_matchers::cxxTryStmt(),
+                    clang::ast_matchers::cxxCatchStmt(),
                     clang::ast_matchers::caseStmt(),
                     clang::ast_matchers::doStmt(),
                     clang::ast_matchers::ifStmt(),

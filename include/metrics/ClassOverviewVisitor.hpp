@@ -143,6 +143,7 @@ public:
      */
     virtual void CalcMetrics(clang::ASTContext *ctx) override;
     virtual std::ostream &Export(const std::string &s, std::ostream &os) const override;
+    bool TraverseDecl(clang::Decl *decl);
 protected:
     void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
     std::map<std::string, Class> classes;
