@@ -8,7 +8,8 @@
 bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl *d)
 {
     if(ctx->getSourceManager().isInSystemHeader(d->getLocation())
-        || !d->isThisDeclarationADefinition()) return true;
+        || !d->isThisDeclarationADefinition() || visited.count(GetFunctionHead(d))) return true;
+    visited.emplace(GetFunctionHead(d));
     ASTMatcherVisitor vis(ctx);
     vis.AddMatchers({callExpr().bind("call")}, &counter);
 

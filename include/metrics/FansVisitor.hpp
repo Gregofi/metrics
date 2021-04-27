@@ -5,6 +5,9 @@
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 
+#include <set>
+#include <string>
+
 /**
  * Callback for counting fans.
  * @detail Implementation is not ideal. Before it is run, it needs to know
@@ -80,6 +83,7 @@ public:
     virtual std::ostream &Export(const std::string &s, std::ostream &os) const override;
     virtual std::ostream &ExportXML(const std::string &s, std::ostream &os) const override;
 protected:
+    std::set<std::string> visited;
     FanCount counter;
 };
 
