@@ -85,7 +85,12 @@ void StmtNPathVisitor::VisitDoStmt(clang::DoStmt *stmt)
 
 void StmtNPathVisitor::VisitConditionalOperator(clang::ConditionalOperator *op)
 {
-    count = 2 + CountLogicalOperators(op->getCond());
+    int result = CountLogicalOperators(op->getCond());
+    Visit(op->getTrueExpr());
+    result += count;
+    Visit(op->getFalseExpr());
+    result += count;
+    count = result;
 }
 
 void StmtNPathVisitor::VisitWhileStmt(clang::WhileStmt *stmt)
@@ -101,12 +106,23 @@ void StmtNPathVisitor::VisitSwitchStmt(clang::SwitchStmt *stmt)
 {
     int result = 1;
     result += CountLogicalOperators(stmt->getCond());
-    for(clang::SwitchCase *c = stmt->getSwitchCaseList(); c != nullptr; c = c->getNextSwitchCase() )
+    int case_range = 0;
+    for(auto *c : stmt->getBody()->children())
     {
-        Visit(c);
-        result += count;
+        if(c->getStmtClass() == Stmt::CaseStmtClass)
+        {
+            result += case_range;
+            Visit(llvm::dyn_cast<CaseStmt>(c)->getSubStmt());
+            case_range = count;
+        }
+        else
+        {
+            Visit(c);
+            case_range *= count;
+        }
     }
-    result += 1;
+    result += case_range;
+    count = result;
 }
 
 void StmtNPathVisitor::VisitIfStmt(clang::IfStmt *stmt)
@@ -138,13 +154,13 @@ void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
 
 void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
 {
-
+    Visit(stmt->getHandlerBlock());
+    count += 1;
 }
 
 void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
 {
-    Visit(stmt->getTryBlock());
-    count += 1;
+
 }
 
 int StmtNPathVisitor::CountLogicalOperators(clang::Stmt *stmt)
@@ -174,4 +190,12 @@ void StmtNPathVisitor::VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt)
 {
     Visit(stmt->getBody());
     count += 1;
+}
+
+void StmtNPathVisitor::VisitCaseStmt(clang::CaseStmt *stmt)
+{
+    if(!stmt)
+        count = 1;
+    else
+        Visit(stmt->getSubStmt());
 }
