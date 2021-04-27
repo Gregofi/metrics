@@ -21,9 +21,8 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     clang::SourceManager &sm(context->getSourceManager());
 
     /* Don't calc if source code is not in main file. */
-    if(!sm.isInMainFile(decl->getLocation())
-        || !decl->isThisDeclarationADefinition()
-        || !decl->hasBody()){
+    if(sm.isInSystemHeader(decl->getLocation())
+        || !decl->isThisDeclarationADefinition() || functions.count(GetFunctionHead(decl))){
         return true;
     }
 
