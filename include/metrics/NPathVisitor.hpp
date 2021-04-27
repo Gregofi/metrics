@@ -32,6 +32,7 @@ public:
     void VisitForStmt(clang::ForStmt *stmt);
     void VisitConditionalOperator(clang::ConditionalOperator *op);
     void VisitLambdaExpr(clang::LambdaExpr *expr);
+    void VisitCaseStmt(clang::CaseStmt *stmt);
     int CountLogicalOperators(clang::Stmt *stmt);
     /**
      * Returns calculated NPATH complexity.

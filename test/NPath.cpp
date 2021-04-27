@@ -81,8 +81,39 @@ int DoStmtTest()
 int ExprTest()
 {
     ASSERT_EQ(GET_VAL("1 && 2;"), 2);
+    ASSERT_EQ(GET_VAL("1 ? 2 : 3;"), 2);
     ASSERT_EQ(GET_VAL("if(true) { int a = 1 ? 0 : 2;} "), 3);
     ASSERT_EQ(GET_VAL("if(true) { int a = 1 && 1 == true ? 0 : 1; } if(true) { 1 && 2;}"), 4*3);
+    return 0;
+}
+
+int CaseTest()
+{
+    ASSERT_EQ(GET_VAL("switch(1) { case 2: return 0; case 3: return 1; break; }"), 3);
+    ASSERT_EQ(GET_VAL(R"(
+            switch(1)
+            {
+                case 1:
+                case 2:
+                    return 1;
+                    break;
+                case 3:
+                    if(1 > 2)
+                        return 3;
+                    else
+                        return 2;
+                    break;
+            }
+            )"), 4);
+    ASSERT_EQ(GET_VAL(R"(
+            switch(1)
+            {
+                case 1:
+                    return 1;
+                default:
+                    return 2;
+            }
+            )"), 2);
     return 0;
 }
 
@@ -96,4 +127,5 @@ int main()
     TEST(WhileStmtTest);
     TEST(DoStmtTest);
     TEST(ExprTest);
+    TEST(CaseTest);
 }
