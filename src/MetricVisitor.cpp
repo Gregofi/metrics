@@ -31,7 +31,6 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
     visitors.emplace_back(std::make_unique<FuncInfoVisitor>(context));
     visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
-    visitors.emplace_back(std::make_unique<HalsteadVisitor>(context));
     visitors.emplace_back(std::make_unique<NPathVisitor>(context));
 
     for(const auto & x : visitors)
