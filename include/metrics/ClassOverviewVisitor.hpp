@@ -7,34 +7,79 @@
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 
+struct Class
+{
+    /**
+     * Number of children for given Key
+     */
+    int children_count{0};
+
+    /**
+     * Contains ID of all function from which this class directly derives.
+     */
+    std::vector<std::string> inheritance_chain;
+
+    /**
+     * Contains classes whose methods this class calls
+     */
+    std::set<std::string> fan_in;
+
+    /**
+     * Vector of sets, each of these sets contains name of used instance variables by one method.
+     */
+    std::vector<std::set<std::string> > functions;
+
+    /**
+     * Number of public methods (except default ones)
+     */
+    int public_methods_count{0};
+
+    /**
+     * Number of all methods (except default ones)
+     */
+    int methods_count{0};
+
+    /**
+     * Number of instance variables.
+     */
+    int instance_vars_count{0};
+    int public_instance_vars_count{0};
+
+    /**
+     * Number of overriden methods.
+     */
+    int overriden_methods_count{0};
+
+    /**
+     * Number of classes that calls method from this class or uses its attributes.
+     */
+    std::set<std::string> fan_out;
+};
+
 /**
  * Used on single method of class, traverses method body and collects:
- *  - IDs of classes from which are methods that this class calls (doesn't add current class)
+ *  - IDs of classes from which are methods that this class calls and members that it accesses (doesn't add current class)
  *  - IDs of instance variables from this class that current method uses
  */
 class MethodCallback : public clang::ast_matchers::MatchFinder::MatchCallback
 {
 public:
-    explicit MethodCallback(std::string currClassName) noexcept : currClassID(std::move(currClassName)) {}
+    explicit MethodCallback(std::string currClassName, std::map<std::string, Class> *classes) noexcept
+                                : currClass(std::move(currClassName)), classes(classes) {}
     void SetCurrentFunction(std::string s) { currFunction = std::move(s); }
     void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
-    /**
-     * Returns ID of classes which this method called, original set is moved.
-     * @return
-     */
-    std::set<std::string> GetClasses() { return std::move(classes); }
     /**
      * Returns ID of instance var which this method used, original set is moved.
      * @return
      */
-    std::set<long unsigned> GetInstanceVars() { return std::move(instance_vars); }
+    std::set<std::string> GetInstanceVars() { return std::move(instance_vars); }
 
 
 protected:
     std::string currFunction{};
-    std::string currClassID;
-    std::set<std::string> classes;
-    std::set<long unsigned> instance_vars;
+    std::string currClass{};
+    std::set<std::string> instance_vars;
+    std::map<std::string, Class> *classes;
 };
 
 /**
@@ -58,51 +103,6 @@ protected:
  */
 class ClassOverviewVisitor : public clang::RecursiveASTVisitor<ClassOverviewVisitor>, public CtxVisitor
 {
-protected:
-    struct Class
-    {
-        /**
-         * Number of children for given Key
-         */
-        int children_count{0};
-
-        /**
-         * Contains ID of all function from which this class directly derives.
-         */
-        std::vector<std::string> inheritance_chain;
-
-        /**
-         * Contains classes whose methods this class calls
-         */
-        std::set<std::string> couples;
-
-        /**
-         * Contains sets of integers, each of these sets contains IDs of used instance variables by one method.
-         */
-        std::vector<std::set<size_t> > functions;
-
-        /**
-         * Number of public methods (except default ones)
-         */
-        int public_methods_count{0};
-
-        /**
-         * Number of all methods (except default ones)
-         */
-        int methods_count{0};
-
-        /**
-         * Number of instance variables.
-         */
-        int instance_vars_count{0};
-        int public_instance_vars_count{0};
-
-        /**
-         * Number of overriden methods.
-         */
-        int overriden_methods_count{0};
-    };
-
 public:
     bool VisitCXXRecordDecl(clang::CXXRecordDecl *decl);
     bool VisitCXXMethodDecl(clang::CXXMethodDecl *decl);
@@ -123,7 +123,7 @@ public:
      * @param s2
      * @return
      */
-    static bool Similar(const std::set<long unsigned> &s1, const std::set<long unsigned> &s2);
+    static bool Similar(const std::set<std::string> &s1, const std::set<std::string> &s2);
 
     /**
      * Calculates the 'lack of cohesion' metric for given class.

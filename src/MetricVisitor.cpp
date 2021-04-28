@@ -44,7 +44,7 @@ bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
     clang::SourceManager &sm(context->getSourceManager());
 
     if(decl->isLambda() || !decl->isThisDeclarationADefinition() || sm.isInSystemHeader(decl->getLocation())
-            || decl->isUnion() || classes.count(decl->getQualifiedNameAsString()))
+            || (!decl->isStruct() && !decl->isClass()) || classes.count(decl->getQualifiedNameAsString()))
         return true;
     classes.insert(decl->getQualifiedNameAsString());
     return true;

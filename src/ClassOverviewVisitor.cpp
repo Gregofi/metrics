@@ -36,13 +36,11 @@ bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
     if(!decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation()) || decl->getParent()->isLambda())
         return true;
     ASTMatcherVisitor vis(ctx);
-    MethodCallback callback(decl->getParent()->getQualifiedNameAsString());
+    MethodCallback callback(decl->getParent()->getQualifiedNameAsString(), &classes);
     vis.AddMatchers({cxxMemberCallExpr().bind("member_call"), memberExpr().bind("member_access")}, &callback);
     vis.TraverseDecl(decl);
-    auto set = callback.GetClasses();
-    classes[decl->getParent()->getQualifiedNameAsString()].couples.insert(set.begin(), set.end());
+    classes[decl->getParent()->getQualifiedNameAsString()].functions.emplace_back(callback.GetInstanceVars());
     auto vars = callback.GetInstanceVars();
-    classes[decl->getParent()->getQualifiedNameAsString()].functions.push_back(vars);
     return true;
 }
 
@@ -57,7 +55,7 @@ int ClassOverviewVisitor::GetInheritanceChainLen(const std::string &s) const
     return res;
 }
 
-bool ClassOverviewVisitor::Similar(const std::set<unsigned long> &s1, const std::set<unsigned long> &s2)
+bool ClassOverviewVisitor::Similar(const std::set<std::string> &s1, const std::set<std::string> &s2)
 {
     for(auto it1 = s1.begin(), it2 = s2.begin(); it1 != s1.end() && it2 != s2.end();)
     {
@@ -89,9 +87,10 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
     {
         /* If this class calls method from other class its coupled with it. Check if the called
          * method is indeed from other class then this one */
-        if(const auto &s = call->getMethodDecl()->getParent()->getQualifiedNameAsString(); s != currClassID)
+        if(const auto &s = call->getMethodDecl()->getParent()->getQualifiedNameAsString(); s != currClass)
         {
-            classes.insert(s);
+            (*classes)[currClass].fan_in.insert(s);
+            (*classes)[s].fan_out.insert(currClass);
         }
     }
     if(const auto *access = Result.Nodes.getNodeAs<MemberExpr>("member_access"))
@@ -99,11 +98,20 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
         /** Check if member is from CXXClass (it can also be from enum or union) */
         if(access->getMemberDecl()->isCXXClassMember())
         {
-            /** Get id of the class that the member belongs to, check its this class id */
-            if(const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl());
-                    d && d->getParent()->getQualifiedNameAsString() == currClassID)
+            const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl());
+            if(d)
             {
-                instance_vars.insert(d->getID());
+                std::string parent_name = d->getParent()->getQualifiedNameAsString();
+                /** Get id of the class that the member belongs to, check its this class id */
+                if(parent_name == currClass)
+                {
+                    instance_vars.insert(d->getNameAsString());
+                }
+                else
+                {
+                    (*classes)[currClass].fan_in.insert(parent_name);
+                    (*classes)[parent_name].fan_out.insert(currClass);
+                }
             }
         }
     }
@@ -150,9 +158,18 @@ std::ostream &ClassOverviewVisitor::Export(const std::string &s, std::ostream &o
        << "  Longest inheritance chain length: " << GetInheritanceChainLen(s) << "\n"
        << "  Overriden methods: " << c.overriden_methods_count << "\n"
        << "Other:\n"
-       << "  Number of couples: " << c.couples.size() << "\n"
+       << "  fan in: " << c.fan_in.size() << "\n"
+       << "  fan out: " << c.fan_out.size() << "\n"
        << "  Lack of cohesion : " << LackOfCohesion(s) << "\n";
     return os;
+}
+
+template <typename T>
+size_t UnionSize(const std::set<T> &s1, const std::set<T> s2)
+{
+    std::vector<T> res;
+    std::set_union(s1.begin(), s1.end(), s2.begin(), s2.end(), std::back_inserter(res));
+    return res.size();
 }
 
 std::ostream &ClassOverviewVisitor::ExportXML(const std::string &s, std::ostream &os) const
@@ -171,7 +188,9 @@ std::ostream &ClassOverviewVisitor::ExportXML(const std::string &s, std::ostream
             + Tag("overriden_methods", c.overriden_methods_count))
        << Tag("other",
              "\n"
-             + Tag("couples", c.couples.size())
+             + Tag("fan_in", c.fan_in.size())
+             + Tag("fan_out", c.fan_out.size())
+             + Tag("coupling", UnionSize(c.fan_in, c.fan_out))
              + Tag("LOC", LackOfCohesion(s)));
     return os;
 }
