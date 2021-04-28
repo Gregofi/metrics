@@ -22,7 +22,7 @@
 class FuncInfoVisitor : public FunctionVisitor
 {
     /* Statements that contains other statements */
-    static const std::array<clang::Stmt::StmtClass, 10> compoundStatements;
+    static const std::array<clang::Stmt::StmtClass, 11> compoundStatements;
 
     struct FunctionInfo
     {

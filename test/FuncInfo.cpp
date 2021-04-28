@@ -25,8 +25,12 @@ const char *sw = R"(
     }
     // And yet another switch statement
     switch(a)
+    {
         case 1:
             return 1;
+        default:
+            break;
+    }
 )";
 
 const char *ifstmt = R"(
@@ -76,7 +80,7 @@ int main()
     ASSERT_EQ(vis.GetResult().statements, 1);
     ASSERT_EQ(vis.GetResult().depth, 1);
     vis = ConstructMetricsOneFunction<FuncInfoVisitor>(sw);
-    ASSERT_EQ(vis.GetResult().statements, 14);
+    ASSERT_EQ(vis.GetResult().statements, 16);
     ASSERT_EQ(vis.GetResult().depth, 3);
     vis = ConstructMetricsOneFunction<FuncInfoVisitor>(ifstmt);
     ASSERT_EQ(vis.GetResult().statements, 6);

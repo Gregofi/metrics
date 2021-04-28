@@ -14,7 +14,7 @@
 
 using namespace clang;
 
-const std::array<Stmt::StmtClass, 10> FuncInfoVisitor::compoundStatements  ({
+const std::array<Stmt::StmtClass, 11> FuncInfoVisitor::compoundStatements  ({
     Stmt::SwitchStmtClass,
     Stmt::IfStmtClass,
     Stmt::ForStmtClass,
@@ -25,6 +25,7 @@ const std::array<Stmt::StmtClass, 10> FuncInfoVisitor::compoundStatements  ({
     Stmt::CXXCatchStmtClass,
     Stmt::CoroutineBodyStmtClass,
     Stmt::CaseStmtClass,
+    Stmt::DefaultStmtClass,
 });
 
 
@@ -81,7 +82,7 @@ std::pair<int, int> FuncInfoVisitor::HandleOtherCompounds(const Stmt *body, int 
                          (stmtClass == Stmt::WhileStmtClass || stmtClass == Stmt::CXXTryStmtClass
                           || stmtClass == Stmt::ForStmtClass || stmtClass == Stmt::SwitchStmtClass
                           || stmtClass == Stmt::CXXForRangeStmtClass || stmtClass == Stmt::CXXCatchStmtClass
-                          || stmtClass == Stmt::CaseStmtClass));
+                          || stmtClass == Stmt::CaseStmtClass || stmtClass == Stmt::DefaultStmtClass));
         std::pair<int, int> tmp_res = StmtCount(*it, depth + advance);
         res.first += tmp_res.first;
         res.second = std::max(res.second, tmp_res.second);
