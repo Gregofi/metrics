@@ -51,6 +51,7 @@ void CyclomaticVisitor::CalcMetrics(clang::FunctionDecl *decl)
                     clang::ast_matchers::ifStmt(),
                     clang::ast_matchers::binaryOperator(hasOperatorName("&&")),
                     clang::ast_matchers::binaryOperator(hasOperatorName("||")),
+                    clang::ast_matchers::gotoStmt(),
             };
     ASTMatcherVisitor v(context);
     v.AddMatchers(matchers, &counter);
