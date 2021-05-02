@@ -86,7 +86,7 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
     if(const auto *call = Result.Nodes.getNodeAs<CXXMemberCallExpr>("member_call"))
     {
         /* If this class calls method from other class its coupled with it. Check if the called
-         * method is indeed from other class then this one */
+         * method is from other class then this one */
         if(const auto &s = call->getMethodDecl()->getParent()->getQualifiedNameAsString(); s != currClass)
         {
             (*classes)[currClass].fan_in.insert(s);
@@ -106,11 +106,6 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
                 if(parent_name == currClass)
                 {
                     instance_vars.insert(d->getNameAsString());
-                }
-                else
-                {
-                    (*classes)[currClass].fan_in.insert(parent_name);
-                    (*classes)[parent_name].fan_out.insert(currClass);
                 }
             }
         }
@@ -160,7 +155,7 @@ std::ostream &ClassOverviewVisitor::Export(const std::string &s, std::ostream &o
        << "Other:\n"
        << "  fan in: " << c.fan_in.size() << "\n"
        << "  fan out: " << c.fan_out.size() << "\n"
-       << "  Lack of cohesion : " << LackOfCohesion(s) << "\n";
+       << "  Lack of cohesion: " << LackOfCohesion(s) << "\n";
     return os;
 }
 
@@ -191,7 +186,7 @@ std::ostream &ClassOverviewVisitor::ExportXML(const std::string &s, std::ostream
              + Tag("fan_in", c.fan_in.size())
              + Tag("fan_out", c.fan_out.size())
              + Tag("coupling", UnionSize(c.fan_in, c.fan_out))
-             + Tag("LOC", LackOfCohesion(s)));
+             + Tag("lack_of_cohesion", LackOfCohesion(s)));
     return os;
 }
 
