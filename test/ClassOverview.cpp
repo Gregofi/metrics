@@ -60,10 +60,15 @@ int BasicCasesTest()
     ASSERT_EQ(vis.GetRefClass("foo").children_count, 1);
     ASSERT_EQ(vis.GetRefClass("bar").children_count, 0);
     ASSERT_EQ(vis.GetRefClass("foreigner").children_count, 0);
+    ASSERT_EQ(vis.GetRefClass("foreigner").fan_in.size(), 0);
+    ASSERT_EQ(vis.GetRefClass("foreigner").fan_out.size(), 1);
+    ASSERT_EQ(vis.GetRefClass("bar").fan_in.size(), 1);
+    ASSERT_EQ(vis.GetRefClass("bar").fan_out.size(), 0);
 
     ASSERT_EQ(vis.GetRefClass("bar").inheritance_chain.front(), "foo");
     ASSERT_EQ(vis.GetRefClass("bar").functions[0].size(), 2);
     ASSERT_EQ(vis.GetInheritanceChainLen("bar"), 1);
+
 
     /* Test counts */
     ASSERT_EQ(vis.GetRefClass("foreigner").methods_count, 2);
@@ -71,6 +76,7 @@ int BasicCasesTest()
     ASSERT_EQ(vis.GetRefClass("foreigner").instance_vars_count, 2);
     ASSERT_EQ(vis.GetRefClass("foreigner").public_instance_vars_count, 1);
     ASSERT_EQ(vis.GetRefClass("foreigner").overriden_methods_count, 0);
+
 
     ASSERT_EQ(vis.GetRefClass("bar").methods_count, 1);
     ASSERT_EQ(vis.GetRefClass("bar").instance_vars_count, 2);
@@ -157,8 +163,11 @@ int MemberAccessTest()
     auto vis = v.vis;
 
     ASSERT_EQ(vis.GetRefClass("a").functions[2].size(), 2);
+    ASSERT_EQ(vis.GetRefClass("a").functions[2].count("a"), 1);
+    ASSERT_EQ(vis.GetRefClass("a").functions[2].count("b"), 1);
     ASSERT_EQ(vis.GetRefClass("a").functions[0].size(), 3);
     ASSERT_EQ(vis.GetRefClass("a").functions[1].size(), 1);
+    ASSERT_EQ(vis.GetRefClass("a").functions[1].count("c"), 1);
 
     ASSERT_EQ(vis.LackOfCohesion("a"), 0);
 
@@ -232,6 +241,60 @@ int InnerClassTest()
     return 0;
 }
 
+const char *fans = R"(
+class A{public: void a() {} };
+class B{public: void b() {} };
+class C{public: void c() {} };
+
+class Foo
+{
+    public:
+    void f1(A *a)
+    {
+        a->a();
+        B b;
+        b.b();
+        bb.b();
+    }
+
+    void f2(B *b)
+    {
+        b->b();
+        bb.b();
+    }
+
+    B bb;
+};
+
+class Bar
+{
+    Foo f;
+    void f1(C *c, A *a)
+    {
+        f.f1(a);
+        c->c();
+        f.f1(a);
+    }
+};
+)";
+
+int FansTest()
+{
+    auto v = Eval(fans);
+    auto cnames = v.names.class_names;
+    auto fnames = v.names.func_names;
+    auto vis = v.vis;
+
+    ASSERT_EQ(vis.GetRefClass("Foo").fan_in.size(), 2);
+    ASSERT_EQ(vis.GetRefClass("Foo").fan_out.size(), 1);
+    ASSERT_EQ(vis.GetRefClass("A").fan_out.size(), 1);
+    ASSERT_EQ(vis.GetRefClass("B").fan_out.size(), 1);
+    ASSERT_EQ(vis.GetRefClass("Bar").fan_in.size(), 2);
+    ASSERT_EQ(vis.GetRefClass("Bar").fan_out.size(), 0);
+
+    return 0;
+}
+
 int main()
 {
     ASSERT_EQ(ClassOverviewVisitor::Similar({"a", "b", "c"}, {"d", "c", "w"}), true);
@@ -244,5 +307,6 @@ int main()
     TEST(MemberAccessTest);
     TEST(LackOfCohesionTest);
     TEST(InnerClassTest);
+    TEST(FansTest);
     return 0;
 }
