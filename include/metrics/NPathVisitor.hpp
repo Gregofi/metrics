@@ -38,11 +38,12 @@ public:
      * Returns calculated NPATH complexity.
      * @return - Calculated NPATH complexity.
      */
-    int GetCount() const { return count; }
+    int GetCount() const { return count + lambda_count; }
     void VisitReturnStmt(clang::ReturnStmt *stmt);
 protected:
     clang::ASTContext *ctx;
     int count = 0;
+    int lambda_count = 0;
 };
 
 /**

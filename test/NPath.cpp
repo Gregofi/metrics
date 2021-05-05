@@ -117,6 +117,18 @@ int CaseTest()
     return 0;
 }
 
+int LambdaTest()
+{
+    ASSERT_EQ(GET_VAL(R"(
+        if(1 < 2) {}
+        if(2 < 3) {}
+        auto l = []() { if(1 < 2) {}
+               if(2 < 3) { if (3 < 4) {} } };
+
+        )"), 10);
+    return 0;
+}
+
 int main()
 {
     TEST(NoConditionsTest);
@@ -128,4 +140,5 @@ int main()
     TEST(DoStmtTest);
     TEST(ExprTest);
     TEST(CaseTest);
+    TEST(LambdaTest);
 }
