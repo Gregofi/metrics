@@ -53,9 +53,9 @@ int main(int argc, const char **argv)
     clang::tooling::CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
     clang::tooling::ClangTool Tool(OptionsParser.getCompilations(), OptionsParser.getSourcePathList());
     /* Add link to clang libraries, path to this can be found by running 'clang --print-file-name=include' */
-    clang::tooling::ArgumentsAdjuster ardj1 =
-            clang::tooling::getInsertArgumentAdjuster("-I/usr/lib/clang/11.1.0/include");
-    Tool.appendArgumentsAdjuster(ardj1);
+//    clang::tooling::ArgumentsAdjuster ardj1 =
+//            clang::tooling::getInsertArgumentAdjuster("-I/usr/lib/clang/11.1.0/include");
+//    Tool.appendArgumentsAdjuster(ardj1);
     Tool.run(clang::tooling::newFrontendActionFactory<FunctionInfoAction>().get());
     if(!XMLOutputOpt.empty())
     {

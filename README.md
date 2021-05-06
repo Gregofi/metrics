@@ -37,7 +37,7 @@ This will be one LOC, but three NOS.
 
 #### Cyclomatic complexity
 Calculates number of branching statements (`if`, `for`, `while`...). This should be equal to 
-number of linearly independent paths through program.
+number of linearly independent paths through program. Lambdas are considered as function body.
 
 #### NPATH
 Calculates number of acyclic paths through program. Consider following code
@@ -60,6 +60,8 @@ This code has 6 acyclic paths through it. `if(c)` has two possible paths, either
   /     /   \
 ```
 `if(a)` has two paths. In total that is 3*2 = 6. Note the difference from Cyclomatic complexity, which would be 4.
+
+Lambdas NPATH complexity in functions is then added to function complexity.
 #### Fan-in, Fan-out
 Counts how many times each function has been called (Fan-out) and how much functions one function calls (Fan-in).
 Function call, member function and overloaded operator call are all considered, constructor and destructor
