@@ -22,7 +22,9 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
 
     /* Don't calc if source code is not in main file. */
     if(sm.isInSystemHeader(decl->getLocation())
-        || !decl->isThisDeclarationADefinition() || functions.count(GetFunctionHead(decl))){
+        || !decl->isThisDeclarationADefinition()
+        || functions.count(GetFunctionHead(decl))
+        || !decl->hasBody()){
         return true;
     }
 

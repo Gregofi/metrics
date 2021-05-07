@@ -201,3 +201,11 @@ void StmtNPathVisitor::VisitCaseStmt(clang::CaseStmt *stmt)
     else
         Visit(stmt->getSubStmt());
 }
+
+void StmtNPathVisitor::Visit(clang::Stmt *stmt)
+{
+    if(!stmt)
+        count = 1;
+    else
+        StmtVisitor<StmtNPathVisitor>::Visit(stmt);
+}

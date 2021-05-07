@@ -20,7 +20,7 @@ public:
     explicit StmtNPathVisitor(clang::ASTContext *ctx) : ctx(ctx){}
     void VisitStmt(clang::Stmt *stmt);
     void VisitCompoundStmt(clang::CompoundStmt *stmt);
-    void Visit(clang::Stmt *stmt) { StmtVisitor<StmtNPathVisitor>::Visit(stmt); }
+    void Visit(clang::Stmt *stmt);
     void VisitIfStmt(clang::IfStmt *stmt);
     void VisitSwitchStmt(clang::SwitchStmt *stmt);
     void VisitWhileStmt(clang::WhileStmt *stmt);
