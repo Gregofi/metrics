@@ -102,6 +102,14 @@ void StmtNPathVisitor::VisitWhileStmt(clang::WhileStmt *stmt)
     count = result;
 }
 
+void StmtNPathVisitor::VisitCaseStmt(clang::CaseStmt *stmt)
+{
+    if(!stmt)
+        count = 1;
+    else
+        Visit(stmt->getSubStmt());
+}
+
 void StmtNPathVisitor::VisitSwitchStmt(clang::SwitchStmt *stmt)
 {
     int result = 1;
@@ -151,16 +159,30 @@ void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
     result += count;
     count = result;
 }
-
-void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
-{
-    Visit(stmt->getHandlerBlock());
-    count += 1;
-}
+//
+//void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
+//{
+//    Visit(stmt->getHandlerBlock());
+//    count += 1;
+//}
 
 void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
 {
+    int res = 0;
+    if(!stmt)
+    {
+        count = 1;
+        return;
+    }
 
+    Visit(stmt->getTryBlock());
+    res += count;
+    for(size_t i = 0; i < stmt->getNumHandlers(); ++ i)
+    {
+        Visit(llvm::dyn_cast_or_null<clang::CompoundStmt>(stmt->getHandler(i)->getHandlerBlock()));
+        res += count;
+    }
+    count = res;
 }
 
 int StmtNPathVisitor::CountLogicalOperators(clang::Stmt *stmt)
@@ -192,14 +214,6 @@ void StmtNPathVisitor::VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt)
 {
     Visit(stmt->getBody());
     count += 1;
-}
-
-void StmtNPathVisitor::VisitCaseStmt(clang::CaseStmt *stmt)
-{
-    if(!stmt)
-        count = 1;
-    else
-        Visit(stmt->getSubStmt());
 }
 
 void StmtNPathVisitor::Visit(clang::Stmt *stmt)

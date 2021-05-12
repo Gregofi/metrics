@@ -129,6 +129,39 @@ int LambdaTest()
     return 0;
 }
 
+int ExceptionTest()
+{
+    ASSERT_EQ(GET_VAL(R"(
+        try {
+            new int[10000];
+        } catch(...) {
+
+        }
+
+        )"), 2);
+    ASSERT_EQ(GET_VAL(R"(
+        try {
+            new int[10000];
+        } catch(...) {
+            if(true){}
+        }
+
+        )"), 3);
+    ASSERT_EQ(GET_VAL(R"(
+        try {
+            new int[10000];
+            if(true) {}
+            if(true) {}
+        } catch(int a) { if(true) {}}
+        catch(...) {
+
+        }
+        if(true){}
+        )"), 14);
+
+    return 0;
+}
+
 int main()
 {
     TEST(NoConditionsTest);
@@ -141,4 +174,5 @@ int main()
     TEST(ExprTest);
     TEST(CaseTest);
     TEST(LambdaTest);
+    TEST(ExceptionTest);
 }

@@ -23,7 +23,15 @@ public:
 
     virtual ~CyclomaticVisitor();
 
+    /**
+     * Calculates cyclomatic complexity for given function
+     * @param decl
+     */
     virtual void CalcMetrics(clang::FunctionDecl *decl) override;
+    /**
+     * Returns counted complexity
+     * @return
+     */
     int GetValue() const { return count; }
 
     virtual std::ostream &ExportXML(std::ostream &os) const override;

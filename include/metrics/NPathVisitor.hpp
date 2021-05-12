@@ -27,7 +27,7 @@ public:
     void VisitDoStmt(clang::DoStmt *stmt);
     void VisitExpr(clang::Expr *expr);
     void VisitCXXTryStmt(clang::CXXTryStmt *stmt);
-    void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
+//    void VisitCXXCatchStmt(clang::CXXCatchStmt *stmt);
     void VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt);
     void VisitForStmt(clang::ForStmt *stmt);
     void VisitConditionalOperator(clang::ConditionalOperator *op);
