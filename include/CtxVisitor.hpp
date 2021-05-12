@@ -4,7 +4,7 @@
 #include "clang/AST/ASTContext.h"
 #include <ostream>
 
-/* This metric collect information about classes, but it needs to traverse whole unit, not just
+/** This metric collect information about classes, but it needs to traverse whole unit, not just
  * one class because metric calculation needs to know about other classes.
  */
 class CtxVisitor
