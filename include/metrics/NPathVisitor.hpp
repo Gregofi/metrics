@@ -37,12 +37,12 @@ public:
      * Returns calculated NPATH complexity.
      * @return - Calculated NPATH complexity.
      */
-    int GetCount() const { return count + lambda_count; }
+    long long unsigned GetCount() const { return count + lambda_count; }
     void VisitReturnStmt(clang::ReturnStmt *stmt);
 protected:
     clang::ASTContext *ctx;
-    int count = 0;
-    int lambda_count = 0;
+    long long unsigned count = 0;
+    long long unsigned lambda_count = 0;
 };
 
 /**
@@ -57,9 +57,9 @@ public:
     virtual std::ostream &Export(std::ostream &os) const override;
     virtual std::ostream &ExportXML(std::ostream &os) const override;
     bool VisitFunctionDecl(clang::FunctionDecl *decl);
-    int GetValue() const { return count; }
+    long long unsigned GetValue() const { return count; }
 private:
-    int count{0};
+    long long unsigned count{0};
 };
 
 

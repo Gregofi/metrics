@@ -33,7 +33,7 @@ std::ostream &NPathVisitor::ExportXML(std::ostream &os) const
 
 void StmtNPathVisitor::VisitStmt(Stmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     for(const auto & x : stmt->children())
     {
         if(!x)
@@ -46,7 +46,7 @@ void StmtNPathVisitor::VisitStmt(Stmt *stmt)
 
 void StmtNPathVisitor::VisitCompoundStmt(clang::CompoundStmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     for(const auto &x : stmt->children())
     {
         if(!x)
@@ -59,7 +59,7 @@ void StmtNPathVisitor::VisitCompoundStmt(clang::CompoundStmt *stmt)
 
 void StmtNPathVisitor::VisitExpr(clang::Expr *expr)
 {
-    int result = 1;
+    long long unsigned result = 1;
     for(const auto & x : expr->children())
     {
         if(!x) continue;
@@ -76,7 +76,7 @@ void StmtNPathVisitor::VisitExpr(clang::Expr *expr)
 
 void StmtNPathVisitor::VisitDoStmt(clang::DoStmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getBody());
     result += count;
@@ -85,7 +85,7 @@ void StmtNPathVisitor::VisitDoStmt(clang::DoStmt *stmt)
 
 void StmtNPathVisitor::VisitConditionalOperator(clang::ConditionalOperator *op)
 {
-    int result = CountLogicalOperators(op->getCond());
+    long long unsigned result = CountLogicalOperators(op->getCond());
     Visit(op->getTrueExpr());
     result += count;
     Visit(op->getFalseExpr());
@@ -95,7 +95,7 @@ void StmtNPathVisitor::VisitConditionalOperator(clang::ConditionalOperator *op)
 
 void StmtNPathVisitor::VisitWhileStmt(clang::WhileStmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getBody());
     result += count;
@@ -112,9 +112,9 @@ void StmtNPathVisitor::VisitCaseStmt(clang::CaseStmt *stmt)
 
 void StmtNPathVisitor::VisitSwitchStmt(clang::SwitchStmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     result += CountLogicalOperators(stmt->getCond());
-    int case_range = 0;
+    long long unsigned  case_range = 0;
     for(auto *c : stmt->getBody()->children())
     {
         if(c->getStmtClass() == Stmt::CaseStmtClass)
@@ -135,7 +135,7 @@ void StmtNPathVisitor::VisitSwitchStmt(clang::SwitchStmt *stmt)
 
 void StmtNPathVisitor::VisitIfStmt(clang::IfStmt *stmt)
 {
-    int result = 1 - (stmt->getElse() != nullptr);
+    long long unsigned result = 1 - (stmt->getElse() != nullptr);
     result += CountLogicalOperators(stmt->getCond());
     Visit(stmt->getThen());
     result += count;
@@ -151,7 +151,7 @@ void StmtNPathVisitor::VisitIfStmt(clang::IfStmt *stmt)
 
 void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
 {
-    int result = 1;
+    long long unsigned result = 1;
     result += CountLogicalOperators(stmt->getInit());
     result += CountLogicalOperators(stmt->getCond());
     result += CountLogicalOperators(stmt->getInc());
@@ -162,7 +162,7 @@ void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
 
 void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
 {
-    int res = 0;
+    long long unsigned res = 0;
     if(!stmt)
     {
         count = 1;
