@@ -6,7 +6,7 @@
 bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     /* Skip declarations that have no body and that aren't in main file */
-    if(!decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation())
+    if(!decl || !decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
         || decl->isLambda() || classes.count(decl->getQualifiedNameAsString())
@@ -33,7 +33,8 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 
 bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
-    if(!decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation()) || decl->getParent()->isLambda())
+    if(!decl || !decl->isThisDeclarationADefinition()
+        || ctx->getSourceManager().isInSystemHeader(decl->getLocation()) || decl->getParent()->isLambda())
         return true;
     ASTMatcherVisitor vis(ctx);
     MethodCallback callback(decl->getParent()->getQualifiedNameAsString(), &classes);
