@@ -96,14 +96,14 @@ void MethodCallback::run(const MatchFinder::MatchResult &Result)
     }
     if(const auto *access = Result.Nodes.getNodeAs<MemberExpr>("member_access"))
     {
-        /** Check if member is from CXXClass (it can also be from enum or union) */
+        /* Check if member is from CXXClass (it can also be from enum or union) */
         if(access->getMemberDecl()->isCXXClassMember())
         {
             const FieldDecl *d = llvm::dyn_cast<FieldDecl>(access->getMemberDecl());
             if(d)
             {
                 std::string parent_name = d->getParent()->getQualifiedNameAsString();
-                /** Get id of the class that the member belongs to, check its this class id */
+                /* Get id of the class that the member belongs to, check its this class id */
                 if(parent_name == currClass)
                 {
                     instance_vars.insert(d->getNameAsString());

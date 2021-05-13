@@ -159,12 +159,6 @@ void StmtNPathVisitor::VisitForStmt(clang::ForStmt *stmt)
     result += count;
     count = result;
 }
-//
-//void StmtNPathVisitor::VisitCXXCatchStmt(clang::CXXCatchStmt *stmt)
-//{
-//    Visit(stmt->getHandlerBlock());
-//    count += 1;
-//}
 
 void StmtNPathVisitor::VisitCXXTryStmt(clang::CXXTryStmt *stmt)
 {
