@@ -15,10 +15,11 @@ using namespace clang;
 using clang::Stmt;
 
 /* Command line args */
-static llvm::cl::OptionCategory MyToolCategory("metrics options");
+static llvm::cl::OptionCategory MyToolCategory("metrics");
 static llvm::cl::opt<std::string> XMLOutputOpt("xml",
                                                llvm::cl::desc("App will export measured data to XML, specify name of output file"),
                                                llvm::cl::value_desc("filename"));
+
 MetricVisitor g_metricVisitor;
 
 
@@ -61,7 +62,10 @@ int main(int argc, const char **argv)
     {
         std::ofstream of(XMLOutputOpt.c_str());
         if(!of.good())
-            throw std::io_errc(1);
+        {
+            std::cerr << "Unable to write output to file, aborting" << std::endl;
+            return 1;
+        }
         g_metricVisitor.ExportXMLMetrics(of);
     }
     else

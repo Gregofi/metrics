@@ -136,5 +136,7 @@ bool MetricVisitor::TraverseDecl(clang::Decl *decl)
     /* Skip files that are in system files */
     if(!decl || context->getSourceManager().isInSystemHeader(decl->getLocation()))
         return true;
+    /* We cannot skip function body even if this visitor only visits function headers, because functions
+     * can contain classes */
     return RecursiveASTVisitor::TraverseDecl(decl);
 }
