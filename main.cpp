@@ -15,10 +15,11 @@ using namespace clang;
 using clang::Stmt;
 
 /* Command line args */
-static llvm::cl::OptionCategory MyToolCategory("metrics");
+static llvm::cl::OptionCategory MetricsCategory("metrics options");
 static llvm::cl::opt<std::string> XMLOutputOpt("xml",
                                                llvm::cl::desc("App will export measured data to XML, specify name of output file"),
-                                               llvm::cl::value_desc("filename"));
+                                               llvm::cl::value_desc("filename"),
+                                               llvm::cl::cat(MetricsCategory));
 
 MetricVisitor g_metricVisitor;
 
@@ -51,7 +52,13 @@ public:
 
 int main(int argc, const char **argv)
 {
-    clang::tooling::CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
+    auto ExpectedParser = clang::tooling::CommonOptionsParser::create(argc, argv, MetricsCategory, llvm::cl::Required);
+    if(!ExpectedParser)
+    {
+        llvm::errs() << ExpectedParser.takeError();
+        return 1;
+    }
+    clang::tooling::CommonOptionsParser &OptionsParser = ExpectedParser.get();
     clang::tooling::ClangTool Tool(OptionsParser.getCompilations(), OptionsParser.getSourcePathList());
     /* Add link to clang libraries, path to this can be found by running 'clang --print-file-name=include' */
 //    clang::tooling::ArgumentsAdjuster ardj1 =
