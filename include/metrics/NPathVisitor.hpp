@@ -14,34 +14,36 @@
 /**
  * Visitor which visits statements and calculates NPath complexity for given compound statement.
  */
-class StmtNPathVisitor : public clang::StmtVisitor<StmtNPathVisitor>
+class StmtNPathVisitor : public clang::StmtVisitor<StmtNPathVisitor, long long unsigned>
 {
 public:
     explicit StmtNPathVisitor(clang::ASTContext *ctx) : ctx(ctx){}
-    void VisitStmt(clang::Stmt *stmt);
-    void VisitCompoundStmt(clang::CompoundStmt *stmt);
-    void Visit(clang::Stmt *stmt);
-    void VisitIfStmt(clang::IfStmt *stmt);
-    void VisitSwitchStmt(clang::SwitchStmt *stmt);
-    void VisitWhileStmt(clang::WhileStmt *stmt);
-    void VisitDoStmt(clang::DoStmt *stmt);
-    void VisitExpr(clang::Expr *expr);
-    void VisitCXXTryStmt(clang::CXXTryStmt *stmt);
-    void VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt);
-    void VisitForStmt(clang::ForStmt *stmt);
-    void VisitConditionalOperator(clang::ConditionalOperator *op);
-    void VisitLambdaExpr(clang::LambdaExpr *expr);
-    void VisitCaseStmt(clang::CaseStmt *stmt);
+
+    unsigned long long VisitStmt(clang::Stmt *stmt);
+    unsigned long long VisitCompoundStmt(clang::CompoundStmt *stmt);
+    unsigned long long Visit(clang::Stmt *stmt);
+    unsigned long long VisitIfStmt(clang::IfStmt *stmt);
+    unsigned long long VisitSwitchStmt(clang::SwitchStmt *stmt);
+    unsigned long long VisitWhileStmt(clang::WhileStmt *stmt);
+    unsigned long long VisitDoStmt(clang::DoStmt *stmt);
+    unsigned long long VisitExpr(clang::Expr *expr);
+    unsigned long long VisitCXXTryStmt(clang::CXXTryStmt *stmt);
+    unsigned long long VisitCXXForRangeStmt(clang::CXXForRangeStmt *stmt);
+    unsigned long long VisitForStmt(clang::ForStmt *stmt);
+    unsigned long long VisitConditionalOperator(clang::ConditionalOperator *op);
+    unsigned long long VisitLambdaExpr(clang::LambdaExpr *expr);
+    unsigned long long VisitCaseStmt(clang::CaseStmt *stmt);
+    unsigned long long VisitReturnStmt(clang::ReturnStmt *stmt);
+
     int CountLogicalOperators(clang::Stmt *stmt);
     /**
      * Returns calculated NPATH complexity.
      * @return - Calculated NPATH complexity.
      */
-    long long unsigned GetCount() const { return count + lambda_count; }
-    void VisitReturnStmt(clang::ReturnStmt *stmt);
+    long long unsigned GetCount(clang::Stmt *stmt) { return Visit(stmt) + lambda_count; }
 protected:
     clang::ASTContext *ctx;
-    long long unsigned count = 0;
+    long long unsigned count = 1;
     long long unsigned lambda_count = 0;
 };
 
