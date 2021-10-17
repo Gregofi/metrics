@@ -102,6 +102,8 @@ You need following packages:
 - llvm-dev
 - libclang-dev
 
+For debian, you might need libclang-cpp-dev
+
 Follow these steps
 1. Clone this repository.
 2. Create a build folder. Run `cmake` from it, as argument give it path to the cloned repository.
