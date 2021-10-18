@@ -31,5 +31,30 @@ std::string GetFunctionHead(const clang::FunctionDecl *decl)
             res += ", ";
     }
     res += ")";
+
+    /* Handle ref qualifiers such as 'int a() const &&'
+     * Only methods can have those, so we cast it first. */
+    if(auto method = llvm::dyn_cast_or_null<clang::CXXMethodDecl>(decl); method)
+    {
+        res += " ";
+        if(method->isConst())
+        {
+            res += "const ";
+        }
+        switch(method->getRefQualifier())
+        {
+            case clang::RefQualifierKind::RQ_LValue:
+                res += "&";
+                break;
+            case clang::RefQualifierKind::RQ_RValue:
+                res += "&&";
+                break;
+            case clang::RefQualifierKind::RQ_None:
+                break;
+        }
+        if(res[res.length() - 1] == ' ')
+            res.pop_back();
+    }
+
     return res;
 }
