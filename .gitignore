@@ -3,3 +3,5 @@ Testing
 build
 out.xml
 cmake-build*
+examples
+
