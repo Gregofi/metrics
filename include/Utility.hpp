@@ -60,7 +60,7 @@ std::string Tag(const std::string &tag, const T &inside, bool newline = true)
 std::string EscapeXML(const std::string &text);
 
 /**
- * Returns function declaration in string, contains function name and its parameters.
+ * Returns function declaration in string, contains function name, parameters, constness and its ref-qualifiers.
  * @example For function int foo(int i, const std::string &s) returns "foo(int, const std::string &)"
  * @param decl
  * @return
