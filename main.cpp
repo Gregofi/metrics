@@ -52,7 +52,7 @@ public:
 
 int main(int argc, const char **argv)
 {
-    auto ExpectedParser = clang::tooling::CommonOptionsParser::create(argc, argv, MetricsCategory, llvm::cl::Required);
+    auto ExpectedParser = clang::tooling::CommonOptionsParser::create(argc, argv, MetricsCategory, llvm::cl::NumOccurrencesFlag::OneOrMore);
     if(!ExpectedParser)
     {
         llvm::errs() << ExpectedParser.takeError();
