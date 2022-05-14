@@ -295,6 +295,38 @@ int FansTest()
     return 0;
 }
 
+const char* pointer_to_member = R"(
+    class X {
+        public:
+        int foo() { return 1; }
+    };
+
+    class Y {
+        public:
+        int bar() {
+            auto method_ptr = &X::foo;
+            X x;
+            auto X_ptr = &x;
+            return (X_ptr->*method_ptr)();
+        }
+    };
+)";
+
+int PtrToMemberTest()
+{
+    auto v = Eval(pointer_to_member);
+    auto cnames = v.names.class_names;
+    auto fnames = v.names.func_names;
+    auto vis = v.vis;
+
+    // FIXME: Should be one, but because of clang not properly
+    // handling ->* it is not implemented for now.
+    // The test exists to check that handling ->* doesn't cause segfault.
+    // ASSERT_EQ(vis.GetRefClass("X").fan_out.size(), 1);
+
+    return 0;
+}
+
 int main()
 {
     ASSERT_EQ(ClassOverviewVisitor::Similar({"a", "b", "c"}, {"d", "c", "w"}), true);
@@ -308,5 +340,6 @@ int main()
     TEST(LackOfCohesionTest);
     TEST(InnerClassTest);
     TEST(FansTest);
+    TEST(PtrToMemberTest);
     return 0;
 }

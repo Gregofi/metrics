@@ -84,7 +84,10 @@ int ClassOverviewVisitor::LackOfCohesion(const std::string &s) const
 
 void MethodCallback::run(const MatchFinder::MatchResult &Result)
 {
-    if(const auto *call = Result.Nodes.getNodeAs<CXXMemberCallExpr>("member_call"))
+    /* FIXME: The check for methodDecl is needed because it returns nullptr for member pointer calls, which
+     * should be fixed in upcoming versions of Clang */
+    if(const auto *call = Result.Nodes.getNodeAs<CXXMemberCallExpr>("member_call"); call != nullptr
+        && call->getMethodDecl() != nullptr)
     {
         /* If this class calls method from other class its coupled with it. Check if the called
          * method is from other class then this one */
