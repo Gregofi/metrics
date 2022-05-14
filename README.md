@@ -1,10 +1,10 @@
 # :straight_ruler: Metrics
 Software based on Clang Libtooling API.It calculates software metrics for given C and C++ source codes.
 
-Currently implemented metrics:  
+Currently implemented metrics:
 * For each function, it calculates following:
     * Lines of code (Including comments and empty lines)
-    * Maximum statement depth 
+    * Maximum statement depth
     * Number of C/C++ statements
     * Cyclomatic complexity
     * NPath
@@ -36,7 +36,7 @@ if(a > b) { foo(); bar(); }
 This will be one LOC, but three NOS.
 
 #### Cyclomatic complexity
-Calculates number of branching statements (`if`, `for`, `while`...). This should be equal to 
+Calculates number of branching statements (`if`, `for`, `while`...). This should be equal to
 number of linearly independent paths through program. Lambdas are considered as function body.
 
 #### NPATH
@@ -74,10 +74,10 @@ Number of classes that directly inherit from this class.
 #### Inheritance chain length
 Maximum length of all inheritance chains for this class. For example
 ```c++
-class A;                       
+class A;
 class B : A;
 
-class D;                       
+class D;
 
 class X : B, D;
 ```
