@@ -116,7 +116,7 @@ You need following packages:
 - cmake
 - llvm
 
-The build steps are the same, hovewer cmake also needs the folder of llvm and clang,
+The build steps are the same, however cmake also needs the folder of llvm and clang,
 which needs to be exported as env variable, for example:
 ```
 export CLANG_DIR=/opt/homebrew/Cellar/llvm/<version>/lib/cmake/clang
