@@ -1,8 +1,8 @@
 # :straight_ruler: Metrics
-Software based on Clang Libtooling API.It calculates software metrics for given C and C++ source codes.
+Software based on Clang Libtooling API. It calculates software metrics for given C and C++ source codes.
 
 Currently implemented metrics:
-* For each function, it calculates following:
+* Function metrics
     * Lines of code (Including comments and empty lines)
     * Maximum statement depth
     * Number of C/C++ statements
@@ -10,7 +10,7 @@ Currently implemented metrics:
     * NPath
     * Halstead token count
     * Fan-in and Fan-out
-* For each class, it calculates following:
+* Class metrics
     * Number of immediate children
     * Length of inheritance chain
     * Lack of cohesion
@@ -20,8 +20,8 @@ Currently implemented metrics:
 
 ---
 
-## Metric calculation
-Here, you can brief description of said metrics.
+## Metrics description
+Here, you can find brief description of measured metrics.
 ### Function metrics
 
 #### Lines of code - LOC
@@ -63,7 +63,7 @@ This code has 6 acyclic paths through it. `if(c)` has two possible paths, either
 
 Lambdas NPATH complexity in functions is then added to function complexity.
 #### Fan-in, Fan-out
-Counts how many times each function has been called (Fan-out) and how much functions one function calls (Fan-in).
+Counts how many times each function has been called (Fan-out) and how many functions are called by one currently measured function (Fan-in).
 Function call, member function and overloaded operator call are all considered, constructor and destructor
 calls are not.
 
@@ -94,7 +94,7 @@ So, for class `X` it would be 2.
 #### Coupling
 
 ## :hammer: How to build
-# Linux
+### Linux
 This was tested on Ubuntu 20.04.2 LTS and Arch linux.
 You need following packages:
 - cmake
@@ -111,7 +111,7 @@ Follow these steps
 3. Run `make`.
 4. Optionally run unit tests via `make test`.
 
-# OSX
+### OSX
 You need following packages:
 - cmake
 - llvm
@@ -122,3 +122,10 @@ which needs to be exported as env variable, for example:
 export CLANG_DIR=/opt/homebrew/Cellar/llvm/<version>/lib/cmake/clang
 export LLVM_DIR=/opt/homebrew/Cellar/llvm/<version>/lib/cmake/llvm
 ```
+
+### Run
+The app is command line based. It accepts as argument the path to files you want to measure.
+
+If you want to measure a project that has more complicated build system, give it a path to
+folder containing compile_commands.json generated via cmake (most often the build folder)
+with switch -p. For example ``metrics -p build `find . -type f -name "*.cpp"``.
