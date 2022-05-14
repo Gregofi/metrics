@@ -93,7 +93,8 @@ So, for class `X` it would be 2.
 #### Lack of cohesion
 #### Coupling
 
-## :hammer: How to build 
+## :hammer: How to build
+# Linux
 This was tested on Ubuntu 20.04.2 LTS and Arch linux.
 You need following packages:
 - cmake
@@ -109,3 +110,15 @@ Follow these steps
 2. Create a build folder. Run `cmake` from it, as argument give it path to the cloned repository.
 3. Run `make`.
 4. Optionally run unit tests via `make test`.
+
+# OSX
+You need following packages:
+- cmake
+- llvm
+
+The build steps are the same, hovewer cmake also needs the folder of llvm and clang,
+which needs to be exported as env variable, for example:
+```
+export CLANG_DIR=/opt/homebrew/Cellar/llvm/<version>/lib/cmake/clang
+export LLVM_DIR=/opt/homebrew/Cellar/llvm/<version>/lib/cmake/llvm
+```
