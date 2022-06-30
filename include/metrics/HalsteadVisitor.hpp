@@ -1,6 +1,4 @@
-#ifndef METRICS_HALSTEADVISITOR_HPP
-#define METRICS_HALSTEADVISITOR_HPP
-
+#pragma once
 
 #include <map>
 #include <iostream>
@@ -76,6 +74,3 @@ protected:
     static const std::vector<clang::ast_matchers::StatementMatcher> operands_stmt;
     static const std::vector<clang::ast_matchers::DeclarationMatcher> operands_decl;
 };
-
-
-#endif //METRICS_HALSTEADVISITOR_HPP

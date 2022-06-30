@@ -1,5 +1,4 @@
-#ifndef METRICS_ASTMATCHERVISITOR_HPP
-#define METRICS_ASTMATCHERVISITOR_HPP
+#pragma once
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -71,5 +70,3 @@ protected:
     MatchFinder finder;
     clang::ASTContext *context;
 };
-
-#endif //METRICS_ASTMATCHERVISITOR_HPP

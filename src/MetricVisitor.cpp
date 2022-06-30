@@ -21,7 +21,7 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl *decl)
     clang::SourceManager &sm(context->getSourceManager());
 
     /* Don't calc if source code is not in main file. */
-    if(!decl || sm.isInSystemHeader(decl->getLocation())
+    if(!decl || isInSystemHeader(context->getSourceManager(), decl->getLocation())
         || !decl->isThisDeclarationADefinition()
         || functions.count(GetFunctionHead(decl))
         || !decl->hasBody()){
@@ -45,7 +45,7 @@ bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     clang::SourceManager &sm(context->getSourceManager());
 
-    if(decl->isLambda() || !decl->isThisDeclarationADefinition() || sm.isInSystemHeader(decl->getLocation())
+    if(decl->isLambda() || !decl->isThisDeclarationADefinition() || isInSystemHeader(context->getSourceManager(), decl->getLocation())
             || (!decl->isStruct() && !decl->isClass()) || classes.count(decl->getQualifiedNameAsString()))
         return true;
     classes.insert(decl->getQualifiedNameAsString());
@@ -134,7 +134,7 @@ std::ostream &MetricVisitor::ExportXMLMetrics(std::ostream &os)
 bool MetricVisitor::TraverseDecl(clang::Decl *decl)
 {
     /* Skip files that are in system files */
-    if(!decl || context->getSourceManager().isInSystemHeader(decl->getLocation()))
+    if(!decl || isInSystemHeader(context->getSourceManager(), decl->getLocation()))
         return true;
     /* We cannot skip function body even if this visitor only visits function headers, because functions
      * can contain classes */

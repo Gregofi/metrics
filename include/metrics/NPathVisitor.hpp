@@ -1,5 +1,4 @@
-#ifndef METRICS_NPATHVISITOR_HPP
-#define METRICS_NPATHVISITOR_HPP
+#pragma once
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -63,6 +62,3 @@ public:
 private:
     long long unsigned count{0};
 };
-
-
-#endif //METRICS_NPATHVISITOR_HPP

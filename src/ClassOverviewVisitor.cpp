@@ -6,7 +6,7 @@
 bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 {
     /* Skip declarations that have no body and that aren't in main file */
-    if(!decl || !decl->isThisDeclarationADefinition() || ctx->getSourceManager().isInSystemHeader(decl->getLocation())
+    if(!decl || !decl->isThisDeclarationADefinition() || isInSystemHeader(ctx->getSourceManager(), decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
         || decl->isLambda() || classes.count(decl->getQualifiedNameAsString())
@@ -34,7 +34,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl *decl)
 bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl *decl)
 {
     if(!decl || !decl->isThisDeclarationADefinition()
-        || ctx->getSourceManager().isInSystemHeader(decl->getLocation()) || decl->getParent()->isLambda())
+        || isInSystemHeader(ctx->getSourceManager(), decl->getLocation()) || decl->getParent()->isLambda())
         return true;
     ASTMatcherVisitor vis(ctx);
     MethodCallback callback(decl->getParent()->getQualifiedNameAsString(), &classes);
@@ -197,7 +197,7 @@ std::ostream &ClassOverviewVisitor::ExportXML(const std::string &s, std::ostream
 bool ClassOverviewVisitor::TraverseDecl(clang::Decl *decl)
 {
     /* Skip files that are in system files */
-    if(!decl || ctx->getSourceManager().isInSystemHeader(decl->getLocation()))
+    if(!decl || isInSystemHeader(ctx->getSourceManager(), decl->getLocation()))
         return true;
     return RecursiveASTVisitor::TraverseDecl(decl);
 }

@@ -1,12 +1,11 @@
-#ifndef METRICS_PROJECT_FANSVISITOR_HPP
-#define METRICS_PROJECT_FANSVISITOR_HPP
+#pragma once
+
+#include <set>
+#include <string>
 
 #include "include/FunctionVisitor.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/CtxVisitor.hpp"
-
-#include <set>
-#include <string>
 
 /**
  * Callback for counting fans.
@@ -86,5 +85,3 @@ protected:
     std::set<std::string> visited;
     FanCount counter;
 };
-
-#endif //METRICS_PROJECT_FANSVISITOR_HPP

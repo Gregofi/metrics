@@ -1,5 +1,4 @@
-#ifndef METRICS_ABSTRACTVISITOR_HPP
-#define METRICS_ABSTRACTVISITOR_HPP
+#pragma once
 
 #include <ostream>
 
@@ -41,7 +40,3 @@ public:
 protected:
     clang::ASTContext *context;
 };
-
-
-
-#endif //METRICS_ABSTRACTVISITOR_HPP

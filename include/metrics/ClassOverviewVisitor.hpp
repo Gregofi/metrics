@@ -1,5 +1,7 @@
-#ifndef METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP
-#define METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP
+#pragma once
+
+#include <set>
+#include <string>
 
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -148,5 +150,3 @@ protected:
     void CalculateLorKiddMetrics(clang::CXXRecordDecl *decl);
     std::map<std::string, Class> classes;
 };
-
-#endif //METRICS_PROJECT_CHIDAMBERKEMERERVISITOR_HPP

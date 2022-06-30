@@ -1,5 +1,4 @@
-#ifndef METRICS_PROJECT_CTXVISITOR_HPP
-#define METRICS_PROJECT_CTXVISITOR_HPP
+#pragma once
 
 #include "clang/AST/ASTContext.h"
 #include <ostream>
@@ -36,5 +35,3 @@ public:
 protected:
     clang::ASTContext *ctx;
 };
-
-#endif //METRICS_PROJECT_CTXVISITOR_HPP

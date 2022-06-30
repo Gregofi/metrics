@@ -1,5 +1,4 @@
-#ifndef METRICS_CYCLOMATICVISITOR_HPP
-#define METRICS_CYCLOMATICVISITOR_HPP
+#pragma once
 
 #include <map>
 
@@ -39,6 +38,3 @@ public:
 protected:
     int count{1};
 };
-
-
-#endif //METRICS_CYCLOMATICVISITOR_HPP

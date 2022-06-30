@@ -1,6 +1,4 @@
-
-#ifndef METRICS_METRICVISITOR_HPP
-#define METRICS_METRICVISITOR_HPP
+#pragma once
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -14,7 +12,6 @@
 #include "include/metrics/FuncInfoVisitor.hpp"
 #include "include/CtxVisitor.hpp"
 #include "include/FunctionVisitor.hpp"
-
 
 /**
  * Traverses whole TranslationUnitDecl, calculates metrics for it and then exports it.
@@ -45,6 +42,3 @@ protected:
 
     clang::ASTContext *context;
 };
-
-
-#endif //METRICS_METRICVISITOR_HPP

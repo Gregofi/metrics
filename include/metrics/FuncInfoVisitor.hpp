@@ -1,6 +1,4 @@
-#ifndef METRICS_FUNCINFO_HPP
-#define METRICS_FUNCINFO_HPP
-
+#pragma once
 
 #include <fstream>
 #include <set>
@@ -68,5 +66,3 @@ private:
      */
     FunctionInfo f;
 };
-
-#endif //METRICS_FUNCINFO_HPP

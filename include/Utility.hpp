@@ -1,6 +1,4 @@
-
-#ifndef METRICS_METRIC_HPP
-#define METRICS_METRIC_HPP
+#pragma once
 
 #include <sstream>
 #include "clang/AST/ASTConsumer.h"
@@ -37,7 +35,7 @@ private:
  * @example for call Tag("employee", Tag("pay", 1, false)) it returns "<employee><pay>1</pay></employee>"
  */
 template <typename T>
-std::string Tag(const std::string &tag, const T &inside, bool newline = true)
+inline std::string Tag(const std::string &tag, const T &inside, bool newline = true)
 {
     std::ostringstream oss;
     oss << "<" << tag << ">" << inside << "</" << tag << ">";
@@ -66,4 +64,20 @@ std::string EscapeXML(const std::string &text);
  * @return
  */
 std::string GetFunctionHead(const clang::FunctionDecl *decl);
-#endif //METRICS_METRIC_HPP
+
+/**
+ * @param sm - Source manager
+ * @param loc - Location of AST node
+ * @return true - If the AST node is located in system header
+ * @return false - If the AST node is not located in system header
+ *
+ * This is used to not measure functions that do not belong to the project.
+ * It ofcourse have its drawbacks. Sometimes the functions are not corretly
+ * identified.
+ *
+ * The double check seems unessecary, but the clang isInSystemHeader doesn't
+ * work on all platform (for example on Debian or MacOS).
+ */
+inline bool isInSystemHeader(const clang::SourceManager& sm, const clang::SourceLocation& loc) {
+    return sm.isInSystemHeader(loc);
+}
