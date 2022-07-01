@@ -28,7 +28,7 @@ public:
      * @param os - output stream to export to.
      * @return - given output stream.
      */
-    virtual std::ostream& Export(std::ostream& os) const = 0;
+    virtual std::ostream& Export(std::ostream& os   ) const = 0;
 
     /**
      * Export metric in XML format with enclosing tags.
