@@ -14,3 +14,5 @@ run_check() {
 
 
 run_check "check_format"
+
+echo "Git hooks run successfully"
