@@ -15,10 +15,10 @@ find_package(Clang REQUIRED CONFIG)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${PROJECT_SOURCE_DIR} -I${LLVM_INCLUDE_DIRS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O1 -fsanitize=address")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_executable(metrics main.cpp src/FuncInfoVisitor.cpp src/CyclomaticVisitor.cpp src/MetricVisitor.cpp
