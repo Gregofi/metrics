@@ -6,16 +6,19 @@
 /** This metric collect information about classes, but it needs to traverse whole unit, not just
  * one class because metric calculation needs to know about other classes.
  */
-class CtxVisitor
-{
+class CtxVisitor {
 public:
-    CtxVisitor() : ctx(nullptr){}
+    CtxVisitor()
+        : ctx(nullptr)
+    {
+    }
+
     virtual ~CtxVisitor() = default;
     /**
      * Traverse UnitDecl and gather metrics.
      * @param decl - Translation unit for which metric will be calculated.
      */
-    virtual void CalcMetrics(clang::ASTContext *ctx) = 0;
+    virtual void CalcMetrics(clang::ASTContext* ctx) = 0;
 
     /**
      * Export metrics to given stream, intended to be human readable.
@@ -23,7 +26,7 @@ public:
      * @param os - output stream to export to.
      * @return - given output stream.
      */
-    virtual std::ostream& Export(const std::string &s, std::ostream &os) const = 0;
+    virtual std::ostream& Export(const std::string& s, std::ostream& os) const = 0;
 
     /**
      * Export metric to given stream in XML format.
@@ -31,7 +34,8 @@ public:
      * @param os - output stream to export to.
      * @return - given output stream.
      */
-    virtual std::ostream& ExportXML(const std::string &s, std::ostream &os) const = 0;
+    virtual std::ostream& ExportXML(const std::string& s, std::ostream& os) const = 0;
+
 protected:
-    clang::ASTContext *ctx;
+    clang::ASTContext* ctx;
 };

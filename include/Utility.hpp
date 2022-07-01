@@ -1,25 +1,26 @@
 #pragma once
 
-#include <sstream>
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
+#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
-#include "clang/ASTMatchers/ASTMatchers.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include <sstream>
 
 /**
  * Simple callback class for matchers that counts how many times a match has been found.
  */
-class Counter : public clang::ast_matchers::MatchFinder::MatchCallback
-{
+class Counter : public clang::ast_matchers::MatchFinder::MatchCallback {
 public:
-    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override
+    virtual void run(const clang::ast_matchers::MatchFinder::MatchResult& Result) override
     {
         count += 1;
     }
+
     int getCount() const { return count; }
+
 private:
     int count = 0;
 };
@@ -35,11 +36,11 @@ private:
  * @example for call Tag("employee", Tag("pay", 1, false)) it returns "<employee><pay>1</pay></employee>"
  */
 template <typename T>
-inline std::string Tag(const std::string &tag, const T &inside, bool newline = true)
+inline std::string Tag(const std::string& tag, const T& inside, bool newline = true)
 {
     std::ostringstream oss;
     oss << "<" << tag << ">" << inside << "</" << tag << ">";
-    if(newline)
+    if (newline)
         oss << "\n";
     return oss.str();
 }
@@ -55,7 +56,7 @@ inline std::string Tag(const std::string &tag, const T &inside, bool newline = t
  * @param text - Text to be escaped.
  * @return Escaped string
  */
-std::string EscapeXML(const std::string &text);
+std::string EscapeXML(const std::string& text);
 
 /**
  * Returns function declaration in string, contains function name, parameters, constness and its ref-qualifiers.
@@ -63,7 +64,7 @@ std::string EscapeXML(const std::string &text);
  * @param decl
  * @return
  */
-std::string GetFunctionHead(const clang::FunctionDecl *decl);
+std::string GetFunctionHead(const clang::FunctionDecl* decl);
 
 /**
  * @param sm - Source manager
@@ -78,6 +79,7 @@ std::string GetFunctionHead(const clang::FunctionDecl *decl);
  * The double check seems unessecary, but the clang isInSystemHeader doesn't
  * work on all platform (for example on Debian or MacOS).
  */
-inline bool isInSystemHeader(const clang::SourceManager& sm, const clang::SourceLocation& loc) {
-    return sm.isInSystemHeader(loc);
+inline bool isInSystemHeader(const clang::SourceManager& sm, const clang::SourceLocation& loc)
+{
+    return !sm.isInMainFile(loc) || sm.isInSystemHeader(loc);
 }

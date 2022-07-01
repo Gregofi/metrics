@@ -6,4 +6,3 @@
 #else
     #define LOG(MESSAGE) void(0)
 #endif
-

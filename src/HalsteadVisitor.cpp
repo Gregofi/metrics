@@ -2,42 +2,40 @@
 
 #include "include/metrics/HalsteadVisitor.hpp"
 
-
 using namespace clang;
 
-
 const std::vector<StatementMatcher> HalsteadVisitor::operators_stmt {
-        /* Control flow statements */
-        ifStmt().bind("stmt"),
-        forStmt().bind("stmt"),
-        gotoStmt().bind("stmt"),
-        doStmt().bind("stmt"),
-        switchStmt().bind("stmt"),
-        whileStmt().bind("stmt"),
-        cxxTryStmt().bind("stmt"),
-        cxxCatchStmt().bind("stmt"),
-        switchStmt().bind("stmt"),
-        caseStmt().bind("stmt"),
-        breakStmt().bind("stmt"),
-        continueStmt().bind("stmt"),
-        cxxForRangeStmt().bind("forRange"),
-        cxxCatchStmt().bind("stmt"),
-        cxxThrowExpr().bind("stmt"),
-        defaultStmt().bind("stmt"),
-        returnStmt().bind("stmt"),
-        /* operators */
-        binaryOperator().bind("stmt"),
-        conditionalOperator().bind("stmt"),
-        binaryConditionalOperator().bind("stmt"),
-        unaryOperator().bind("stmt"),
-        cxxNewExpr().bind("stmt"),
-        cxxDeleteExpr().bind("stmt"),
-        /* function calls */
-        callExpr().bind("stmt"),
-        /* explicit casts */
-        explicitCastExpr().bind("stmt"),
+    /* Control flow statements */
+    ifStmt().bind("stmt"),
+    forStmt().bind("stmt"),
+    gotoStmt().bind("stmt"),
+    doStmt().bind("stmt"),
+    switchStmt().bind("stmt"),
+    whileStmt().bind("stmt"),
+    cxxTryStmt().bind("stmt"),
+    cxxCatchStmt().bind("stmt"),
+    switchStmt().bind("stmt"),
+    caseStmt().bind("stmt"),
+    breakStmt().bind("stmt"),
+    continueStmt().bind("stmt"),
+    cxxForRangeStmt().bind("forRange"),
+    cxxCatchStmt().bind("stmt"),
+    cxxThrowExpr().bind("stmt"),
+    defaultStmt().bind("stmt"),
+    returnStmt().bind("stmt"),
+    /* operators */
+    binaryOperator().bind("stmt"),
+    conditionalOperator().bind("stmt"),
+    binaryConditionalOperator().bind("stmt"),
+    unaryOperator().bind("stmt"),
+    cxxNewExpr().bind("stmt"),
+    cxxDeleteExpr().bind("stmt"),
+    /* function calls */
+    callExpr().bind("stmt"),
+    /* explicit casts */
+    explicitCastExpr().bind("stmt"),
 
-        memberExpr().bind("member"),
+    memberExpr().bind("member"),
 };
 
 const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::operators_decl {
@@ -64,12 +62,12 @@ const std::vector<clang::ast_matchers::DeclarationMatcher> HalsteadVisitor::oper
     varDecl().bind("decl"),
 };
 
-HalsteadVisitor::HalsteadVisitor(clang::ASTContext *ctx) : FunctionVisitor(ctx)
+HalsteadVisitor::HalsteadVisitor(clang::ASTContext* ctx)
+    : FunctionVisitor(ctx)
 {
-
 }
 
-std::ostream &HalsteadVisitor::Export(std::ostream &os) const
+std::ostream& HalsteadVisitor::Export(std::ostream& os) const
 {
     os << "Number of operators: " << operators << "\n";
     os << "Number of unique operators: " << unique_operators << "\n";
@@ -78,7 +76,7 @@ std::ostream &HalsteadVisitor::Export(std::ostream &os) const
     return os;
 }
 
-void HalsteadVisitor::CalcMetrics(clang::FunctionDecl *decl)
+void HalsteadVisitor::CalcMetrics(clang::FunctionDecl* decl)
 {
     TokenCounter tk_operators(true);
     TokenCounter tk_operand;
@@ -97,41 +95,38 @@ void HalsteadVisitor::CalcMetrics(clang::FunctionDecl *decl)
     operands = tk_operand.getCount();
 }
 
-std::ostream &HalsteadVisitor::ExportXML(std::ostream &os) const
+std::ostream& HalsteadVisitor::ExportXML(std::ostream& os) const
 {
     os << Tag("operators", operators) << Tag("unique_operators", unique_operators)
        << Tag("operands", operands) << Tag("unique_operands", unique_operands);
     return os;
 }
 
-void TokenCounter::run(const MatchFinder::MatchResult &Result)
+void TokenCounter::run(const MatchFinder::MatchResult& Result)
 {
     count += 1;
-    if(const auto *s = Result.Nodes.getNodeAs<clang::CXXForRangeStmt>("forRange"); isOperator && s)
-    {
-        if(s->getEndStmt() != nullptr)
+    if (const auto* s = Result.Nodes.getNodeAs<clang::CXXForRangeStmt>("forRange"); isOperator && s) {
+        if (s->getEndStmt() != nullptr) {
             count -= 1;
-        if(s->getCond() != nullptr)
+        }
+        if (s->getCond() != nullptr) {
             count -= 1;
+        }
     }
-    if(const auto *s = Result.Nodes.getNodeAs<clang::MemberExpr>("member"))
-    {
-        if(s->getBase()->isImplicitCXXThis())
+    if (const auto* s = Result.Nodes.getNodeAs<clang::MemberExpr>("member")) {
+        if (s->getBase()->isImplicitCXXThis()) {
             count -= 1;
+        }
     }
-    if(const auto *s = Result.Nodes.getNodeAs<clang::Stmt>("stmt"))
-    {
+    if (const auto* s = Result.Nodes.getNodeAs<clang::Stmt>("stmt")) {
         seen_tokens_stmt.emplace(s->getStmtClass());
     }
-    if(const Type *t = Result.Nodes.getNodeAs<clang::Type>("type"))
-    {
+    if (const Type* t = Result.Nodes.getNodeAs<clang::Type>("type")) {
         seen_tokens_type.emplace(t->getTypeClass());
     }
-    if(const Decl *d = Result.Nodes.getNodeAs<clang::Decl>("decl"))
-    {
+    if (const Decl* d = Result.Nodes.getNodeAs<clang::Decl>("decl")) {
         seen_tokens_decl.emplace(d->getKind());
-        if(const auto *vardecl = llvm::dyn_cast<clang::VarDecl>(d); isOperator && vardecl)
-        {
+        if (const auto* vardecl = llvm::dyn_cast<clang::VarDecl>(d); isOperator && vardecl) {
             count += vardecl->hasInit();
         }
     }
