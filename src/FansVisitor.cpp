@@ -56,8 +56,8 @@ void FanCount::run(const MatchFinder::MatchResult& Result)
             fan_in[curr_func] += 1;
         }
         if (s->getDirectCallee()) {
-            fan_out[GetFunctionHead
-        }(s->getDirectCallee())] += 1;
+            fan_out[GetFunctionHead(s->getDirectCallee())] += 1;
+        }
     }
 }
 
