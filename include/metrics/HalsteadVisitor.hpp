@@ -1,28 +1,34 @@
 #pragma once
 
-#include <map>
 #include <iostream>
+#include <map>
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
+#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendAction.h"
 #include "clang/Tooling/Tooling.h"
-#include "clang/ASTMatchers/ASTMatchers.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
 
-#include "include/MetricVisitor.hpp"
-#include "include/Utility.hpp"
 #include "include/ASTMatcherVisitor.hpp"
 #include "include/Logging.hpp"
+#include "include/MetricVisitor.hpp"
+#include "include/Utility.hpp"
 
-class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback
-{
+class TokenCounter : public clang::ast_matchers::MatchFinder::MatchCallback {
 public:
-    explicit TokenCounter(bool isOperator = false) : isOperator(isOperator) {}
-    void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) override;
+    explicit TokenCounter(bool isOperator = false)
+        : isOperator(isOperator)
+    {
+    }
+
+    void run(const clang::ast_matchers::MatchFinder::MatchResult& Result) override;
+
     int getCount() const { return count; }
+
     int getUniqueCount() const { return seen_tokens_stmt.size() + seen_tokens_decl.size() + seen_tokens_type.size(); }
+
 private:
     bool isOperator;
     int count = 0;
@@ -49,26 +55,30 @@ private:
  *
  * Operands:
  */
-class HalsteadVisitor : public FunctionVisitor
-{
+class HalsteadVisitor : public FunctionVisitor {
 public:
-    explicit HalsteadVisitor(clang::ASTContext *ctx);
+    explicit HalsteadVisitor(clang::ASTContext* ctx);
 
-    virtual void CalcMetrics(clang::FunctionDecl *decl) override;
-    int GetOperatorCount() const {return operators;}
-    int GetOperandCount() const {return operands;}
-    int GetUniqueOperandCount() const {return unique_operands;}
-    int GetUniqueOperatorCount() const {return unique_operators;}
+    virtual void CalcMetrics(clang::FunctionDecl* decl) override;
 
-    virtual std::ostream &Export(std::ostream &os) const override;
-    virtual std::ostream &ExportXML(std::ostream &os) const override;
+    int GetOperatorCount() const { return operators; }
+
+    int GetOperandCount() const { return operands; }
+
+    int GetUniqueOperandCount() const { return unique_operands; }
+
+    int GetUniqueOperatorCount() const { return unique_operators; }
+
+    virtual std::ostream& Export(std::ostream& os) const override;
+    virtual std::ostream& ExportXML(std::ostream& os) const override;
+
 protected:
     int operators;
     int operands;
     int unique_operators;
     int unique_operands;
 
-    static const std::vector<clang::ast_matchers::StatementMatcher>   operators_stmt;
+    static const std::vector<clang::ast_matchers::StatementMatcher> operators_stmt;
     static const std::vector<clang::ast_matchers::DeclarationMatcher> operators_decl;
 
     static const std::vector<clang::ast_matchers::StatementMatcher> operands_stmt;

@@ -9,7 +9,7 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* decl)
     if (!decl || !decl->isThisDeclarationADefinition() || isInSystemHeader(ctx->getSourceManager(), decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
-        || decl->isLambda() 
+        || decl->isLambda()
         || (!decl->isClass() && !decl->isStruct())) {
         return true;
     }
