@@ -33,8 +33,9 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl* decl)
     visitors.emplace_back(std::make_unique<CyclomaticVisitor>(context));
     visitors.emplace_back(std::make_unique<NPathVisitor>(context));
 
-    for (const auto& x : visitors)
+    for (const auto& x : visitors) {
         x->CalcMetrics(decl);
+    }
     functions[GetFunctionHead(decl)] = std::move(visitors);
 
     return true;
@@ -42,9 +43,7 @@ bool MetricVisitor::VisitFunctionDecl(clang::FunctionDecl* decl)
 
 bool MetricVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* decl)
 {
-    clang::SourceManager& sm(context->getSourceManager());
-
-    if (decl->isLambda() || !decl->isThisDeclarationADefinition() || isInSystemHeader(context->getSourceManager(), decl->getLocation())
+    if (!decl || decl->isLambda() || !decl->isThisDeclarationADefinition() || isInSystemHeader(context->getSourceManager(), decl->getLocation())
         || (!decl->isStruct() && !decl->isClass()) || classes.count(decl->getQualifiedNameAsString()))
         return true;
     classes.insert(decl->getQualifiedNameAsString());
@@ -57,6 +56,7 @@ void MetricVisitor::CalcMetrics(clang::ASTContext* ctx)
     TraverseTranslationUnitDecl(ctx->getTranslationUnitDecl());
     for (auto& x : ctx_vis_cl)
         x->CalcMetrics(ctx);
+    LOG("First pass");
     for (auto& x : ctx_vis_fn)
         x->CalcMetrics(ctx);
     context = nullptr;

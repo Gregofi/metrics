@@ -9,10 +9,11 @@ bool ClassOverviewVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* decl)
     if (!decl || !decl->isThisDeclarationADefinition() || isInSystemHeader(ctx->getSourceManager(), decl->getLocation())
         /* Also skip declarations which represents lambdas and classes that we already added(this happens if they are
          * included from multiple files */
-        || decl->isLambda() || classes.count(decl->getQualifiedNameAsString())
+        || decl->isLambda() 
         || (!decl->isClass() && !decl->isStruct())) {
         return true;
     }
+    LOG(decl->getQualifiedNameAsString());
     /* Create new class in map, this is important because if there is an empty class (class A{};), it
      * wouldn't be added otherwise */
     if (!classes.count(decl->getQualifiedNameAsString())) {
@@ -48,6 +49,7 @@ bool ClassOverviewVisitor::VisitCXXMethodDecl(clang::CXXMethodDecl* decl)
 
 int ClassOverviewVisitor::GetInheritanceChainLen(const std::string& s) const
 {
+    assert(classes.contains(s));
     const auto& chain = classes.at(s).inheritance_chain;
     if (chain.empty()) {
         return 0;
@@ -76,6 +78,7 @@ bool ClassOverviewVisitor::Similar(const std::set<std::string>& s1, const std::s
 
 int ClassOverviewVisitor::LackOfCohesion(const std::string& s) const
 {
+    assert(classes.contains(s));
     auto c = classes.at(s);
 
     c.functions.size();
@@ -143,6 +146,7 @@ void ClassOverviewVisitor::CalcMetrics(clang::ASTContext* ctx)
 
 std::ostream& ClassOverviewVisitor::Export(const std::string& s, std::ostream& os) const
 {
+    assert(classes.contains(s));
     const auto& c = classes.at(s);
     os << "Size:\n"
        << "  Number of methods: " << c.methods_count << ", " << c.public_methods_count << " are public.\n"
@@ -169,6 +173,7 @@ size_t UnionSize(const std::set<T>& s1, const std::set<T> s2)
 
 std::ostream& ClassOverviewVisitor::ExportXML(const std::string& s, std::ostream& os) const
 {
+    assert(classes.contains(s));
     const auto& c = classes.at(s);
     os << Tag("size",
         "\n"
@@ -193,7 +198,7 @@ std::ostream& ClassOverviewVisitor::ExportXML(const std::string& s, std::ostream
 bool ClassOverviewVisitor::TraverseDecl(clang::Decl* decl)
 {
     /* Skip files that are in system files */
-    if (!decl || isInSystemHeader(ctx->getSourceManager(), decl->getLocation())) {
+    if (!decl) {
         return true;
     }
     return RecursiveASTVisitor::TraverseDecl(decl);

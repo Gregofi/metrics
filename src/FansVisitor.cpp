@@ -6,7 +6,7 @@
 
 bool FansVisitor::VisitFunctionDecl(clang::FunctionDecl* d)
 {
-    if (ctx->getSourceManager().isInSystemHeader(d->getLocation())
+    if (isInSystemHeader(ctx->getSourceManager(), d->getLocation())
         || !d->isThisDeclarationADefinition() || visited.count(GetFunctionHead(d))) {
         return true;
     }
@@ -74,7 +74,7 @@ void FanCount::InitFunction(const std::string& s)
 bool FansVisitor::TraverseDecl(clang::Decl* decl)
 {
     /* Skip files that are in system files */
-    if (!decl || ctx->getSourceManager().isInSystemHeader(decl->getLocation())) {
+    if (!decl || isInSystemHeader(ctx->getSourceManager(), decl->getLocation())) {
         return true;
     }
     return RecursiveASTVisitor::TraverseDecl(decl);
