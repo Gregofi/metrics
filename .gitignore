@@ -7,3 +7,4 @@ examples
 .cache
 compile_commands.json
 out.txt
+.DS_Store
