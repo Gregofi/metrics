@@ -7,6 +7,6 @@ class Foo {
 };
 
 int main() {
-    auto f = Foo(5);
-    return f.bar() * 2;
+    // auto f = Foo(5);
+    // return f.bar() * 2;
 }
