@@ -1,4 +1,0 @@
-
-struct Foo {
-    int work();
-};
