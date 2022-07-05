@@ -72,9 +72,11 @@ if __name__ == "__main__":
     # Compare the expected with actual result
     success = True
     # First do functions
-    print(funcs_exp)
-    # for funcs in funcs_exp:
     for fun_name, metrics in funcs_exp.items():
+        # This will happen if only function with no metrics is specified
+        if metrics is None:
+            # TODO: Check that the function was atleast measured
+            continue
         for metric, value in metrics.items():
             # Check if function was measured
             if fun_name not in funcs:
@@ -89,7 +91,7 @@ if __name__ == "__main__":
                 continue
 
             # Check if the measured value is correct
-            if funcs[fun_name][metric] != value:
+            if int(funcs[fun_name][metric]) != int(value):
                 success = False
                 print(f"{fun_name} -> {metric}: {value}, expected: {value}, got: {funcs[fun_name][metric]}")
 

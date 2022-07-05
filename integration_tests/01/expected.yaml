@@ -1,11 +1,8 @@
 functions:
   Foo::Foo(int):
-    lines: 0
-  Foo::bar():
-    lines: 1
     cyclomatic: 1
+  Foo::bar():
   main():
-    lines: 2
     cyclomatic: 1
 classes:
   Foo:
