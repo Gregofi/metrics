@@ -1,0 +1,8 @@
+functions:
+  main():
+    cyclomatic: 1
+    statements: 1
+  bar():
+    cyclomatic: 1
+    statements: 1
+classes:

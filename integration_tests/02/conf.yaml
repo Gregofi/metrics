@@ -1,0 +1,5 @@
+sources:
+  - main.cpp
+  - bar.h
+functions: 2
+classes: 0

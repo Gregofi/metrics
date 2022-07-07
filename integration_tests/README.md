@@ -36,11 +36,11 @@ Format of the expected output is quite simple:
 ```
 functions:
   - foo:
-    - LOC: 20
-    - cc: 4
-    - NPATH: 16
+    - lines: 20
+    - cyclomatic: 4
+    - npath: 16
   - bar:
-    - LOC: 30
+    - lines: 30
   - baz:
 classes:
   - A:
@@ -53,14 +53,16 @@ In this example, `foo` will be tested that it exists, it has 20 lines of code, 4
 It will also be checked that class `A` exists with 5 public methods and 3 private methods.
 
 Use following keys for function metrics
-- Cyclomatic complexity: cc
-- Lines of code: loc
-- Number of statements: nos
+- Cyclomatic complexity: cyclomatic
+- Lines of code: lines
+- Number of statements: statements
 - NPath: npath
-- fan-in: fanin
-- fan-out: fanout
+- fan-in: fan_in
+- fan-out: fan_out
 
 And for classes
 - Number of public methods: methodpub
 - Number of private methods: methodpriv
 - TODO
+
+The keys are the same as in the XML export.

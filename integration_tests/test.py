@@ -61,16 +61,22 @@ if __name__ == "__main__":
 
     # Run the metrics program
     command = [sys.argv[1], *tests_fullpath, '--xml', 'out.xml']
-    subprocess.run(command)
+    subprocess.run(command, stderr = subprocess.DEVNULL)
 
     # Parse the result
     tree = ET.parse('out.xml')
     root = tree.getroot()
 
-    funcs, classes = xml_to_dict(root)
+    funcs_out, classes = xml_to_dict(root)
+
+    # Check if the expected number of functions were measured
+    if len(funcs_out) != exp_func_cnt:
+        print(f"Expected {exp_func_cnt} to be measured, instead got {len(funcs_out)}.")
+        exit(1)
 
     # Compare the expected with actual result
     success = True
+
     # First do functions
     for fun_name, metrics in funcs_exp.items():
         # This will happen if only function with no metrics is specified
@@ -79,21 +85,21 @@ if __name__ == "__main__":
             continue
         for metric, value in metrics.items():
             # Check if function was measured
-            if fun_name not in funcs:
+            if fun_name not in funcs_out:
                 success = False
                 print(f"{fun_name} was not measured")
                 continue
 
             # Check if metric was measured
-            if metric not in funcs[fun_name]:
+            if metric not in funcs_out[fun_name]:
                 success = False
                 print(f"`{metric}` key was not found in measured metrics")
                 continue
 
             # Check if the measured value is correct
-            if int(funcs[fun_name][metric]) != int(value):
+            if int(funcs_out[fun_name][metric]) != int(value):
                 success = False
-                print(f"{fun_name} -> {metric}: {value}, expected: {value}, got: {funcs[fun_name][metric]}")
+                print(f"{fun_name} -> {metric}: {value}, expected: {value}, got: {funcs_out[fun_name][metric]}")
 
     #Then do classes
     pass
